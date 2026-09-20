@@ -68,7 +68,7 @@
 - **书籍（book）**
   `id`(唯一) · `title`(书名，用户手填) · `user_id`(归属用户) · `created_at`(录入时间)
 - **读书心得（note）**
-  `id`(唯一) · `book_id`(归属书籍) · `content`(心得正文) · `mood`(可选心情标签) · `user_id`(归属用户) · `created_at`(书写时间)
+  `id`(唯一) · `book_id`(归属书籍) · `content`(心得正文) · `mood`(可选心情标签，取值：平静/温暖/触动/治愈/思索/困惑/轻盈/惆怅，可空) · `user_id`(归属用户) · `created_at`(书写时间)
 - **用户（user）**
   `id`(唯一) · `nickname`(可选昵称) · `created_at`(注册时间)
 
