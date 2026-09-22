@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>栀书心驿 · 我的心得</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@300;400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <!-- 栀子花瓣飘落动景容器（由 js/petals.js 填充，尊重"减少动态效果"偏好） -->
+  <div class="petals" id="petals" aria-hidden="true"></div>
+
+  <main class="page notes">
+    <div class="glow" aria-hidden="true"></div>
+
+    <div class="panel">
+      <p class="brand">栀书心驿</p>
+      <h2 class="title">我的心得</h2>
+
+      <div id="notes-list" class="notes-list"></div>
+
+      <!-- 空状态：还没有任何心得时温柔承接（见 TECH_DESIGN §7） -->
+      <div id="empty" class="empty" hidden>
+        <p class="empty-tip">还没开始，今天就是第一天。<br />读几页，写几句，心就慢慢安下来了。</p>
+        <a class="entry" href="book.html">收下第一本书</a>
+      </div>
+
+      <nav class="links">
+        <a href="index.html">回到首页</a>
+        <a href="book.html">再收一本书</a>
+      </nav>
+    </div>
+  </main>
+
+  <script src="js/store.js"></script>
+  <script src="js/notes.js"></script>
+  <!-- 栀子花瓣飘落动景 -->
+  <script src="js/petals.js"></script>
+</body>
+</html>

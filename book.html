@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>栀书心驿 · 收下一本书</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@300;400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <!-- 栀子花瓣飘落动景容器（由 js/petals.js 填充，尊重"减少动态效果"偏好） -->
+  <div class="petals" id="petals" aria-hidden="true"></div>
+
+  <main class="page book">
+    <div class="glow" aria-hidden="true"></div>
+
+    <div class="panel">
+      <p class="brand">栀书心驿</p>
+      <h2 class="title">今天读了哪一本？</h2>
+
+      <form id="book-form" class="book-form">
+        <input id="book-title" class="book-input" type="text"
+               placeholder="写下书名，例如《被讨厌的勇气》" autocomplete="off" />
+        <button type="submit" class="entry">收下这本书</button>
+      </form>
+
+      <p id="book-empty" class="hint" hidden>写点什么再保存吧。</p>
+
+      <div id="book-card" class="book-card" hidden>
+        <p class="card-label">已收下</p>
+        <p id="book-name" class="card-name"></p>
+        <p id="book-date" class="card-date"></p>
+        <a id="to-note" class="entry subtle" href="#">写几句心得</a>
+      </div>
+
+      <nav class="links">
+        <a href="index.html">回到首页</a>
+        <a href="notes.html">看看我的心得</a>
+      </nav>
+    </div>
+  </main>
+
+  <script src="js/store.js"></script>
+  <script src="js/book.js"></script>
+  <!-- 栀子花瓣飘落动景 -->
+  <script src="js/petals.js"></script>
+</body>
+</html>

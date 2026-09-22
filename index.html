@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>栀书心驿 · 慢慢读，慢慢写</title>
+  <!-- 诗意衬线字体：联网时加载，离线自动回退到系统衬线体 -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@300;400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <!-- 栀子花瓣飘落动景容器（由 js/petals.js 填充，尊重"减少动态效果"偏好） -->
+  <div class="petals" id="petals" aria-hidden="true"></div>
+
+  <main class="page home">
+    <!-- 微光：自然意象点缀，缓慢呼吸般的动效 -->
+    <div class="glow" aria-hidden="true"></div>
+
+    <!-- 封面底部栀子花点缀：淡雅固定的花枝，置于无文字角落（见 css .cover-flora） -->
+    <div class="cover-flora" aria-hidden="true">
+      <img class="flora flora-left" src="assets/img/gardenia.svg" alt="" />
+      <img class="flora flora-right" src="assets/img/gardenia.svg" alt="" />
+    </div>
+
+    <!-- 顶部留白处一句温柔鼓励：随意、温暖、夸赞，不抢主视觉 -->
+    <p class="whisper">今天的你，也很棒呀</p>
+
+    <div class="home-inner">
+      <p class="brand">栀书心驿</p>
+      <h1 class="motto">今天，也请慢慢来</h1>
+      <p class="sub">在快与慢之间，留一处让心停靠的驿站。</p>
+      <a class="entry" href="book.html">开始今天的阅读</a>
+      <p class="hint">不必读很多，哪怕几页、几句，也好。</p>
+    </div>
+
+    <footer class="foot">栀子微光，伴你读完这一段</footer>
+  </main>
+
+  <!-- 本地存储封装：MVP 的"后端+数据库"替代物（步骤 2 起被页面调用） -->
+  <script src="js/store.js"></script>
+  <!-- 栀子花瓣飘落动景 -->
+  <script src="js/petals.js"></script>
+</body>
+</html>

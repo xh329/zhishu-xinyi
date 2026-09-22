@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>栀书心驿 · 写几句心得</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@300;400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <!-- 栀子花瓣飘落动景容器（由 js/petals.js 填充，尊重"减少动态效果"偏好） -->
+  <div class="petals" id="petals" aria-hidden="true"></div>
+
+  <main class="page note">
+    <div class="glow" aria-hidden="true"></div>
+
+    <div class="panel">
+      <p class="brand">栀书心驿</p>
+      <h2 class="title">写几句心得</h2>
+      <p id="book-ref" class="book-ref"></p>
+
+      <!-- 心得正文：由你本人书写，AI 不代笔（见 AGENTS.md [D6-4]） -->
+      <textarea id="note-content" class="note-area"
+                placeholder="读完这段文字，心里泛起了什么？慢慢写，几句就好。"></textarea>
+
+      <div class="mood">
+        <p class="mood-label">此刻的心情（可不选）</p>
+        <div id="mood-list" class="mood-list"></div>
+      </div>
+
+      <div class="note-actions">
+        <button id="save-note" class="entry" type="button">温柔留存</button>
+        <p id="saved-tip" class="saved-tip">已为你收好，去"我的心得"看看吧。</p>
+      </div>
+
+      <nav class="links">
+        <a href="book.html">再收一本书</a>
+        <a href="notes.html">我的心得</a>
+      </nav>
+    </div>
+  </main>
+
+  <script src="js/store.js"></script>
+  <script src="js/note.js"></script>
+  <!-- 栀子花瓣飘落动景 -->
+  <script src="js/petals.js"></script>
+</body>
+</html>
