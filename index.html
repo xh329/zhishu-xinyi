@@ -14,32 +14,57 @@
   <!-- 栀子花瓣飘落动景容器（由 js/petals.js 填充，尊重"减少动态效果"偏好） -->
   <div class="petals" id="petals" aria-hidden="true"></div>
 
-  <main class="page home">
+  <!-- Day 8 主视图：诗意引导（区块1）+ 最近在读（区块2）+ 最近的读书心得（区块3） -->
+  <main class="page home main-view">
     <!-- 微光：自然意象点缀，缓慢呼吸般的动效 -->
     <div class="glow" aria-hidden="true"></div>
 
-    <!-- 封面底部栀子花点缀：淡雅固定的花枝，置于无文字角落（见 css .cover-flora） -->
+    <!-- 封面底部栀子花点缀：淡雅固定的花枝，置于无文字角落 -->
     <div class="cover-flora" aria-hidden="true">
       <img class="flora flora-left" src="assets/img/gardenia.svg" alt="" />
       <img class="flora flora-right" src="assets/img/gardenia.svg" alt="" />
     </div>
 
-    <!-- 顶部留白处一句温柔鼓励：随意、温暖、夸赞，不抢主视觉 -->
-    <p class="whisper">今天的你，也很棒呀</p>
-
-    <div class="home-inner">
+    <!-- 区块1：诗意引导 + 当日寄语 + 入口 -->
+    <section class="hero">
+      <p class="whisper">今天的你，也很棒呀</p>
       <p class="brand">栀书心驿</p>
       <h1 class="motto">今天，也请慢慢来</h1>
       <p class="sub">在快与慢之间，留一处让心停靠的驿站。</p>
       <a class="entry" href="book.html">开始今天的阅读</a>
       <p class="hint">不必读很多，哪怕几页、几句，也好。</p>
-    </div>
+      <p class="stat" id="stat"></p>
+    </section>
+
+    <!-- 区块2：最近在读（列表 / 卡片，四种状态容器） -->
+    <section class="shelf">
+      <div class="shelf-head">
+        <h2>最近在读</h2>
+        <a href="book.html">添加一本</a>
+      </div>
+      <div class="state" id="books-state"></div>
+    </section>
+
+    <!-- 区块3：最近的读书心得（卡片，四种状态容器） -->
+    <section class="shelf">
+      <div class="shelf-head">
+        <h2>最近的读书心得</h2>
+        <a href="notes.html">查看全部</a>
+      </div>
+      <div class="state" id="notes-state"></div>
+    </section>
 
     <footer class="foot">栀子微光，伴你读完这一段</footer>
   </main>
 
-  <!-- 本地存储封装：MVP 的"后端+数据库"替代物（步骤 2 起被页面调用） -->
+  <!-- 本地存储封装：供 book/note/notes 页面使用（主视图本版用 mock，不依赖它） -->
   <script src="js/store.js"></script>
+  <!-- 可复用组件（余力加练）：卡片 / 列表 / 状态视图 -->
+  <script src="js/components.js"></script>
+  <!-- 主视图 mock 数据（Day 8：本地假数据，不接真实 API） -->
+  <script src="js/mock.js"></script>
+  <!-- 主视图渲染与四态逻辑 -->
+  <script src="js/main.js"></script>
   <!-- 栀子花瓣飘落动景 -->
   <script src="js/petals.js"></script>
 </body>

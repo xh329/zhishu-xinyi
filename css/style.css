@@ -370,3 +370,119 @@ body {
 @media (max-width: 560px) {
   .whisper { top: 7%; font-size: 13px; letter-spacing: 2px; }
 }
+
+/* ============ Day 8 主视图（index.html）布局 ============ */
+
+/* 主视图改为可滚动的纵向流，不再强制单屏居中（覆盖 .page 的 center / overflow:hidden） */
+.main-view {
+  justify-content: flex-start;
+  min-height: 100vh;
+  padding: 56px 24px 96px;
+  overflow: visible;
+}
+
+/* 入口按钮在空/错误态里也作行动、重试按钮，统一指针与字体 */
+.entry { cursor: pointer; font-family: inherit; }
+
+/* 修正（实战步骤3）：主视图是长滚动页，原先绝对定位 top:9% 的轻声寄语
+   会挤进「栀书心驿」与主标语之间；改回文档流，置于品牌上方 */
+.main-view .whisper {
+  position: static;
+  margin-bottom: 26px;
+}
+
+/* 区块1：诗意引导 */
+.hero {
+  text-align: center;
+  max-width: 560px;
+  margin: 6px auto 8px;
+  animation: fadein 1.6s ease both;
+}
+.hero .sub { margin-bottom: 30px; }
+.hero .hint { margin-top: 22px; }
+.stat {
+  margin-top: 22px;
+  color: var(--ink-soft);
+  font-size: 14px;
+  letter-spacing: 0.06em;
+}
+
+/* 区块容器（区块2 / 区块3） */
+.shelf {
+  width: 100%;
+  max-width: 720px;
+  margin: 30px auto 0;
+  text-align: left;
+  animation: fadein 1.6s ease both;
+}
+.shelf-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 18px;
+  padding: 0 4px;
+}
+.shelf-head h2 {
+  font-size: 20px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  color: var(--ink);
+}
+.shelf-head a {
+  color: var(--ink-soft);
+  font-size: 13px;
+  text-decoration: none;
+  letter-spacing: 0.06em;
+  border-bottom: 1px solid transparent;
+  transition: color .4s ease, border-color .4s ease;
+}
+.shelf-head a:hover { color: var(--leaf); border-color: var(--line); }
+
+/* 卡片网格：桌面多列，手机单列 */
+.card-grid { display: grid; gap: 16px; }
+.book-grid  { grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); }
+.notes-grid { grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 18px; }
+
+/* 卡片基底（书名卡 / 心得卡 共用） */
+.card {
+  padding: 20px 22px;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.72);
+  text-align: left;
+  animation: fadein 1.1s ease both;
+  transition: transform .5s ease, box-shadow .5s ease;
+}
+.card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 30px rgba(155, 179, 138, 0.18);
+}
+
+/* 状态视图：加载 / 空 / 错误 */
+.state-view {
+  text-align: center;
+  padding: 30px 12px;
+  animation: fadein 1.2s ease both;
+}
+.state-text { color: var(--ink-soft); font-size: 16px; line-height: 2; }
+.state-view .entry { margin-top: 18px; }
+
+/* 加载中转圈（缓慢、温和，呼应整体氛围） */
+.spinner {
+  width: 30px;
+  height: 30px;
+  margin: 0 auto 14px;
+  border: 3px solid var(--line);
+  border-top-color: var(--leaf);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* 手机宽度：卡片单列、间距收紧、留白减小 */
+@media (max-width: 560px) {
+  .main-view { padding: 44px 18px 84px; }
+  .main-view .whisper { margin-bottom: 20px; }
+  .book-grid, .notes-grid { grid-template-columns: 1fr; }
+  .shelf { margin-top: 24px; }
+}
