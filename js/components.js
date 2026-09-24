@@ -9,6 +9,10 @@
  *   1. 组件只产 DOM，不碰数据来源——mock 与未来的 store/API 都能喂它；
  *   2. 所有用户文本经 escapeHtml 转义，避免注入（即便数据来自本地）；
  *   3. 视觉沿用 style.css 的诗意基底（柔色、留白、衬线、圆角）。
+ * 视觉约束（Day 9 设计规则沉淀，所有组件须遵守）：
+ *   4. 文字颜色须满足 WCAG AA（对比度 ≥ 4.5:1）：正文/副文用 --ink / --ink-soft；品牌字、标签、选中态用 --leaf-ink；禁止直接拿 --leaf 作文字色。
+ *   5. 交互元素必须具备三种状态：:hover、:focus-visible、:active；禁用只有 hover 的按钮。
+ *   6. 组件级容器复用 .card 规范：圆角 18px、白底半透明、内边距 20-24px；文字使用 overflow-wrap 防长内容溢出；移动端热区不小于 44px。
  */
 window.ZhiShu = window.ZhiShu || {};
 
