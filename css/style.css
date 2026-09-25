@@ -277,9 +277,12 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
   margin-bottom: 12px;
 }
 .nc-book { font-size: 18px; color: var(--ink); }
+.nc-moods { display: flex; flex-wrap: wrap; gap: 8px; }
 .nc-mood {
   font-size: 13px;
   padding: 4px 14px;

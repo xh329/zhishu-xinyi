@@ -24,21 +24,24 @@ if (book) {
   bookRef.textContent = '（未指定书名，也可直接写下此刻的感受）';
 }
 
-// 渲染心情标签，可点选 / 取消
-let selectedMood = '';
+// 渲染心情标签，可多选 / 取消（人们的感受往往是多面的，不止一个词能描述）
+let selectedMoods = [];
 MOODS.forEach(function (m) {
   const btn = document.createElement('button');
   btn.type = 'button';
   btn.className = 'mood-item';
   btn.textContent = m;
+  btn.setAttribute('aria-pressed', 'false');
   btn.addEventListener('click', function () {
-    if (selectedMood === m) {
-      selectedMood = '';
-      btn.classList.remove('selected');
-    } else {
-      selectedMood = m;
-      moodList.querySelectorAll('.mood-item').forEach(function (el) { el.classList.remove('selected'); });
+    const idx = selectedMoods.indexOf(m);
+    if (idx === -1) {
+      selectedMoods.push(m);
       btn.classList.add('selected');
+      btn.setAttribute('aria-pressed', 'true');
+    } else {
+      selectedMoods.splice(idx, 1);
+      btn.classList.remove('selected');
+      btn.setAttribute('aria-pressed', 'false');
     }
   });
   moodList.appendChild(btn);
@@ -60,7 +63,7 @@ saveBtn.addEventListener('click', function () {
   }
   emptyTip.hidden = true;
 
-  store.addNote(bookId || '', text, selectedMood);
+  store.addNote(bookId || '', text, selectedMoods.slice());
   content.value = '';
   savedTip.classList.add('show');
   setTimeout(function () { location.href = 'notes.html'; }, 1100);

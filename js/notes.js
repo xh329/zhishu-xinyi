@@ -29,11 +29,18 @@ if (notes.length === 0) {
     name.className = 'nc-book';
     name.textContent = bookName;
     top.appendChild(name);
-    if (n.mood) {
-      const mood = document.createElement('span');
-      mood.className = 'nc-mood';
-      mood.textContent = n.mood;
-      top.appendChild(mood);
+    // mood 可能是单字符串（旧数据）或数组（多选），统一成数组后成组展示（整体靠右，不散开）
+    const moods = Array.isArray(n.mood) ? n.mood : (n.mood ? [n.mood] : []);
+    if (moods.length) {
+      const moodsWrap = document.createElement('span');
+      moodsWrap.className = 'nc-moods';
+      moods.forEach(function (m) {
+        const mood = document.createElement('span');
+        mood.className = 'nc-mood';
+        mood.textContent = m;
+        moodsWrap.appendChild(mood);
+      });
+      top.appendChild(moodsWrap);
     }
 
     const date = document.createElement('div');

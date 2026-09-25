@@ -51,14 +51,14 @@ const store = {
   },
 
   // F3 写心得：写入一条 note，关联 book_id（对应未来 POST /api/notes）
-  // mood 取 TECH_DESIGN §4.1 枚举之一或空，可空
+  // mood 为心情标签数组（支持多选，可空）；旧数据可能是单字符串，渲染处会做兼容
   addNote(bookId, content, mood) {
     const notes = this.getNotes();
     const note = {
       id: makeId('n_'),
       book_id: bookId,
       content: content.trim(),
-      mood: mood || '',
+      mood: mood || [],
       user_id: USER_ID,
       created_at: new Date().toISOString(),
     };

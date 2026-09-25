@@ -56,8 +56,12 @@ window.ZhiShu = window.ZhiShu || {};
   Z.createNoteCard = function (note) {
     var el = document.createElement('article');
     el.className = 'card note-card';
-    var moodHtml = note.mood
-      ? '<span class="nc-mood">' + escapeHtml(note.mood) + '</span>'
+    // mood 可能为单字符串（旧数据）或数组（多选），统一成数组后成组渲染
+    var moods = Array.isArray(note.mood) ? note.mood : (note.mood ? [note.mood] : []);
+    var moodHtml = moods.length
+      ? '<span class="nc-moods">' + moods.map(function (m) {
+          return '<span class="nc-mood">' + escapeHtml(m) + '</span>';
+        }).join('') + '</span>'
       : '';
     el.innerHTML =
       '<div class="nc-top">' +
