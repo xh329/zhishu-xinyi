@@ -10,6 +10,7 @@ const content = document.getElementById('note-content');
 const moodList = document.getElementById('mood-list');
 const saveBtn = document.getElementById('save-note');
 const savedTip = document.getElementById('saved-tip');
+const emptyTip = document.getElementById('note-empty');
 
 // 从 URL 取出书名对应的 bookId（由 P2 的"写几句心得"带过来）
 const params = new URLSearchParams(location.search);
@@ -43,17 +44,21 @@ MOODS.forEach(function (m) {
   moodList.appendChild(btn);
 });
 
+// 用户重新写起来后，收起"空内容"提示（提示只在真的没写时才出现）
+content.addEventListener('input', function () {
+  if (!emptyTip.hidden && content.value.trim()) emptyTip.hidden = true;
+});
+
 // 保存心得
 saveBtn.addEventListener('click', function () {
   const text = content.value.trim();
   if (!text) {
+    // 空内容：温柔拦截并给出可见提示（与 P2 录入页 #book-empty 一致），不抛生硬报错
+    emptyTip.hidden = false;
     content.focus();
-    // 空内容不保存，给一句温柔的话（不抛生硬报错）
-    if (!content.placeholder.includes('慢慢写')) {
-      content.placeholder = '写点什么再保存吧。';
-    }
     return;
   }
+  emptyTip.hidden = true;
 
   store.addNote(bookId || '', text, selectedMood);
   content.value = '';
