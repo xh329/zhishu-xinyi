@@ -428,6 +428,75 @@ body {
   .cover-flora .flora-right { right: 2px; }
 }
 
+/* ---- Day 11 追加：背景乐声开关键（js/music.js 注入，全站常驻右上角） ---- */
+.music-btn {
+  position: fixed;
+  top: 18px;
+  right: 18px;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.72);
+  color: var(--ink-soft);
+  font-family: inherit;
+  font-size: 18px;
+  cursor: pointer;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.5s ease;
+}
+/* 关：一枚斜线轻轻划过音符（休止的意象） */
+.music-btn[data-state="off"]::after {
+  content: "";
+  position: absolute;
+  width: 24px;
+  height: 1.5px;
+  background: var(--ink-soft);
+  transform: rotate(-45deg);
+}
+.music-btn:hover {
+  border-color: var(--leaf);
+  color: var(--leaf-ink);
+  box-shadow: 0 6px 20px rgba(155, 179, 138, 0.25);
+}
+.music-btn:focus-visible {
+  outline: 2px solid var(--leaf-ink);
+  outline-offset: 3px;
+}
+/* 待命态：轻微呼吸，邀请一次轻触；开：静止并微微上浮；关：斜线休止符 */
+.music-btn[data-state="waiting"] { animation: music-invite 3.5s ease-in-out infinite; }
+.music-btn[data-state="on"] { color: var(--leaf-ink); border-color: var(--leaf); transform: translateY(-1px); }
+.music-btn[data-state="off"] { color: var(--ink-soft); opacity: 0.75; }
+@keyframes music-invite {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(155, 179, 138, 0); }
+  50%      { box-shadow: 0 0 0 9px rgba(155, 179, 138, 0.18); }
+}
+/* 待命提示：开关键旁一行小字，乐声响起后淡出 */
+.music-hint {
+  position: fixed;
+  top: 30px;
+  right: 72px;
+  margin: 0;
+  color: var(--ink-soft);
+  font-size: 13px;
+  letter-spacing: 0.1em;
+  z-index: 50;
+  transition: opacity 1.2s ease;
+  pointer-events: none;
+}
+.music-hint.fade { opacity: 0; }
+@media (max-width: 560px) {
+  .music-btn { top: 12px; right: 12px; width: 40px; height: 40px; }
+  .music-hint { display: none; } /* 小屏放不下侧字，靠按钮呼吸动效传达 */
+}
+/* 尊重"减少动态效果"偏好：开关键也不再呼吸 */
+@media (prefers-reduced-motion: reduce) {
+  .music-btn[data-state="waiting"] { animation: none; }
+}
+
 /* 顶部留白处的一句鼓励：小字、柔色、淡入，随意而温暖 */
 .whisper {
   position: absolute;
