@@ -319,7 +319,7 @@ body {
 }
 
 /* ---- P4 我的心得列表页 ---- */
-.notes .title { font-size: 26px; font-weight: 400; letter-spacing: 0.06em; margin-bottom: 30px; }
+.notes .title { font-size: 26px; font-weight: 400; letter-spacing: 0.06em; margin-bottom: 24px; }
 .notes-list {
   width: 100%;
   max-width: 600px;
@@ -357,6 +357,31 @@ body {
 .nc-content { font-size: 16px; line-height: 2; color: var(--ink); white-space: pre-wrap; }
 .empty { text-align: center; max-width: 460px; animation: fadein 1.4s ease both; }
 .empty-tip { color: var(--ink-soft); font-size: 16px; margin-bottom: 30px; line-height: 2; }
+
+/* ---- Day 12 筛选交互：筛一筛（沿用 .book-input 的柔色输入框语言） ---- */
+.filter {
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto 26px;
+}
+.filter-label {
+  display: block;
+  color: var(--ink-soft);
+  font-size: 13px;
+  letter-spacing: 0.18em;
+  margin-bottom: 10px;
+}
+/* 筛选框比录入框更收敛一点：更矮、字号稍小，像书页边一行小注 */
+.filter-input { max-width: 380px; padding: 11px 18px; font-size: 15px; }
+/* 结果回执：一行小字，深叶绿色保证对比度；变化时轻柔淡入 */
+.filter-status {
+  margin: 0 auto 18px;
+  color: var(--leaf-ink);
+  font-size: 14px;
+  letter-spacing: 0.06em;
+  animation: fadein 0.8s ease both;
+}
+.filter-status:empty { display: none; margin: 0; }
 
 /* ============================================================
    栀子花飘落动景（呼应 PRD 自然意象 + 缓慢温和动效的"必要条件"）

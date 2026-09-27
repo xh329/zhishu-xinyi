@@ -20,12 +20,27 @@
       <p class="brand">栀书心驿</p>
       <h2 class="title">我的心得</h2>
 
+      <!-- Day 12 筛选：按书名或关键字轻轻筛一筛（label 与输入框显式关联，读屏可用） -->
+      <div class="filter">
+        <label class="filter-label" for="filter-input">筛一筛</label>
+        <input id="filter-input" class="book-input filter-input" type="search"
+               placeholder="想找哪本书的心得？输入书名或关键字" autocomplete="off" />
+      </div>
+      <!-- 筛选结果回执：让「列表变了」被看见，aria-live 让读屏用户也能感知 -->
+      <p id="filter-status" class="filter-status" aria-live="polite"></p>
+
       <div id="notes-list" class="notes-list"></div>
 
       <!-- 空状态：还没有任何心得时温柔承接（见 TECH_DESIGN §7） -->
       <div id="empty" class="empty" hidden>
         <p class="empty-tip">还没开始，今天就是第一天。<br />读几页，写几句，心就慢慢安下来了。</p>
         <a class="entry" href="book.html">收下第一本书</a>
+      </div>
+
+      <!-- Day 12 筛选无结果的空状态：与「全空」区分开，换一个词或去写下一篇 -->
+      <div id="filter-empty" class="empty" hidden>
+        <p class="empty-tip" id="filter-empty-text"></p>
+        <a class="entry subtle" href="book.html">再收一本书，写下一篇</a>
       </div>
 
       <nav class="links">

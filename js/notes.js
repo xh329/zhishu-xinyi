@@ -1,23 +1,31 @@
 /* P4 我的心得列表页逻辑（回看沉淀的内心）
- * 读取全部 note，按时间倒序以诗意卡片展示；无记录时展示空状态文案。 */
+ *
+ * Day 12 筛选交互：按书名或关键字轻轻筛一筛——
+ *   有结果：只显示匹配的卡片，并回执「找到了几篇」（结果规则）；
+ *   无结果：温柔承接的空状态文案，换一个词或去写下一篇（空状态文案）；
+ *   清空后：恢复显示全部心得（恢复规则）。
+ * 筛选只读 localStorage（store.getNotes），不改动任何存量数据。 */
 
 const listEl = document.getElementById('notes-list');
 const emptyEl = document.getElementById('empty');
+const filterInput = document.getElementById('filter-input');
+const filterStatus = document.getElementById('filter-status');
+const filterEmptyEl = document.getElementById('filter-empty');
+const filterEmptyText = document.getElementById('filter-empty-text');
 
-// 建一个 bookId → 书名 的映射，方便卡片上显示《书名》
+// 建一个 bookId → 书名 的映射，方便卡片上显示《书名》，筛选时也用它匹配书名
 const bookMap = {};
 store.getBooks().forEach(function (b) { bookMap[b.id] = b.title; });
 
-// 取出全部心得，按书写时间从新到旧排列
-const notes = store.getNotes().slice().sort(function (a, b) {
+// 全量心得按书写时间从新到旧排列；筛选只是在这个副本上做，不动原数据
+const allNotes = store.getNotes().slice().sort(function (a, b) {
   return new Date(b.created_at) - new Date(a.created_at);
 });
 
-if (notes.length === 0) {
-  emptyEl.hidden = false;
-  listEl.hidden = true;
-} else {
-  notes.forEach(function (n) {
+// 把一组心得渲染成卡片列表（Day 12 起渲染可被筛选反复调用）
+function renderNotes(list) {
+  listEl.innerHTML = '';
+  list.forEach(function (n) {
     const bookName = bookMap[n.book_id] ? '《' + bookMap[n.book_id] + '》' : '（未关联书名）';
 
     const card = document.createElement('div');
@@ -57,6 +65,58 @@ if (notes.length === 0) {
     listEl.appendChild(card);
   });
 }
+
+/* 应用当前筛选条件，处理三种情况：
+ * ① 输入为空（或清空）：恢复全部，回到「全空」或「全量」两种原始状态；
+ * ② 有匹配：只渲染匹配卡片 + 一行回执（aria-live 区域，见 notes.html）；
+ * ③ 无匹配：隐藏列表，显示温柔的空状态文案。 */
+function applyFilter() {
+  const raw = filterInput.value.trim();
+  const kw = raw.toLowerCase();
+
+  if (kw === '') {
+    // 清空恢复：回到没有筛选词的原始视图
+    filterStatus.textContent = '';
+    filterEmptyEl.hidden = true;
+    if (allNotes.length === 0) {
+      listEl.hidden = true;
+      emptyEl.hidden = false;
+    } else {
+      emptyEl.hidden = true;
+      listEl.hidden = false;
+      renderNotes(allNotes);
+    }
+    return;
+  }
+
+  const matched = allNotes.filter(function (n) {
+    const bookName = (bookMap[n.book_id] || '').toLowerCase();
+    const content = (n.content || '').toLowerCase();
+    return bookName.indexOf(kw) !== -1 || content.indexOf(kw) !== -1;
+  });
+
+  emptyEl.hidden = true; // 有筛选词时，「全空」状态不参与
+
+  if (matched.length === 0) {
+    // 无结果：温柔承接，不吓人，给一个可点的去处
+    listEl.hidden = true;
+    filterStatus.textContent = '';
+    filterEmptyText.textContent = '「' + raw + '」还没有对应的心得。换一个词试试，或者去写下一篇吧。';
+    filterEmptyEl.hidden = false;
+  } else {
+    // 有结果：只显示匹配的卡片，并回执找到了几篇
+    listEl.hidden = false;
+    filterEmptyEl.hidden = true;
+    renderNotes(matched);
+    filterStatus.textContent = '轻轻找到了 ' + matched.length + ' 篇与「' + raw + '」相关的心得';
+  }
+}
+
+// 每次输入（包括原生清空按钮的 ✕）都会重新应用筛选；本地数据量小，无需防抖
+filterInput.addEventListener('input', applyFilter);
+
+// 初次进入页面：等价于「筛选词为空」的情况，渲染全部
+applyFilter();
 
 function formatDate(iso) {
   const d = new Date(iso);
