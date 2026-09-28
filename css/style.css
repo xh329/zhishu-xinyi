@@ -658,3 +658,200 @@ body {
   .shelf { margin-top: 24px; }
   .entry { min-width: 220px; padding-left: 24px; padding-right: 24px; }
 }
+
+/* ============================================================
+   Day 13 多视图导航（hash 路由）：顶栏 / 面包屑 / 视图区块
+   ============================================================ */
+
+/* 跳过导航的隐藏链接：平时藏在页面上方，键盘聚焦时才滑出来 */
+.skip-link {
+  position: absolute;
+  top: -60px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 60;
+  padding: 10px 22px;
+  border: 1px solid var(--line);
+  border-radius: 0 0 14px 14px;
+  background: #fff;
+  color: var(--ink);
+  font-size: 14px;
+  letter-spacing: 0.08em;
+  text-decoration: none;
+  transition: top 0.3s ease;
+}
+.skip-link:focus {
+  top: 0;
+  outline: 2px solid var(--leaf-ink);
+  outline-offset: 2px;
+}
+
+/* 顶栏：左侧品牌，右侧导航标签；给右上角固定的乐声键让出位置 */
+.topbar {
+  position: relative;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px 84px 6px 28px;
+  flex-wrap: wrap;
+}
+.topbar-brand {
+  color: var(--leaf-ink);
+  font-size: 15px;
+  letter-spacing: 0.34em;
+}
+.mainnav {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.mainnav a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;              /* 移动端热区 */
+  padding: 0 18px;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  color: var(--ink-soft);
+  font-size: 15px;
+  letter-spacing: 0.14em;
+  text-decoration: none;
+  transition: all 0.5s ease;
+}
+.mainnav a:hover {
+  color: var(--ink);
+  border-color: var(--line);
+  background: rgba(255, 255, 255, 0.6);
+}
+.mainnav a:focus-visible {
+  outline: 2px solid var(--leaf-ink);
+  outline-offset: 3px;
+}
+/* 当前所在：深叶绿胶囊 + 底部一线书签，两种线索并行，不只靠颜色区分 */
+.mainnav a[aria-current="page"] {
+  color: var(--leaf-ink);
+  border-color: var(--leaf);
+  background: rgba(155, 179, 138, 0.16);
+  box-shadow: inset 0 -2px 0 var(--leaf-ink);
+}
+
+/* 视图上方的"当前位置"一行：面包屑在左，返回上一页在右 */
+.viewbar {
+  width: 100%;
+  max-width: 720px;
+  margin: 4px auto 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.crumbs {
+  color: var(--ink-soft);
+  font-size: 13px;
+  letter-spacing: 0.08em;
+}
+.crumbs a {
+  color: var(--ink-soft);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: color 0.4s ease, border-color 0.4s ease;
+}
+.crumbs a:hover { color: var(--leaf-ink); border-color: var(--line); }
+.crumbs a:focus-visible { outline: 2px solid var(--leaf-ink); outline-offset: 3px; }
+.crumbs [aria-current="page"] { color: var(--ink); }
+
+.crumb-back {
+  padding: 6px 14px;
+  min-height: 36px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.6);
+  color: var(--ink-soft);
+  font-family: inherit;
+  font-size: 13px;
+  letter-spacing: 0.08em;
+  cursor: pointer;
+  transition: all 0.4s ease;
+}
+.crumb-back:hover { color: var(--leaf-ink); border-color: var(--leaf); }
+.crumb-back:focus-visible { outline: 2px solid var(--leaf-ink); outline-offset: 3px; }
+
+/* 未知路由的温柔说明：一行小注，不惊扰 */
+.route-warn {
+  width: 100%;
+  max-width: 720px;
+  margin: 16px auto 0;
+  padding: 10px 18px;
+  border: 1px dashed var(--line);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.5);
+  color: var(--ink-soft);
+  font-size: 14px;
+  text-align: center;
+  animation: fadein 0.8s ease both;
+}
+
+/* 视图区块：切换时轻轻淡入，像翻过一页 */
+.view {
+  width: 100%;
+  animation: fadein 0.9s ease both;
+}
+/* 仅供读屏的隐藏文本：视觉上收起来，屏幕阅读器照常播报 */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* 今日视图：并排的两个入口 */
+.hero-actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+/* 区块标题旁的数量小注 */
+.shelf-title { display: flex; align-items: baseline; gap: 10px; }
+.shelf-count { color: var(--ink-soft); font-size: 13px; letter-spacing: 0.06em; }
+.view-tip { color: var(--ink-soft); font-size: 14px; margin: -8px 0 16px; padding: 0 4px; }
+
+/* 整张卡片可点：清掉链接下划线，保留卡片的柔色外观 */
+.card-link {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+  border-radius: 18px;
+  transition: transform 0.5s ease, box-shadow 0.5s ease;
+}
+.card-link:hover { transform: translateY(-3px); }
+.card-link:focus-visible { outline: 2px solid var(--leaf-ink); outline-offset: 3px; }
+.card-link .card { animation: none; }        /* 由外层统一做淡入，避免双层动效打架 */
+.card-link:hover .card { box-shadow: 0 10px 30px rgba(155, 179, 138, 0.18); }
+
+/* 多视图容器：扣掉顶栏高度，避免多出一屏滚动 */
+.app { min-height: calc(100vh - 62px); padding-top: 26px; }
+
+@media (max-width: 560px) {
+  .topbar { padding: 10px 66px 4px 18px; }
+  .topbar-brand { letter-spacing: 0.22em; font-size: 14px; }
+  .mainnav a { padding: 0 14px; min-height: 40px; font-size: 14px; }
+  .viewbar { margin-top: 8px; }
+  .app { padding-top: 20px; }
+}
+/* 尊重"减少动态效果"偏好：视图切换也安静下来 */
+@media (prefers-reduced-motion: reduce) {
+  .view, .route-warn { animation: none; }
+  .card-link:hover { transform: none; }
+}

@@ -36,14 +36,15 @@
         <p id="note-empty" class="hint" hidden>还没写下什么呢，等想说了再留存吧。</p>
         <!-- Day 11 交互反馈：收存成功后的"撤销"入口（1.6 秒反悔窗口内可见，按钮本身支持键盘 Enter/空格） -->
         <button id="undo-save" class="undo-link" type="button" hidden>先不放进去（撤销）</button>
-        <p id="saved-tip" class="saved-tip" aria-live="polite">已为你收好，去"我的心得"看看吧。</p>
+        <p id="saved-tip" class="saved-tip" aria-live="polite">已为你收好，去"心迹"看看吧。</p>
         <!-- Day 11 交互反馈：收存失败（如浏览器存储满 / 隐私模式写不进）时的温柔提示 -->
         <p id="save-fail" class="fail-tip" role="alert" hidden>这一次没能收好，可能是浏览器存储满了，稍后再试一次吧。</p>
       </div>
 
+      <!-- Day 13：写完后的去处指向新的「心迹」视图 -->
       <nav class="links">
         <a href="book.html">再收一本书</a>
-        <a href="notes.html">我的心得</a>
+        <a href="index.html#/notes">我的心迹</a>
       </nav>
     </div>
   </main>

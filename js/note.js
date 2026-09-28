@@ -118,13 +118,13 @@ saveBtn.addEventListener('click', function () {
     saveBtn.classList.add('done');
     saveBtn.textContent = '已收好';
     content.value = '';
-    savedTip.textContent = '已为你收好，去"我的心得"看看吧。';
+    savedTip.textContent = '已为你收好，去"心迹"看看吧。';
     savedTip.classList.add('show');
     undoBtn.hidden = false;
 
-    // 1.6 秒内不撤销，就去"我的心得"（与原跳转行为一致，只是留出了反悔时间）
+    // 1.6 秒内不撤销，就去「心迹」视图（Day 13 起走多视图路由，与原跳转行为一致，只是留出了反悔时间）
     redirectTimer = setTimeout(function () {
-      location.href = 'notes.html';
+      location.href = 'index.html#/notes';
     }, 1600);
   }, 600);
 });
@@ -139,9 +139,9 @@ undoBtn.addEventListener('click', function () {
     store.removeNote(lastSaved.id);
   } catch (e) {
     // 极少数情况取回失败：这条心得其实已收好，如实告知并照常去列表页
-    failTip.textContent = '没能取回，不过这条心得已经好好收着了，去"我的心得"看看吧。';
-    failTip.hidden = false;
-    redirectTimer = setTimeout(function () { location.href = 'notes.html'; }, 1200);
+      failTip.textContent = '没能取回，不过这条心得已经好好收着了，去"心迹"看看吧。';
+      failTip.hidden = false;
+      redirectTimer = setTimeout(function () { location.href = 'index.html#/notes'; }, 1200);
     return;
   }
 

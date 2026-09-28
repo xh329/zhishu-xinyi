@@ -1,5 +1,9 @@
 /* 栀书心驿 · 主视图逻辑（Day 8 · mock 数据版）
  *
+ * 【Day 13 说明】index.html 已改为多视图容器，由 js/router.js + js/views.js 接管
+ * （数据也从 mock 换成真实的本地存储 store）。本文件不再被 index.html 引用，
+ * 保留作 Day 8「四态 + mock」的学习记录；其中的 preview 调试思路已被 views.js 沿用。
+ *
  * 职责：
  *   1. 模拟异步加载（setTimeout 假装有网络/读取耗时）；
  *   2. 渲染「最近在读」与「最近的读书心得」两个区块；

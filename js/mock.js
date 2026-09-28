@@ -1,5 +1,8 @@
 /* 栀书心驿 · 主视图 mock 数据（Day 8）
  *
+ * 【Day 13 说明】主视图已改接真实本地数据（store），index.html 不再引用本文件；
+ * 保留作 Day 8「先做出四种状态、再换数据源」的学习记录。
+ * 需要演示数据时，可把下面的数组写进 localStorage 的 zhishu_books / zhishu_notes。
  * 本文件只服务于「主视图 / mock 数据版」演示：提供本地假数据，
  * 不接任何真实 API（接真实接口是第 3 周的事）。
  * 上云后，js/main.js 里的读取逻辑整体替换为 store / REST 调用即可，

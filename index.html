@@ -11,12 +11,24 @@
   <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
+  <!-- 余力加练：跳过导航，直接到正文（键盘 Tab 第一站即可跳过，读屏友好） -->
+  <a class="skip-link" href="#view-root">跳过导航，直接看内容</a>
+
   <!-- 栀子花瓣飘落动景容器（由 js/petals.js 填充，尊重"减少动态效果"偏好） -->
   <div class="petals" id="petals" aria-hidden="true"></div>
 
-  <!-- Day 8 主视图：诗意引导（区块1）+ 最近在读（区块2）+ 最近的读书心得（区块3） -->
-  <main class="page home main-view">
-    <!-- 微光：自然意象点缀，缓慢呼吸般的动效 -->
+  <!-- Day 13 顶部导航：三个视图共享一套可点、可聚焦的导航标签 -->
+  <header class="topbar">
+    <p class="topbar-brand">栀书心驿</p>
+    <nav id="main-nav" class="mainnav" aria-label="主导航">
+      <a href="#/home" data-route="/home">今日</a>
+      <a href="#/books" data-route="/books">书架</a>
+      <a href="#/notes" data-route="/notes">心迹</a>
+    </nav>
+  </header>
+
+  <!-- Day 13 多视图容器：四个 .view 区块同时存在，由 js/router.js 按 hash 显示其中一个 -->
+  <main class="page main-view app" id="view-root" tabindex="-1">
     <div class="glow" aria-hidden="true"></div>
 
     <!-- 封面底部栀子花点缀：淡雅固定的花枝，置于无文字角落 -->
@@ -25,46 +37,86 @@
       <img class="flora flora-right" src="assets/img/gardenia.svg" alt="" />
     </div>
 
-    <!-- 区块1：诗意引导 + 当日寄语 + 入口 -->
-    <section class="hero">
-      <p class="whisper">今天的你，也很棒呀</p>
-      <p class="brand">栀书心驿</p>
-      <h1 class="motto">今天，也请慢慢来</h1>
-      <p class="sub">在快与慢之间，留一处让心停靠的驿站。</p>
-      <a class="entry" href="book.html">开始今天的阅读</a>
-      <p class="hint">不必读很多，哪怕几页、几句，也好。</p>
-      <p class="stat" id="stat"></p>
+    <!-- 当前位置（面包屑）+ 返回上一页：由 js/router.js 动态填充 -->
+    <div class="viewbar">
+      <nav id="crumbs" class="crumbs" aria-label="当前位置"></nav>
+      <button id="back-btn" class="crumb-back" type="button">← 返回上一页</button>
+    </div>
+
+    <!-- 未知路由时的温柔说明：默认隐藏，命中不匹配的路径才显示 -->
+    <p id="route-warn" class="route-warn" role="status" hidden></p>
+    <!-- 视图切换的隐藏播报（读屏可用，视觉上不可见，见 .sr-only） -->
+    <p id="route-live" class="sr-only" role="status" aria-live="polite"></p>
+
+    <!-- 视图一：#/home 今日（诗意引导 + 概览） -->
+    <section class="view" id="view-home" hidden>
+      <section class="hero">
+        <p class="whisper">今天的你，也很棒呀</p>
+        <h1 class="motto">今天，也请慢慢来</h1>
+        <p class="sub">在快与慢之间，留一处让心停靠的驿站。</p>
+        <div class="hero-actions">
+          <a class="entry" href="book.html">开始今天的阅读</a>
+          <a class="entry subtle" href="#/books">去书架看看</a>
+        </div>
+        <p class="hint">不必读很多，哪怕几页、几句，也好。</p>
+        <p class="stat" id="stat"></p>
+      </section>
     </section>
 
-    <!-- 区块2：最近在读（列表 / 卡片，四种状态容器） -->
-    <section class="shelf">
-      <div class="shelf-head">
-        <h2>最近在读</h2>
-        <a href="book.html">添加一本</a>
+    <!-- 视图二：#/books 书架（全部书籍 · 四态：加载/成功/空/错误） -->
+    <section class="view" id="view-books" hidden>
+      <div class="shelf">
+        <div class="shelf-head">
+          <div class="shelf-title">
+            <h2>书架</h2>
+            <span class="shelf-count" id="books-count"></span>
+          </div>
+          <a href="book.html">收下一本</a>
+        </div>
+        <div class="state" id="books-box"></div>
       </div>
-      <div class="state" id="books-state"></div>
     </section>
 
-    <!-- 区块3：最近的读书心得（卡片，四种状态容器） -->
-    <section class="shelf">
-      <div class="shelf-head">
-        <h2>最近的读书心得</h2>
-        <a href="notes.html">查看全部</a>
+    <!-- 视图三：#/books/:id 书页（二级路由 · 这本书的心得 · 四态） -->
+    <section class="view" id="view-book" hidden>
+      <div class="shelf">
+        <div class="shelf-head">
+          <div class="shelf-title">
+            <h2 id="book-title">《》</h2>
+            <span class="shelf-count" id="book-notes-count"></span>
+          </div>
+          <a id="book-write" class="entry subtle" href="#">写下心得</a>
+        </div>
+        <p class="view-tip" id="book-meta"></p>
+        <div class="state" id="book-notes-box"></div>
       </div>
-      <div class="state" id="notes-state"></div>
+    </section>
+
+    <!-- 视图四：#/notes 心迹（全部心得 · 四态） -->
+    <section class="view" id="view-notes" hidden>
+      <div class="shelf">
+        <div class="shelf-head">
+          <div class="shelf-title">
+            <h2>心迹</h2>
+            <span class="shelf-count" id="notes-count"></span>
+          </div>
+          <a href="notes.html">去筛一筛</a>
+        </div>
+        <div class="state" id="notes-box"></div>
+      </div>
     </section>
 
     <footer class="foot">栀子微光，伴你读完这一段</footer>
   </main>
 
-  <!-- 本地存储封装：供 book/note/notes 页面使用（主视图本版用 mock，不依赖它） -->
+  <!-- 本地存储封装：三个视图的数据来源（book / note） -->
   <script src="js/store.js"></script>
-  <!-- 可复用组件（余力加练）：卡片 / 列表 / 状态视图 -->
+  <!-- 可复用组件：卡片 / 状态视图 -->
   <script src="js/components.js"></script>
-  <!-- 主视图 mock 数据（Day 8：本地假数据，不接真实 API） -->
-  <script src="js/mock.js"></script>
-  <!-- 主视图渲染与四态逻辑 -->
-  <script src="js/main.js"></script>
+  <!-- Day 13 极简 hash 路由 -->
+  <script src="js/router.js"></script>
+  <!-- Day 13 三个视图的渲染与四态逻辑 -->
+  <script src="js/views.js"></script>
   <!-- 栀子花瓣飘落动景 -->
   <script src="js/petals.js"></script>
   <!-- 背景乐声：进站待命，首次轻点响起，右上角可开关 -->
