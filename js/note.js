@@ -118,13 +118,17 @@ saveBtn.addEventListener('click', function () {
     saveBtn.classList.add('done');
     saveBtn.textContent = '已收好';
     content.value = '';
-    savedTip.textContent = '已为你收好，去"心迹"看看吧。';
+    savedTip.textContent = bookId ? '已为你收好，回到这本书看看吧。' : '已为你收好，去"心迹"看看吧。';
     savedTip.classList.add('show');
     undoBtn.hidden = false;
 
-    // 1.6 秒内不撤销，就去「心迹」视图（Day 13 起走多视图路由，与原跳转行为一致，只是留出了反悔时间）
+    // 1.6 秒内不撤销，就去下一处（Day 14 最小修复：从哪本书来，就回哪本书——
+    // 真人测试发现"从书页写下心得，保存后却被带到心迹，想回这本书得重新绕书架"。
+    // 带 book 参数时回这本书的页面；未指定书时维持原行为去「心迹」）
     redirectTimer = setTimeout(function () {
-      location.href = 'index.html#/notes';
+      location.href = bookId
+        ? 'index.html#/books/' + encodeURIComponent(bookId)
+        : 'index.html#/notes';
     }, 1600);
   }, 600);
 });

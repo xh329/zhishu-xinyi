@@ -657,6 +657,11 @@ body {
   .book-grid, .notes-grid { grid-template-columns: 1fr; }
   .shelf { margin-top: 24px; }
   .entry { min-width: 220px; padding-left: 24px; padding-right: 24px; }
+  /* Day 14 手机宽度修复：标题行不再硬挤一行——书页标题《被讨厌的勇气》
+     在 375px 下被右侧按钮压成一字一行竖排。允许换行后，标题拿整行、按钮另起一行。 */
+  .shelf-head { flex-wrap: wrap; row-gap: 10px; }
+  .shelf-title { flex-wrap: wrap; }
+  .shelf-head h2 { white-space: normal; }
 }
 
 /* ============================================================
