@@ -53,9 +53,13 @@ window.ZhiShu = window.ZhiShu || {};
   };
 
   // ---- 心得卡片 ----
+  // 卡片只产 DOM 结构（含 id / book_id 与两个动作按钮），数据操作交给视图层的事件委托，
+  // 保证组件"只产结构、不碰数据来源"的原则不变。
   Z.createNoteCard = function (note) {
     var el = document.createElement('article');
     el.className = 'card note-card';
+    el.setAttribute('data-note-id', note.id);
+    el.setAttribute('data-book-id', note.book_id || '');
     // mood 可能为单字符串（旧数据）或数组（多选），统一成数组后成组渲染
     var moods = Array.isArray(note.mood) ? note.mood : (note.mood ? [note.mood] : []);
     var moodHtml = moods.length
@@ -69,7 +73,13 @@ window.ZhiShu = window.ZhiShu || {};
         moodHtml +
       '</div>' +
       '<p class="nc-date">' + escapeHtml(Z.formatDate(note.created_at)) + '</p>' +
-      '<p class="nc-content">' + escapeHtml(note.content) + '</p>';
+      '<p class="nc-content">' + escapeHtml(note.content) + '</p>' +
+      '<div class="nc-actions">' +
+        '<button type="button" class="nc-btn" data-action="edit-note" ' +
+          'data-note-id="' + escapeHtml(note.id) + '" data-book-id="' + escapeHtml(note.book_id || '') + '">改写</button>' +
+        '<button type="button" class="nc-btn nc-btn-ghost" data-action="delete-note" ' +
+          'data-note-id="' + escapeHtml(note.id) + '">收起</button>' +
+      '</div>';
     return el;
   };
 

@@ -199,6 +199,66 @@
     box.appendChild(grid);
   }
 
+  /* ========== 心得的改写 / 收起（来自用户真实反馈：写完的心得应能自由增删改） ==========
+   * 卡片本身是纯 DOM（components.js 只产结构、不碰数据），这里用一次事件委托接管动作。
+   * 删除走"就地温柔确认"，不弹生硬的原生 confirm；改写复用写心得页（?edit=）。 */
+  function noteActionsHtml(id, bookId) {
+    return '<div class="nc-actions">' +
+      '<button type="button" class="nc-btn" data-action="edit-note" data-note-id="' + Z.escapeHtml(id) + '" data-book-id="' + Z.escapeHtml(bookId || '') + '">改写</button>' +
+      '<button type="button" class="nc-btn nc-btn-ghost" data-action="delete-note" data-note-id="' + Z.escapeHtml(id) + '">收起</button>' +
+    '</div>';
+  }
+
+  function onNoteAction(e) {
+    var t = e.target;
+    if (!t || !t.closest) return;
+
+    // 改写：跳到写心得页的编辑模式（带上 id、book 与来源视图）
+    var edit = t.closest('[data-action="edit-note"]');
+    if (edit) {
+      var id = edit.getAttribute('data-note-id');
+      var bid = edit.getAttribute('data-book-id') || '';
+      var from = Z.router.path().indexOf('/books/') === 0 ? 'book' : 'notes';
+      location.href = 'note.html?edit=' + encodeURIComponent(id) +
+        '&book=' + encodeURIComponent(bid) + '&from=' + from;
+      return;
+    }
+
+    // 收起：就地换成确认行，不弹原生框
+    var del = t.closest('[data-action="delete-note"]');
+    if (del) {
+      var card = del.closest('.note-card');
+      if (card) {
+        card.querySelector('.nc-actions').outerHTML =
+          '<div class="nc-actions nc-actions-confirm">' +
+            '<span class="nc-confirm-text">要把这段收起来吗？</span>' +
+            '<button type="button" class="nc-btn nc-btn-ghost" data-action="cancel-delete">留下</button>' +
+            '<button type="button" class="nc-btn nc-btn-danger" data-action="confirm-delete" data-note-id="' + Z.escapeHtml(del.getAttribute('data-note-id')) + '">收起</button>' +
+          '</div>';
+      }
+      return;
+    }
+
+    // 取消收起：还原成"改写 / 收起"（id 与 bookId 仍记在卡片上）
+    var cancel = t.closest('[data-action="cancel-delete"]');
+    if (cancel) {
+      var ccard = cancel.closest('.note-card');
+      if (ccard) {
+        ccard.querySelector('.nc-actions').outerHTML =
+          noteActionsHtml(ccard.getAttribute('data-note-id'), ccard.getAttribute('data-book-id'));
+      }
+      return;
+    }
+
+    // 确认收起：删除并重渲染当前视图（心迹 / 书页都走同一通道）
+    var yes = t.closest('[data-action="confirm-delete"]');
+    if (yes) {
+      store.removeNote(yes.getAttribute('data-note-id'));
+      Z.router.go(Z.router.path());
+    }
+  }
+  document.addEventListener('click', onNoteAction);
+
   /* ========== 未知路由：温柔承接，不白屏 ==========
    * 处理办法：不悄悄改掉你输的地址（改了反而更让人困惑），
    * 而是把「今日」的内容显示出来，并在上方留一行说明，告诉你这条路还没通。

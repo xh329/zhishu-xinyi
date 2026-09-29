@@ -77,6 +77,19 @@ const store = {
     return this.getNotes().filter((n) => n.book_id === bookId);
   },
 
+  // 改写一条心得（对应未来 PUT /api/notes/:id）：更新正文与心情，留下修改时间
+  // 用户反馈：写完的心得应能自由修改，故补齐这一层
+  updateNote(id, content, mood) {
+    const notes = this.getNotes();
+    const idx = notes.findIndex((n) => n.id === id);
+    if (idx === -1) return null;
+    notes[idx].content = content.trim();
+    notes[idx].mood = mood || [];
+    notes[idx].updated_at = new Date().toISOString();
+    writeList('notes', notes);
+    return notes[idx];
+  },
+
   // 删除一条心得（对应未来 DELETE /api/notes/:id）
   removeNote(id) {
     const notes = this.getNotes().filter((n) => n.id !== id);

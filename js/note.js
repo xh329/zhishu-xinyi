@@ -17,6 +17,10 @@ const failTip = document.getElementById('save-fail');
 // 从 URL 取出书名对应的 bookId（由 P2 的"写几句心得"带过来）
 const params = new URLSearchParams(location.search);
 const bookId = params.get('book');
+// 编辑模式：带 edit=<心得id> 进来时，回填原文并改调 updateNote（用户反馈：心得应能改写）
+const editId = params.get('edit');
+// from 记录来源视图（book / notes），保存后回到来处
+const from = params.get('from');
 
 // 取出该书标题，显示在书写页顶部
 const book = store.getBooks().find(function (b) { return b.id === bookId; });
@@ -28,6 +32,9 @@ if (book) {
 
 // 渲染心情标签，可多选 / 取消（人们的感受往往是多面的，不止一个词能描述）
 let selectedMoods = [];
+// 编辑模式下用于"撤销改写"：把正文与心情还原回改之前的状态
+let originalContent = '';
+let originalMoods = [];
 const moodButtons = []; // 记录 { 按钮, 心情 }，撤销时用它把选中状态恢复回去
 MOODS.forEach(function (m) {
   const btn = document.createElement('button');
@@ -50,6 +57,26 @@ MOODS.forEach(function (m) {
   moodButtons.push({ btn: btn, mood: m });
   moodList.appendChild(btn);
 });
+
+// 编辑模式：进来时把原文与心情回填，标题也从"写几句心得"切成"改写这段心得"
+if (editId) {
+  const existing = store.getNotes().find(function (n) { return n.id === editId; });
+  if (existing) {
+    originalContent = existing.content;
+    originalMoods = Array.isArray(existing.mood) ? existing.mood.slice() : (existing.mood ? [existing.mood] : []);
+    content.value = existing.content;
+    selectedMoods = originalMoods.slice();
+    syncMoodButtons();
+    const titleEl = document.querySelector('.title');
+    if (titleEl) titleEl.textContent = '改写这段心得';
+    bookRef.textContent = '《' + (book ? book.title : '这本书') + '》';
+  } else {
+    // 找不到（可能已被删除）：温柔回到心迹
+    failTip.hidden = false;
+    failTip.textContent = '这段心得好像不在了，先回心迹看看吧。';
+    setTimeout(function () { location.href = 'index.html#/notes'; }, 1400);
+  }
+}
 
 // 依据 selectedMoods 同步所有心情按钮的选中外观（撤销回填时用）
 function syncMoodButtons() {
@@ -102,7 +129,10 @@ saveBtn.addEventListener('click', function () {
   setTimeout(function () {
     let note;
     try {
-      note = store.addNote(bookId || '', text, selectedMoods.slice());
+      // 编辑模式改调 updateNote，否则新建
+      note = editId
+        ? store.updateNote(editId, text, selectedMoods.slice())
+        : store.addNote(bookId || '', text, selectedMoods.slice());
     } catch (e) {
       // ② 失败：localStorage 写不进去（隐私模式 / 存储配额满），温柔告知并允许重试
       saveState = 'idle';
@@ -118,7 +148,9 @@ saveBtn.addEventListener('click', function () {
     saveBtn.classList.add('done');
     saveBtn.textContent = '已收好';
     content.value = '';
-    savedTip.textContent = bookId ? '已为你收好，回到这本书看看吧。' : '已为你收好，去"心迹"看看吧。';
+    savedTip.textContent = editId
+      ? '已为你改好，去瞧瞧吧。'
+      : (bookId ? '已为你收好，回到这本书看看吧。' : '已为你收好，去"心迹"看看吧。');
     savedTip.classList.add('show');
     undoBtn.hidden = false;
 
@@ -126,9 +158,12 @@ saveBtn.addEventListener('click', function () {
     // 真人测试发现"从书页写下心得，保存后却被带到心迹，想回这本书得重新绕书架"。
     // 带 book 参数时回这本书的页面；未指定书时维持原行为去「心迹」）
     redirectTimer = setTimeout(function () {
-      location.href = bookId
-        ? 'index.html#/books/' + encodeURIComponent(bookId)
-        : 'index.html#/notes';
+      // 编辑从书页来就回书页，从心迹来（或没带来源）就回心迹
+      if (from === 'book' && bookId) {
+        location.href = 'index.html#/books/' + encodeURIComponent(bookId);
+      } else {
+        location.href = 'index.html#/notes';
+      }
     }, 1600);
   }, 600);
 });
@@ -140,7 +175,12 @@ undoBtn.addEventListener('click', function () {
   clearTimeout(redirectTimer);
 
   try {
-    store.removeNote(lastSaved.id);
+    if (editId) {
+      // 编辑态的"撤销"= 把正文与心情还原回改写前的样子
+      store.updateNote(editId, originalContent, originalMoods);
+    } else {
+      store.removeNote(lastSaved.id);
+    }
   } catch (e) {
     // 极少数情况取回失败：这条心得其实已收好，如实告知并照常去列表页
       failTip.textContent = '没能取回，不过这条心得已经好好收着了，去"心迹"看看吧。';
@@ -150,14 +190,14 @@ undoBtn.addEventListener('click', function () {
   }
 
   // 取回成功：内容与心情标签都放回去
-  content.value = lastSaved.text;
-  selectedMoods = lastSaved.moods.slice();
+  content.value = editId ? originalContent : lastSaved.text;
+  selectedMoods = (editId ? originalMoods : lastSaved.moods).slice();
   syncMoodButtons();
 
   saveState = 'idle';
   resetSaveButton();
   undoBtn.hidden = true;
   savedTip.classList.remove('show');
-  savedTip.textContent = '已取回，想改哪里，慢慢改。';
+  savedTip.textContent = editId ? '已还原到改写前的样子，想改哪里慢慢改。' : '已取回，想改哪里，慢慢改。';
   content.focus();
 });
