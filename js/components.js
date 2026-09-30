@@ -78,7 +78,7 @@ window.ZhiShu = window.ZhiShu || {};
         '<button type="button" class="nc-btn" data-action="edit-note" ' +
           'data-note-id="' + escapeHtml(note.id) + '" data-book-id="' + escapeHtml(note.book_id || '') + '">改写</button>' +
         '<button type="button" class="nc-btn nc-btn-ghost" data-action="delete-note" ' +
-          'data-note-id="' + escapeHtml(note.id) + '">收起</button>' +
+          'data-note-id="' + escapeHtml(note.id) + '">删除</button>' +
       '</div>';
     return el;
   };
