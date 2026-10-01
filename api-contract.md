@@ -28,6 +28,31 @@
 | `created_at` | string(ISO8601) | 写下时间 |
 | `updated_at` | string(ISO8601)\|null | 改写时间，未改过为 null |
 
+### 数据库实现（Day 16 落地 · MySQL 方言）
+> 两张表分别存什么、靠哪个字段关联，已定：
+> - **books** 存「用户收录的每本书的元信息」（书名、归属用户、收录时间）；
+> - **notes** 存「用户为某本书写下的读书心得」（正文、心情、时间）；
+> - **关联字段：`notes.book_id` → `books.id`**（一对多：一本书可有多段心得，一段心得只属于一本书）。
+>
+> 建表脚本 `db/schema.sql`、种子脚本 `db/seed.sql`（每表 ≥5 行、可重复执行）。下表为契约字段到 SQL 列类型的落地映射，类型选择理由见「为什么这么选」。
+
+| 表 | 字段 | SQL 列类型 | 约束 | 为什么这么选 |
+| --- | --- | --- | --- | --- |
+| books | `id` | `VARCHAR(32)` | PK | 形如 `b_xxx` 的业务短字符串主键，保留前缀可读性、便于排查，故不用自增整数 |
+| books | `title` | `VARCHAR(255)` | NOT NULL | 书名必填；长度一般 < 100 字，`VARCHAR` 足够且省空间 |
+| books | `user_id` | `VARCHAR(32)` | NOT NULL DEFAULT 'local' | 与 id 同源的字符串风格；MVP 固定 `local`，上云改真实登录用户 |
+| books | `created_at` | `DATETIME` | NOT NULL | 收书时间；用 `DATETIME` 便于排序/范围查询（接口层仍收发 ISO8601 字符串，云函数做 `DATETIME ↔ ISO8601` 转换，契约字段不变） |
+| books | — | — | UNIQUE(`user_id`,`title`) | **业务唯一约束加在业务字段上**：同一用户不重复收录同一书名；若允许重读再收录可删除 |
+| notes | `id` | `VARCHAR(32)` | PK | 形如 `n_xxx` |
+| notes | `book_id` | `VARCHAR(32)` | NOT NULL, FK→books.id | **关联字段**；`ON DELETE CASCADE`——删书时连同其心得一起清理，避免孤儿数据 |
+| notes | `content` | `TEXT` | NOT NULL | 心得正文长度不定，用 `TEXT` 避免 `VARCHAR` 截断 |
+| notes | `mood` | `JSON` | NULL（可空） | 心情标签是数组 `["平静"]`，`JSON` 类型原生存数组；不支持 JSON 的实例可退化为 `VARCHAR/TEXT` 存 JSON 串 |
+| notes | `user_id` | `VARCHAR(32)` | NOT NULL DEFAULT 'local' | 同 books.user_id |
+| notes | `created_at` | `DATETIME` | NOT NULL | 写下时间，理由同 books.created_at |
+| notes | `updated_at` | `DATETIME` | NULL | 改写时间；未改过为 NULL，允许空 |
+
+> 可重复执行保障：`schema.sql` 先 `DROP TABLE IF EXISTS`（子表 notes 先于父表 books）再 `CREATE`；`seed.sql` 先 `DELETE FROM`（同样子表先于父表）再 `INSERT`，重跑不报错、数据幂等。
+
 ---
 
 ## 二、接口总览
@@ -185,8 +210,8 @@
 
 ---
 
-## 五、Day 15 占位说明
-- 仅 `/api/health` 真实可访问（云函数已部署）。
-- `books` / `notes` 两表与其余 8 个接口**今天不建、不写**，仅在本文登记。
-- 前端页面仍读 `localStorage`（见 `js/store.js`），待 Day 16 起按本契约逐个切换为云端接口。
-- 跨域（CORS）配置不在今日范围， Day 16–20 随真实接口一并处理。
+## 五、Day 15/16 状态说明
+- **Day 15**：仅 `/api/health` 真实可访问（云函数已部署），`books` / `notes` 两表与其余 8 个接口当时仅登记、未实现。
+- **Day 16（已落地）**：`books` / `notes` 两表已建 —— 建表脚本 `db/schema.sql`、种子脚本 `db/seed.sql`（每表 ≥5 行、可重复执行），字段/约束/外键映射见 §一「数据库实现」。两表设计与本契约一致。
+- 其余 8 个接口（第 1–8 项，除 `/api/health`）**Day 17 起**逐个落地；前端页面目前仍读 `localStorage`（见 `js/store.js`），待接口就绪后按本契约切换为云端调用。
+- 跨域（CORS）配置不在 Day 16 范围，Day 17–20 随真实接口一并处理。
