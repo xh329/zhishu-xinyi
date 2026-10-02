@@ -1,0 +1,9 @@
+{
+  "name": "notes",
+  "version": "1.0.0",
+  "description": "栀书心驿 · 全部心得列表读取云函数（GET /api/notes）",
+  "main": "index.js",
+  "dependencies": {
+    "mysql2": "^3.11.0"
+  }
+}

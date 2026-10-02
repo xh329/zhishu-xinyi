@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>栀书心驿 · 真实数据查看器（Day 17 验证）</title>
+<style>
+  :root { --ink:#5b5147; --soft:#8a7f74; --line:#e7ddd2; --bg:#fbf7f2; --card:#fffdfb; --accent:#c98b9b; }
+  * { box-sizing: border-box; }
+  body { margin:0; background:var(--bg); color:var(--ink);
+         font-family:"Songti SC","STSong","Noto Serif SC",serif; padding:32px 18px 64px; }
+  .wrap { max-width:760px; margin:0 auto; }
+  h1 { font-weight:500; letter-spacing:.04em; font-size:22px; margin:0 0 4px; }
+  .sub { color:var(--soft); font-size:13px; margin:0 0 20px; }
+  .tip { font-size:12px; color:var(--soft); background:#fff6ef; border:1px solid var(--line);
+         border-radius:10px; padding:10px 12px; margin:0 0 22px; line-height:1.7; }
+  .tip code { background:#f3e9df; padding:1px 5px; border-radius:5px; }
+  h2 { font-weight:500; font-size:16px; margin:28px 0 12px; color:var(--ink);
+       border-left:3px solid var(--accent); padding-left:10px; }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:14px;
+          padding:14px 16px; margin:10px 0; box-shadow:0 1px 2px rgba(120,90,70,.05); }
+  .book-title { font-size:16px; }
+  .meta { font-size:12px; color:var(--soft); margin-top:4px; }
+  .note-content { font-size:15px; line-height:1.8; }
+  .mood { display:inline-block; font-size:12px; color:#fff; background:var(--accent);
+          border-radius:999px; padding:2px 10px; margin-top:8px; }
+  .empty { color:var(--soft); font-style:italic; padding:10px 2px; }
+  .err { color:#b4543f; font-size:13px; }
+  nav a { color:var(--soft); font-size:13px; margin-right:14px; text-decoration:none; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>栀书心驿 · 真实数据查看器</h1>
+  <p class="sub">只读验证页 · 直接读公网 GET 接口返回的真实库数据（非本地假数据）</p>
+
+  <div class="tip">
+    把下面的 <code>API_BASE</code> 改成你部署后的公网地址前缀（到 <code>/api</code> 即可）。<br/>
+    当前值：<code id="baseLabel">加载中…</code>
+  </div>
+
+  <nav>
+    <a href="#books">书架（GET /api/books）</a>
+    <a href="#notes">心迹（GET /api/notes）</a>
+  </nav>
+
+  <h2 id="books">书架 · 我收录的书</h2>
+  <div id="booksList"><p class="empty">读取中…</p></div>
+
+  <h2 id="notes">心迹 · 我写下的心得</h2>
+  <div id="notesList"><p class="empty">读取中…</p></div>
+</div>
+
+<script>
+  // ★ 改成你的公网地址前缀（例如 https://xxxx.apigw.tencentcs.com/release）
+  const API_BASE = 'https://YOUR_CLOUDBASE_PUBLIC_URL';
+
+  document.getElementById('baseLabel').textContent = API_BASE;
+
+  function fmt(dt) {
+    if (!dt) return '—';
+    return dt.replace('T', ' ').replace(/\.\d+Z?$/, '');
+  }
+
+  async function loadBooks() {
+    const box = document.getElementById('booksList');
+    try {
+      const res = await fetch(API_BASE + '/api/books');
+      const data = await res.json();
+      if (!data.ok) { box.innerHTML = '<p class="err">接口返回错误：' + data.error + '</p>'; return; }
+      if (!data.books.length) { box.innerHTML = '<p class="empty">还没有收录的书。</p>'; return; }
+      box.innerHTML = data.books.map(b => `
+        <div class="card">
+          <div class="book-title">《${escapeHtml(b.title)}》</div>
+          <div class="meta">收录于 ${fmt(b.created_at)} · ${escapeHtml(b.user_id)}</div>
+        </div>`).join('');
+    } catch (e) {
+      box.innerHTML = '<p class="err">读取失败：' + e.message + '（请确认 API_BASE 与 CORS）</p>';
+    }
+  }
+
+  async function loadNotes() {
+    const box = document.getElementById('notesList');
+    try {
+      const res = await fetch(API_BASE + '/api/notes');
+      const data = await res.json();
+      if (!data.ok) { box.innerHTML = '<p class="err">接口返回错误：' + data.error + '</p>'; return; }
+      if (!data.notes.length) { box.innerHTML = '<p class="empty">还没有写下的心得。</p>'; return; }
+      box.innerHTML = data.notes.map(n => `
+        <div class="card">
+          <div class="note-content">${escapeHtml(n.content)}</div>
+          ${n.mood && n.mood.length ? '<span class="mood">' + escapeHtml(n.mood.join(' · ')) + '</span>' : ''}
+          <div class="meta">${fmt(n.created_at)} · 来自《${escapeHtml(n.book_id)}》</div>
+        </div>`).join('');
+    } catch (e) {
+      box.innerHTML = '<p class="err">读取失败：' + e.message + '（请确认 API_BASE 与 CORS）</p>';
+    }
+  }
+
+  function escapeHtml(s) {
+    return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  }
+
+  loadBooks();
+  loadNotes();
+</script>
+</body>
+</html>
