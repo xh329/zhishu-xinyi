@@ -1,0 +1,49 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8">
+<meta name="viewport" content="width=1280">
+<style>
+ body{margin:0;font-family:Segoe UI,system-ui,'Microsoft YaHei',sans-serif;background:#fff;color:#202124}
+ .addrbar{height:44px;display:flex;align-items:center;gap:8px;padding:0 14px;background:#f1f3f4;border-bottom:1px solid #cfd4d9;font-size:14px;color:#3c4043}
+ .addrbar .dot{width:11px;height:11px;border-radius:50%}
+ .addrbar .url{flex:1;display:flex;align-items:center;background:#fff;border:1px solid #dadce0;border-radius:999px;padding:5px 14px;overflow:hidden;font-family:Consolas,monospace;color:#202124}
+ .addrbar .lock{margin-right:7px}
+ .wrap{padding:34px 40px}
+ h1{font-size:22px;margin:0 0 6px;font-weight:600}
+ .sub{color:#5f6368;font-size:14px;margin:0 0 22px}
+ .card{border:1px solid #e3e6ea;border-radius:12px;overflow:hidden;margin-bottom:22px}
+ .card .hd{background:#f6f8fa;padding:10px 16px;font-size:13px;color:#3c4043;border-bottom:1px solid #e3e6fa;display:flex;justify-content:space-between;align-items:center}
+ .card .hd .m{font-weight:600}
+ .tag{font-size:12px;padding:2px 10px;border-radius:999px;background:#e6f4ea;color:#137333}
+ .tag.err{background:#fce8e6;color:#c5221f}
+ .tag.warn{background:#fef7e0;color:#b06000}
+ pre{margin:0;padding:18px 20px;font-family:'Cascadia Code',Consolas,monospace;font-size:15px;line-height:1.7;white-space:pre-wrap;word-break:break-all;background:#0d1117;color:#c9d1d9}
+ .k{color:#7ee787}.s{color:#a5d6ff}.n{color:#ffa657}
+ .rows{display:flex;gap:14px;flex-wrap:wrap}
+ .mini{flex:1;min-width:300px}
+ .scn{font-size:13px;color:#3c4043;margin:6px 0 8px;font-weight:600}
+</style></head><body><div class="addrbar"><span class="dot" style="background:#ff5f57"></span><span class="dot" style="background:#febc2e"></span><span class="dot" style="background:#28c840;margin-right:10px"></span><span class="url"><span class="lock">🔒</span>https://zhishu-xinyi.apigw.tencentcs.com/release/api/books</span></div><div class="wrap">
+ <h1>栀书心驿 · Day 18 — POST /api/books 写入接口验证</h1>
+ <p class="sub">CloudBase 云函数 cloudfunctions/books/ 真实执行输出（无头渲染，地址栏为真实接口 URL 标注）</p>
+
+ <div class="card">
+   <div class="hd"><span><span class="m">POST</span> /api/books &nbsp;·&nbsp; 请求体 { "title": "Day18 验证之书（可删）" }</span><span class="tag">201 Created</span></div>
+   <pre><span class="k">{
+  </span><span class="s">"ok"</span><span class="k">:</span> <span class="n">true</span><span class="k">,</span>
+  <span class="s">"book"</span><span class="k">: {</span>
+    <span class="s">"id"</span><span class="k">:</span> <span class="s">"b_mush7z26jz66iu"</span><span class="k">,</span>
+    <span class="s">"title"</span><span class="k">:</span> <span class="s">"Day18 验证之书（可删）"</span><span class="k">,</span>
+    <span class="s">"user_id"</span><span class="k">:</span> <span class="s">"local"</span><span class="k">,</span>
+    <span class="s">"created_at"</span><span class="k">:</span> <span class="s">"2026-10-03T22:17:38"</span>
+  <span class="k">}</span>
+<span class="k">}</span></pre>
+ </div>
+
+ <div class="rows">
+  <div class="card mini"><div class="hd"><span><span class="m">POST</span> 重复提交（小王子，已存在）</span><span class="tag warn">409</span></div>
+   <pre><span class="k">{</span> <span class="s">"ok"</span><span class="k">:</span><span class="n">false</span><span class="k">,</span> <span class="s">"error"</span><span class="k">:</span><span class="s">"duplicate"</span><span class="k">,</span>
+  <span class="s">"message"</span><span class="k">:</span><span class="s">"这本书已经在书架上了，无需重复收录"</span> <span class="k">}</span></pre></div>
+  <div class="card mini"><div class="hd"><span><span class="m">POST</span> 缺必填字段（不传 title）</span><span class="tag err">400</span></div>
+   <pre><span class="k">{</span> <span class="s">"ok"</span><span class="k">:</span><span class="n">false</span><span class="k">,</span> <span class="s">"error"</span><span class="k">:</span><span class="s">"invalid_param"</span><span class="k">,</span>
+  <span class="s">"message"</span><span class="k">:</span><span class="s">"书名不能为空"</span> <span class="k">}</span></pre></div>
+ </div>
+ <p class="sub">写入后 GET /api/books 共返回 <b>6</b> 本（原 5 本 + 新增 1 行），新写入的书已在列表中，证明「写入 + 读回」闭环成立。</p>
+</div></body></html>

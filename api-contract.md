@@ -90,6 +90,8 @@
 ---
 
 ### 1. POST /api/books —— 新增书籍（F2 录入书名）
+> **状态**：✅ Day 18 已实现 · 部署位置 `cloudfunctions/books/`（同一函数同时承载 GET 列表 + POST 写入；CORS 方法白名单补上 `POST`；写入走**参数化 INSERT**；已加服务端写入日志）。见 `outputs/Day18/部署与验证.md`。
+
 - **请求体**（JSON）：
   ```json
   { "title": "小王子" }
@@ -102,7 +104,8 @@
   }
   ```
 - **错误返回**：
-  - `title` 缺失/空白 → 400 `{ "ok": false, "error": "invalid_param", "message": "书名不能为空" }`
+  - `title` 缺失/空白（含纯空格，trim 后为空）→ 400 `{ "ok": false, "error": "invalid_param", "message": "书名不能为空" }`
+  - **防重复**：同一用户重复收录同一书名 → 命中 `UNIQUE(user_id, title)` → 409 `{ "ok": false, "error": "duplicate", "message": "这本书已经在书架上了，无需重复收录" }`（数据库层兜底拒绝，接口层转成中文提示）
 
 ### 2. GET /api/books —— 书籍列表（书架）
 > **状态**：✅ Day 17 已实现 · 部署位置 `cloudfunctions/books/`（参数化 SQL、CORS 头、支持 `?user_id=&limit=`、非 GET 回 405 method_not_allowed）。见 `outputs/Day17/部署与验证.md`。
@@ -218,6 +221,7 @@
 - **Day 15**：仅 `/api/health` 真实可访问（云函数已部署），`books` / `notes` 两表与其余 8 个接口当时仅登记、未实现。
 - **Day 16（已落地）**：`books` / `notes` 两表已建 —— 建表脚本 `db/schema.sql`、种子脚本 `db/seed.sql`（每表 ≥5 行、可重复执行），字段/约束/外键映射见 §一「数据库实现」。两表设计与本契约一致。
 - **Day 17（已落地）**：`GET /api/books`（第 2 项，读核心表 `books`）与 `GET /api/notes`（第 6 项 ★ 读记录表 `notes`）两个读取接口已实现——代码见 `cloudfunctions/books/`、`cloudfunctions/notes/`，均为**参数化 SQL**、统一 `{ok, books/notes}` 成功形状与 `{ok:false, error}` 错误形状、云函数返回头已补 **CORS**（`Access-Control-Allow-Origin: *`）、并支持 `?limit=` 条数限制（余力加练）。公网验证需在 CloudBase 导入 `db/schema.sql`+`db/seed.sql` 并部署两函数后由浏览器完成（步骤见 `outputs/Day17/部署与验证.md`，`outputs/Day17/self-check.js` 可在 Node 本地验证 SQL 与响应形状）。
-- 其余 6 个接口（第 1、3、4、5、7、8 项，除 `/api/health` 与已实现的 2、6）**Day 18 起**逐个落地；前端页面目前仍读 `localStorage`（见 `js/store.js`），待接口就绪后按本契约切换为云端调用。
+- **Day 18（已落地）**：第 1 项 `POST /api/books`（核心表写入）已实现——`books` 云函数现同时承载 GET 列表与 POST 写入：必填校验（`title` 缺失/空白 → 400 中文「书名不能为空」）、参数化 INSERT、**防重复**（`UNIQUE(user_id,title)` 冲突 → 409 `duplicate`，中文「这本书已经在书架上了，无需重复收录」）、CORS 方法白名单补 `POST`、并新增服务端写入日志（余力加练）。本地已用 `outputs/Day18/self-check.js`（有状态内存表）完成「正常 / 重复 / 缺字段 / 空白书名 / 写入读回 / 参数化 / 方法边界」全路径验证；真实 CloudBase 部署与线上验证步骤（含三条 curl 测试命令与 SELECT 核对）见 `outputs/Day18/部署与验证.md`。
+- 其余 5 个接口（第 3、4、5、7、8 项，除 `/api/health` 与已实现的 1、2、6）**Day 19 起**逐个落地；前端页面目前仍读 `localStorage`（见 `js/store.js`），待接口就绪后按本契约切换为云端调用。
 - 跨域（CORS）配置：Day 17 已随真实接口在云函数返回头中补上 `Access-Control-Allow-Origin: *`（预检 OPTIONS 回 204）。
 - **关于响应形状 `{ok, data, error}` 的说明**：本项目成功响应用**语义化键** `books` / `notes` 承载数据（见 §三），与统一错误形状 `{ok:false, error}` 共同构成一致契约；未使用通用 `data` 键，是有意设计（字段语义更清晰），属契约范围内，不改变"成功 `ok:true` / 失败 `ok:false`+`error`"的统一约定。
