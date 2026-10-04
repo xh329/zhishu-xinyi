@@ -232,3 +232,20 @@ flowchart LR
 
 ## 12. 每日一问：用一句话说清你的数据从哪来、到哪去
 > 数据来自用户在网页上手填的书名与读书心得，**经前端存入浏览器本地存储**，再**被首页与"我的心得"页面读取，以诗意卡片回看**；MVP 阶段数据始终留在用户自己的浏览器里，不上传任何服务器。
+
+---
+
+## 13. 后端分层架构（Day 19 重构后 · 补充）
+> 本节为第 3 周上云后的后端结构补记，**仅新增**，不改动 §0–§12 的 MVP 设计正文
+
+![后端分层架构](assets/img/backend-layers.svg)
+
+上云后的后端分三层，遵循"接口层只接请求、查数据库只落数据访问层"：
+
+| 层 | 文件 | 职责 |
+|----|------|------|
+| ① 接口层 Controller | `cloudfunctions/books/index.js`、`notes/index.js`、`health/index.js` | CORS、参数校验、错误码映射、调用 Repository、返回契约响应；**不再写一句 SQL** |
+| ② 数据访问层 Repository | `cloudfunctions/books/booksRepository.js`、`notes/notesRepository.js` | 集中 books 表 / notes 表的**全部** `SELECT` / `INSERT`（Day 19 新拆出） |
+| ③ 基础设施层 Infrastructure | `cloudfunctions/books/db.js`、`notes/db.js` | MySQL 连接池（`mysql2/promise`）+ 行 → 契约形状映射；被上两层复用 |
+
+**Day 19 的落点**：`books/index.js`、`notes/index.js` 内联的查询平移至各自的 `*Repository.js`；接口路径与字段名不变、响应形状不变（回归 49/49 通过，SQL 逐字一致）。

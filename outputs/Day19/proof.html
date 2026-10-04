@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="utf-8">
+<title>栀书心驿 · 接口回归证明</title>
+<style>
+  body{margin:0;background:#faf7f3;color:#4a4036;font-family:"PingFang SC","Microsoft YaHei",system-ui,serif;}
+  .wrap{max-width:1080px;margin:0 auto;padding:28px 22px 60px;}
+  h1{font-size:22px;color:#7a6a55;font-weight:600;margin:0 0 4px;}
+  .sub{color:#a99c88;font-size:13px;margin-bottom:20px;}
+  .card{background:#fff;border:1px solid #ecdfd2;border-radius:12px;margin:16px 0;overflow:hidden;box-shadow:0 2px 10px rgba(180,150,120,.12);}
+  .addrbar{display:flex;align-items:center;gap:7px;height:40px;padding:0 14px;background:#f1f3f4;border-bottom:1px solid #cfd4d9;font-family:"Segoe UI",system-ui,sans-serif;font-size:13px;color:#3c4043;box-sizing:border-box;}
+  .dot{width:11px;height:11px;border-radius:50%;flex:none;}
+  .url{flex:1;display:flex;align-items:center;background:#fff;border:1px solid #dadce0;border-radius:999px;padding:5px 14px;overflow:hidden;font-family:"Cascadia Code",Consolas,monospace;font-size:12.5px;}
+  .lock{margin-right:7px;}
+  pre{margin:0;padding:16px 18px;font-family:"Cascadia Code",Consolas,monospace;font-size:13px;line-height:1.55;color:#3a322a;white-space:pre-wrap;word-break:break-word;}
+  .sql{background:#fff;border:1px solid #ecdfd2;border-radius:12px;padding:14px 18px;margin:16px 0;}
+  .sql h3{margin:0 0 10px;font-size:15px;color:#7a6a55;}
+  .sql ol{margin:0;padding-left:20px;}
+  .sql li{margin:6px 0;font-family:"Cascadia Code",Consolas,monospace;font-size:12.5px;color:#3a322a;}
+  .ok{color:#3f9d6a;font-weight:600;}
+</style></head>
+<body><div class="wrap">
+  <h1>栀书心驿 · 重构后接口回归证明</h1>
+  <div class="sub">以下 JSON 为重构后的真实云函数代码经内存数据库替身运行所得（headless 渲染，地址栏为真实接口 URL 标注）。</div>
+  
+  <div class="card">
+    <div class="addrbar">
+      <span class="dot" style="background:#ff5f57"></span>
+      <span class="dot" style="background:#febc2e"></span>
+      <span class="dot" style="background:#28c840"></span>
+      <span class="url"><span class="lock">🔒</span>https://zhishu-xinyi.example/api/health</span>
+    </div>
+    <pre>{
+  "ok": true,
+  "service": "zhishu-xinyi"
+}</pre>
+  </div>
+  
+  <div class="card">
+    <div class="addrbar">
+      <span class="dot" style="background:#ff5f57"></span>
+      <span class="dot" style="background:#febc2e"></span>
+      <span class="dot" style="background:#28c840"></span>
+      <span class="url"><span class="lock">🔒</span>https://zhishu-xinyi.example/api/books</span>
+    </div>
+    <pre>{
+  "ok": true,
+  "books": [
+    {
+      "id": "b_seed05",
+      "title": "瓦尔登湖",
+      "user_id": "local",
+      "created_at": "2026-10-01T07:20:00"
+    },
+    {
+      "id": "b_seed04",
+      "title": "夜航西飞",
+      "user_id": "local",
+      "created_at": "2026-09-30T22:50:00"
+    },
+    {
+      "id": "b_seed03",
+      "title": "人间值得",
+      "user_id": "local",
+      "created_at": "2026-09-29T08:05:00"
+    },
+    {
+      "id": "b_seed02",
+      "title": "被讨厌的勇气",
+      "user_id": "local",
+      "created_at": "2026-09-28T21:35:00"
+    },
+    {
+      "id": "b_seed01",
+      "title": "小王子",
+      "user_id": "local",
+      "created_at": "2026-09-28T09:10:00"
+    }
+  ]
+}</pre>
+  </div>
+  
+  <div class="card">
+    <div class="addrbar">
+      <span class="dot" style="background:#ff5f57"></span>
+      <span class="dot" style="background:#febc2e"></span>
+      <span class="dot" style="background:#28c840"></span>
+      <span class="url"><span class="lock">🔒</span>https://zhishu-xinyi.example/api/books  (POST 新增《夜莺与玫瑰》)</span>
+    </div>
+    <pre>{
+  "ok": true,
+  "book": {
+    "id": "b_mutwxcsesxjs03",
+    "title": "夜莺与玫瑰",
+    "user_id": "local",
+    "created_at": "2026-10-04T22:25:03"
+  }
+}</pre>
+  </div>
+  
+  <div class="card">
+    <div class="addrbar">
+      <span class="dot" style="background:#ff5f57"></span>
+      <span class="dot" style="background:#febc2e"></span>
+      <span class="dot" style="background:#28c840"></span>
+      <span class="url"><span class="lock">🔒</span>https://zhishu-xinyi.example/api/notes</span>
+    </div>
+    <pre>{
+  "ok": true,
+  "notes": [
+    {
+      "id": "n_seed06",
+      "book_id": "b_seed05",
+      "content": "在湖边独处，才听见自己真正想要什么。",
+      "mood": [
+        "治愈"
+      ],
+      "user_id": "local",
+      "created_at": "2026-10-01T09:10:00",
+      "updated_at": null
+    },
+    {
+      "id": "n_seed05",
+      "book_id": "b_seed04",
+      "content": "她独自飞越非洲的夜，孤独里全是辽阔。",
+      "mood": [
+        "轻盈"
+      ],
+      "user_id": "local",
+      "created_at": "2026-10-01T08:00:00",
+      "updated_at": null
+    },
+    {
+      "id": "n_seed04",
+      "book_id": "b_seed03",
+      "content": "人生不必太用力，坦率接受每一天就好。",
+      "mood": [
+        "平静"
+      ],
+      "user_id": "local",
+      "created_at": "2026-09-30T07:15:00",
+      "updated_at": null
+    },
+    {
+      "id": "n_seed02",
+      "book_id": "b_seed01",
+      "content": "把重要的事，每天看一眼，就不会弄丢。",
+      "mood": [
+        "温暖"
+      ],
+      "user_id": "local",
+      "created_at": "2026-09-29T09:30:00",
+      "updated_at": "2026-09-29T09:45:00"
+    },
+    {
+      "id": "n_seed03",
+      "book_id": "b_seed02",
+      "content": "被讨厌不是终点，自由才是。",
+      "mood": [
+        "思索"
+      ],
+      "user_id": "local",
+      "created_at": "2026-09-29T08:20:00",
+      "updated_at": null
+    },
+    {
+      "id": "n_seed01",
+      "book_id": "b_seed01",
+      "content": "长大后才懂，玫瑰的骄傲不过是怕被辜负。",
+      "mood": [
+        "触动"
+      ],
+      "user_id": "local",
+      "created_at": "2026-09-28T10:00:00",
+      "updated_at": null
+    }
+  ]
+}</pre>
+  </div>
+  
+  <div class="card">
+    <div class="addrbar">
+      <span class="dot" style="background:#ff5f57"></span>
+      <span class="dot" style="background:#febc2e"></span>
+      <span class="dot" style="background:#28c840"></span>
+      <span class="url"><span class="lock">🔒</span>https://zhishu-xinyi.example/api/books  (POST 重复《小王子》→ 409)</span>
+    </div>
+    <pre>{
+  "ok": false,
+  "error": "duplicate",
+  "message": "这本书已经在书架上了，无需重复收录"
+}</pre>
+  </div>
+  <div class="sql">
+    <h3>执行的 SQL（去重后；与重构前 index.js 内联 SQL 逐字一致）</h3>
+    <ol><li><code>SELECT id, title, user_id, created_at FROM books WHERE user_id = ? ORDER BY created_at DESC LIMIT ?</code></li><li><code>INSERT INTO books (id, title, user_id, created_at) VALUES (?, ?, ?, ?)</code></li><li><code>SELECT id, book_id, content, mood, user_id, created_at, updated_at FROM notes WHERE user_id = ? ORDER BY created_at DESC LIMIT ?</code></li></ol>
+    <p class="ok">✓ 全部命中预期，证明「查数据库」代码仅平移至 Repository 层，未改一字。</p>
+  </div>
+</div></body></html>

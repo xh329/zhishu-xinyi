@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="utf-8">
+<title>栀书心驿 · 后端文件结构（Day 19 分层重构后）</title>
+<style>
+  body{margin:0;background:#faf7f3;color:#4a4036;font-family:"PingFang SC","Microsoft YaHei",system-ui,serif;}
+  .wrap{max-width:920px;margin:0 auto;padding:30px 24px 56px;}
+  h1{font-size:22px;color:#7a6a55;font-weight:600;margin:0 0 4px;}
+  .sub{color:#a99c88;font-size:13px;margin-bottom:18px;}
+  .legend{display:flex;gap:18px;flex-wrap:wrap;margin-bottom:18px;font-size:13px;color:#6b5f4e;}
+  .legend span{display:inline-flex;align-items:center;gap:6px;}
+  .sw{width:12px;height:12px;border-radius:3px;display:inline-block;}
+  .tree{background:#fff;border:1px solid #ecdfd2;border-radius:12px;padding:20px 22px;font-family:"Cascadia Code",Consolas,monospace;font-size:13.5px;line-height:1.9;box-shadow:0 2px 10px rgba(180,150,120,.12);white-space:pre-wrap;}
+  .dir{color:#8a7a63;font-weight:600;}
+  .file{color:#3a322a;}
+  .repo{background:#fdeede;border-radius:5px;padding:1px 7px;color:#b5651d;font-weight:600;box-decoration-break:clone;-webkit-box-decoration-break:clone;}
+  .infra{color:#3f7d9d;}
+  .ctrl{color:#5a8a5a;}
+  .badge{font-size:11px;color:#b5651d;border:1px solid #e9c9a3;border-radius:999px;padding:0 7px;margin-left:8px;background:#fff7ee;}
+  .note{margin-top:16px;font-size:12.5px;color:#a99c88;line-height:1.7;}
+  .arrow{color:#c0b29a;}
+</style></head>
+<body><div class="wrap">
+  <h1>栀书心驿 · 后端文件结构</h1>
+  <div class="sub">cloudfunctions/ 分层重构后（Day 19）：数据库操作已从接口层抽到 Repository 层。</div>
+  <div class="legend">
+    <span><i class="sw" style="background:#fdeede;border:1px solid #e9c9a3"></i> 数据访问层 · Repository（新拆出）</span>
+    <span><i class="sw" style="background:#e8f1f6"></i> 基础设施层 · db.js（连接+形状映射）</span>
+    <span><i class="sw" style="background:#eaf3ea"></i> 接口层 · index.js（接请求/调 repo/返响应）</span>
+  </div>
+  <div class="tree">
+<span class="dir">cloudfunctions/</span>
+├─ <span class="dir">books/</span>
+│  ├─ <span class="repo">booksRepository.js</span><span class="badge">新 · Day 19</span>  <span class="arrow">← 书籍表全部 SQL 集中于此</span>
+│  ├─ <span class="infra">db.js</span>                <span class="arrow">连接池 + 行→契约形状映射</span>
+│  ├─ <span class="ctrl">index.js</span>             <span class="arrow">接口层（委托给 Repository）</span>
+│  └─ package.json
+├─ <span class="dir">notes/</span>
+│  ├─ <span class="repo">notesRepository.js</span><span class="badge">新 · Day 19</span>  <span class="arrow">← 心得表全部 SQL 集中于此</span>
+│  ├─ <span class="infra">db.js</span>
+│  ├─ <span class="ctrl">index.js</span>             <span class="arrow">接口层（委托给 Repository）</span>
+│  └─ package.json
+└─ <span class="dir">health/</span>
+   └─ <span class="ctrl">index.js</span>             <span class="arrow">探活（无数据库，无需 Repository）</span>
+
+<span class="dir">db/</span>            schema.sql · seed.sql
+<span class="dir">js/ css/ assets/</span>   前端
+<span class="dir">根目录</span>          PRD.md · research.md · TECH_DESIGN.md · AGENTS.md · api-contract.md
+  </div>
+  <div class="note">
+    关键变化：「查数据库」这段代码从 <b>index.js（接口层）</b> 移到了 <b>booksRepository.js / notesRepository.js（数据访问层）</b>；
+    db.js 仍是基础设施层（只管连库与把行映射成契约形状），三个函数各自独立部署，互不干扰。
+  </div>
+</div></body></html>

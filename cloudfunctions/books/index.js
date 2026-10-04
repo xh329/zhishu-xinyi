@@ -1,14 +1,19 @@
 'use strict';
 
 // 栀书心驿 · 书籍云函数（GET 列表 / POST 新增）
+// ─────────────────────────────────────────────────────────────
+// 分层（Day 19 重构）：
+//   · 接口层（本文件）：接请求、做校验、调 repository、包响应、转错误码——不再直接写 SQL；
+//   · 数据访问层：cloudfunctions/books/booksRepository.js（所有 SQL 都在这里）；
+//   · 基础设施层：cloudfunctions/books/db.js（连接池 + 行→契约形状映射）。
 // GET  /api/books  → 书籍列表（书架）       api-contract.md 第 2 项（Day 17 实现）
 // POST /api/books  → 新增书籍（录入书名）   api-contract.md 第 1 项（Day 18 实现）
-// 部署位置：cloudfunctions/books/
+// ─────────────────────────────────────────────────────────────
 //
 // CloudBase HTTP 触发：event 携带请求信息，返回值须为标准 HTTP 响应 { statusCode, headers, body }。
 // 一个函数同时承载 GET（列表读取）与 POST（写入），对应契约里同路径的不同方法。
 
-const { getPool, shapeBook } = require('./db');
+const repo = require('./booksRepository');
 
 // 统一 CORS 头（原契约约定 Day 16–20 随真实接口处理；Day 17 落地真实接口即补上）
 // Day 18 新增 POST：方法白名单补上 POST，否则浏览器跨域写入会被拦。
@@ -44,6 +49,7 @@ function parseBody(event) {
 }
 
 // Date → MySQL DATETIME('YYYY-MM-DD HH:MM:SS')，用本地时间（与 db.toISO 对称，不加 Z）
+// 这是「组装待存实体」的准备工作，属于接口层职责，不写在 Repository 里。
 function toMySQLDate(d) {
   const pad = (n) => String(n).padStart(2, '0');
   return (
@@ -87,16 +93,11 @@ exports.main = async (event, context) => {
     const createdAt = toMySQLDate(now); // 存 DATETIME；响应层再转 ISO 字符串
 
     try {
-      const pool = getPool();
-      // 参数化 INSERT，杜绝 SQL 注入
-      await pool.query(
-        'INSERT INTO books (id, title, user_id, created_at) VALUES (?, ?, ?, ?)',
-        [id, title, userId, createdAt]
-      );
+      // 调数据访问层：INSERT 由 repository 完成，接口层只拿回 shapeBook 后的对象
+      const book = await repo.createBook({ id, title, userId, createdAt });
       // 余力加练：写一条服务端日志，方便以后排查写入问题
       console.log('[books] POST /api/books 新增成功', { id, title, user_id: userId, created_at: createdAt });
       // 响应形状严格对齐契约第 1 项：{ ok:true, book:{ id,title,user_id,created_at } }
-      const book = shapeBook({ id, title, user_id: userId, created_at: now });
       return json(201, { ok: true, book });
     } catch (err) {
       // 同一用户重复收录同一书名 → 命中 UNIQUE(user_id,title) → 拒绝，并给中文提示
@@ -112,7 +113,6 @@ exports.main = async (event, context) => {
   // ---------- GET /api/books：书籍列表（书架） ----------
   if (method === 'GET') {
     try {
-      const pool = getPool();
       const qs = getQuery(event);
       // 可选查询参数：user_id（上云后由登录态提供）；不传则读 local 的全部书
       const userId = qs.user_id || 'local';
@@ -121,12 +121,9 @@ exports.main = async (event, context) => {
         ? Math.max(1, Math.min(100, parseInt(qs.limit, 10) || 100))
         : 100;
 
-      // 参数化查询：user_id、limit 都用 ? 占位，杜绝 SQL 注入
-      const [rows] = await pool.query(
-        'SELECT id, title, user_id, created_at FROM books WHERE user_id = ? ORDER BY created_at DESC LIMIT ?',
-        [userId, limit]
-      );
-      return json(200, { ok: true, books: rows.map(shapeBook) });
+      // 调数据访问层：查询由 repository 完成，接口层只拿回 shapeBook 后的数组
+      const books = await repo.listBooks(userId, limit);
+      return json(200, { ok: true, books });
     } catch (err) {
       // 真实异常打到云函数日志，对客户端只给稳定错误码
       console.error('[books] GET /api/books 读取失败', err);
