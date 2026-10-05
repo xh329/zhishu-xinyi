@@ -109,7 +109,10 @@
     <footer class="foot">栀子微光，伴你读完这一段</footer>
   </main>
 
-  <!-- 本地存储封装：三个视图的数据来源（book / note） -->
+  <!-- Day 20：前端运行配置（公网接口地址）+ 云端接口客户端，须在 store 之前加载 -->
+  <script src="js/config.js"></script>
+  <script src="js/api.js"></script>
+  <!-- 本地存储封装：仅 book.html / note.html / notes.html 仍用本地存储写数据 -->
   <script src="js/store.js"></script>
   <!-- 可复用组件：卡片 / 状态视图 -->
   <script src="js/components.js"></script>

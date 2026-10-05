@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>栀书心驿 · 检查台</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@300;400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <!-- 栀子花瓣飘落动景容器（由 js/petals.js 填充，尊重"减少动态效果"偏好） -->
+  <div class="petals" id="petals" aria-hidden="true"></div>
+
+  <main class="page check">
+    <div class="glow" aria-hidden="true"></div>
+
+    <div class="panel">
+      <p class="brand">栀书心驿 · 检查台</p>
+      <h2 class="title">接口与数据自检</h2>
+      <p class="hint">这里只读你的公网接口，确认页面真的连上了数据库。</p>
+
+      <!-- ① 健康状态 -->
+      <section class="check-block">
+        <h3>① 健康状态</h3>
+        <div id="health-box" class="state">检测中…</div>
+      </section>
+
+      <!-- ② 核心表真实数据 -->
+      <section class="check-block">
+        <h3>② 核心表真实数据（books / notes）</h3>
+        <div id="data-box" class="state">加载中…</div>
+      </section>
+
+      <!-- ③ 一次写入测试入口 -->
+      <section class="check-block">
+        <h3>③ 一次写入测试</h3>
+        <p class="hint">往 books 表写一条测试记录，验证「写」的链路通不通（接口第 1 项已实现）。</p>
+        <button id="write-test" class="entry" type="button">写入一条测试书籍</button>
+        <div id="write-box" class="state" hidden></div>
+      </section>
+
+      <!-- ④ 余力加练：最后更新时间 -->
+      <section class="check-block">
+        <h3>④ 数据最后更新时间</h3>
+        <p id="last-update" class="hint">—</p>
+      </section>
+
+      <nav class="links">
+        <a href="index.html#/home">回到今日</a>
+      </nav>
+    </div>
+  </main>
+
+  <!-- 运行配置 + 云端接口客户端，须在 check.js 之前加载 -->
+  <script src="js/config.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/check.js"></script>
+  <!-- 栀子花瓣飘落动景 -->
+  <script src="js/petals.js"></script>
+</body>
+</html>

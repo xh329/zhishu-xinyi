@@ -15,18 +15,28 @@
 
 const repo = require('./booksRepository');
 
-// 统一 CORS 头（原契约约定 Day 16–20 随真实接口处理；Day 17 落地真实接口即补上）
-// Day 18 新增 POST：方法白名单补上 POST，否则浏览器跨域写入会被拦。
-const CORS = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Methods': 'GET,POST,OPTIONS',
-  'Access-Control-Allow-Headers': 'Content-Type',
-};
+// 统一 CORS 头（Day 20：只允许白名单来源，禁止 * 通配符）
+// 白名单来自云函数环境变量 ALLOWED_ORIGIN（逗号/空格分隔，如 "https://xxx.tcloudbaseapp.com http://localhost:8080"）。
+// 命中才回 Access-Control-Allow-Origin，否则不带该头——浏览器会拦下跨域读取，满足"只放自己域名"的要求。
+let CORS_HEADERS = {};
+function corsHeaders(event) {
+  const headers = (event && event.headers) || {};
+  const origin = headers.origin || headers.Origin || '';
+  const allowed = (process.env.ALLOWED_ORIGIN || '').split(/[\s,]+/).map((s) => s.trim()).filter(Boolean);
+  const base = {
+    'Access-Control-Allow-Methods': 'GET,POST,OPTIONS',
+    'Access-Control-Allow-Headers': 'Content-Type',
+    'Vary': 'Origin',
+  };
+  if (allowed.indexOf(origin) !== -1) base['Access-Control-Allow-Origin'] = origin;
+  return base;
+}
+function setCors(event) { CORS_HEADERS = corsHeaders(event); }
 
 function json(statusCode, obj) {
   return {
     statusCode,
-    headers: { 'Content-Type': 'application/json; charset=utf-8', ...CORS },
+    headers: { 'Content-Type': 'application/json; charset=utf-8', ...CORS_HEADERS },
     body: JSON.stringify(obj),
   };
 }
@@ -64,9 +74,10 @@ function genBookId() {
 }
 
 exports.main = async (event, context) => {
+  setCors(event); // Day 20：按白名单计算本次请求的 CORS 头
   // 浏览器跨域预检
   if ((event.httpMethod || '').toUpperCase() === 'OPTIONS') {
-    return { statusCode: 204, headers: CORS, body: '' };
+    return { statusCode: 204, headers: CORS_HEADERS, body: '' };
   }
 
   const method = (event.httpMethod || 'GET').toUpperCase();

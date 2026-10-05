@@ -898,3 +898,40 @@ body {
   .view, .route-warn { animation: none; }
   .card-link:hover { transform: none; }
 }
+
+/* ===== 检查台（Day 20 · 公网接口与数据自检） ===== */
+.page.check { justify-content: flex-start; }
+.page.check .panel { width: 100%; max-width: 640px; margin-top: 40px; }
+.page.check .title { margin-bottom: 6px; }
+.check-block {
+  margin-top: 26px;
+  padding-top: 18px;
+  border-top: 1px solid var(--line);
+}
+.check-block h3 {
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--leaf-ink);
+  margin-bottom: 12px;
+  letter-spacing: 0.04em;
+}
+/* 检查台里的状态块：复用 .state 容器，给一点文字与配色 */
+.page.check .state {
+  text-align: left;
+  padding: 14px 16px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.5);
+  font-size: 15px;
+  line-height: 1.9;
+  color: var(--ink-soft);
+  word-break: break-all;
+}
+.page.check .state.ok { border-left: 3px solid var(--leaf); }
+.page.check .state.err { border-left: 3px solid #d98b8b; color: #9a5b5b; }
+.check-list {
+  margin: 8px 0 0;
+  padding-left: 20px;
+  color: var(--ink);
+}
+.check-list li { margin: 4px 0; }
+#last-update { color: var(--leaf-ink); }
