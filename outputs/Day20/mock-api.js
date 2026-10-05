@@ -61,6 +61,7 @@ const server = http.createServer((req, res) => {
         let title = '测试书籍';
         try { title = (JSON.parse(body).title) || title; } catch (e) {}
         const book = { id: 'b_' + Date.now(), title, user_id: 'local', created_at: new Date().toISOString().slice(0, 19) };
+        books.unshift(book);   // 真写进内存表：这样「写入 → 刷新首页」能看到条数跟着变（与真实云函数一致）
         send(res, 201, { ok: true, book }, req);
       });
       return;
