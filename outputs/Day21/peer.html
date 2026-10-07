@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><title>② 同伴交叉验证 · 三行结论</title>
+<style>
+:root{--ink:#2f3a2e;--sub:#6b7a68;--line:#e3e7df;--soft:#f7f8f4;--accent:#5f774f;--warn:#b4453a;--ok:#3f7a45;}
+*{box-sizing:border-box;}
+body{margin:0;background:#fff;color:var(--ink);
+  font-family:"Noto Serif SC","Songti SC",Georgia,serif;font-size:15px;line-height:1.75;}
+#__addrbar{position:fixed;left:0;right:0;top:0;height:44px;z-index:99999;display:flex;align-items:center;gap:8px;
+  padding:0 14px;background:#f1f3f4;border-bottom:1px solid #cfd4d9;
+  font-family:"Segoe UI",system-ui,sans-serif;font-size:14px;color:#3c4043;}
+#__addrbar .dots{display:flex;gap:6px;margin-right:10px;}
+#__addrbar .dot{width:11px;height:11px;border-radius:50%;}
+#__addrbar .omni{flex:1;display:flex;align-items:center;background:#fff;border:1px solid #dadce0;
+  border-radius:999px;padding:5px 14px;overflow:hidden;color:#202124;}
+.wrap{padding:56px 40px 40px;max-width:1180px;margin:0 auto;}
+.badge{display:inline-block;background:var(--soft);border:1px solid var(--line);border-radius:999px;
+  padding:4px 14px;font-size:13px;color:var(--accent);margin-bottom:10px;}
+h1{font-size:26px;margin:6px 0 14px;font-weight:500;}
+h2{font-size:20px;margin:26px 0 10px;padding-bottom:6px;border-bottom:1px solid var(--line);font-weight:500;}
+h3{font-size:17px;margin:20px 0 8px;font-weight:500;}
+p{margin:8px 0;}
+blockquote{margin:12px 0;padding:10px 16px;background:#fbfaf6;border-left:3px solid #cfd9c4;color:#55604f;}
+blockquote p{margin:4px 0;}
+table{border-collapse:collapse;width:100%;margin:12px 0;font-size:14px;}
+th,td{border:1px solid var(--line);padding:7px 10px;text-align:left;vertical-align:top;}
+th{background:var(--soft);font-weight:500;}
+tr:nth-child(even) td{background:#fcfcf9;}
+code{background:#f2f4ee;padding:1px 5px;border-radius:4px;font-size:13px;
+  font-family:Consolas,"Courier New",monospace;}
+pre{background:#f7f8f4;border:1px solid var(--line);border-radius:6px;padding:12px 14px;overflow:auto;}
+pre code{background:none;padding:0;font-size:13px;line-height:1.6;}
+hr{border:none;border-top:1px solid var(--line);margin:22px 0;}
+ul,ol{padding-left:24px;margin:8px 0;}
+li{margin:4px 0;}
+strong{color:#243020;}
+</style></head><body>
+<div id="__addrbar">
+  <span class="dots"><span class="dot" style="background:#ff5f57"></span><span class="dot" style="background:#febc2e"></span><span class="dot" style="background:#28c840"></span></span>
+  <span class="omni"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" style="margin-right:7px;flex:none">
+    <rect x="4" y="10" width="16" height="11" rx="2.5" fill="#5f6368"/>
+    <path d="M8 10V7a4 4 0 0 1 8 0v3" stroke="#5f6368" stroke-width="2.2" fill="none"/></svg>http://127.0.0.1:8137/outputs/Day21/peer.html</span>
+</div>
+<div class="wrap">
+  <span class="badge">② 同伴交叉验证 · 三行结论 · Day 21 · 第 3 周验收 · 2026-10-07</span>
+  <h1>栀书心驿 · 同伴交叉验证 · 三行结论</h1>
+<blockquote>
+<p>用途：发给同伴，<strong>由同伴在自己机器上独立操作后回填三行结论</strong>。
+规则：每行只能填 <strong>PASS / FAIL</strong> 二选一，FAIL 必须附一句现象（不然我没法定位）。
+不要替他填、不要推测他的结果。</p>
+</blockquote>
+<hr>
+<h2>一、需要我先填好的两个地址（同伴照着点）</h2>
+<table>
+<thead>
+<tr>
+<th>项</th>
+<th>值</th>
+<th>当前状态</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>首页 URL</td>
+<td><code>&lt;静态托管域名&gt;/</code></td>
+<td>❌ <strong>待补</strong> —— 全仓仍是占位符 <code>https://xxx.tcloudbaseapp.com</code></td>
+</tr>
+<tr>
+<td>检查台 URL</td>
+<td><code>&lt;静态托管域名&gt;/check.html</code></td>
+<td>❌ <strong>待补</strong> —— 同上</td>
+</tr>
+<tr>
+<td>接口基地址</td>
+<td><code>https://zhishu-xinyi.apigw.tencentcs.com/release</code></td>
+<td>❌ 当前 DNS 解析失败（见 <code>outputs/Day21/公网连通性检查.txt</code>）</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>上面两个地址补齐之前，本表<strong>无法由同伴执行</strong>。补齐后把实际域名填进来再转发。</p>
+</blockquote>
+<hr>
+<h2>二、同伴回填的三行结论（模板）</h2>
+<pre><code>① 能否打开：____（首页 + 检查台，两个地址都要开）
+② 能否真实读写：____（录入一本 → 刷新仍在 → 检查台写入测试成功且条数 +1）
+③ 有无报错：____（F12 Console 与 Network 全过一遍）
+</code></pre>
+<p><strong>填写示例（真实写法，别照抄结论）</strong></p>
+<pre><code>① 能否打开：PASS —— 首页 https://xxx.tcloudbaseapp.com/ 正常渲染；check.html 健康显示「在线 · {&quot;ok&quot;:true,&quot;service&quot;:&quot;zhishu-xinyi&quot;}」
+② 能否真实读写：PASS —— 录入《夜莺与玫瑰》后 F5，书还在；点写入测试后 books 从 5 → 6，「最后更新时间」同步变化
+③ 有无报错：PASS —— Console 无红字；Network 里三个请求均 200/201，响应含 ok:true
+</code></pre>
+<hr>
+<h2>三、三行各自的判定标准（同伴照这个判，不靠感觉）</h2>
+<h3>① 能否打开 —— 怎么验 / 怎么判</h3>
+<table>
+<thead>
+<tr>
+<th>步骤</th>
+<th>操作</th>
+<th>PASS 标准</th>
+<th>FAIL 现象（照抄给回我）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>浏览器打开首页 URL</td>
+<td>诗意首页正常渲染，<strong>不白屏</strong>、无「数据还在路上」</td>
+<td>白屏 / 一直转圈 / 显示「数据还在路上」</td>
+</tr>
+<tr>
+<td>2</td>
+<td>打开 <code>&lt;域名&gt;/check.html</code></td>
+<td>顶部健康状态显示 <strong>「在线 · {&quot;ok&quot;:true,&quot;service&quot;:&quot;zhishu-xinyi&quot;}」</strong></td>
+<td>显示「离线 · …」→ 把离线后面的原文发我</td>
+</tr>
+<tr>
+<td>3</td>
+<td>换个设备/浏览器再开一次</td>
+<td>同样能开，且<strong>条数与刚才一致</strong>（证明读的是云端，不是本地缓存）</td>
+<td>另一台设备条数是 0 或不一致</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>判 <strong>PASS</strong>：1、2、3 全过。任一项不过 → <strong>FAIL</strong>，把现象原文贴回。</p>
+</blockquote>
+<h3>② 能否真实读写 —— 怎么验 / 怎么判</h3>
+<table>
+<thead>
+<tr>
+<th>步骤</th>
+<th>操作</th>
+<th>PASS 标准</th>
+<th>FAIL 现象</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>首页底部看统计</td>
+<td>显示「书架上已有 N 本 · 写下 M 段心得」，N/M 是<strong>非零真实数字</strong></td>
+<td>显示 0 或「数据还在路上」</td>
+</tr>
+<tr>
+<td>2</td>
+<td>书架页录入一本新书（书名随意）</td>
+<td>成功，列表立刻多一行</td>
+<td>报错 / 提示重复 / 无反应</td>
+</tr>
+<tr>
+<td>3</td>
+<td><strong>按 F5 刷新</strong> ★ 关键</td>
+<td>新书<strong>还在</strong>（证明写进了数据库）</td>
+<td>刷新后消失 → 说明只写进前端，判 FAIL</td>
+</tr>
+<tr>
+<td>4</td>
+<td>检查台点「写入测试」</td>
+<td>显示「写入成功：…（b_xxx）」，条数 <strong>+1</strong>，「最后更新时间」跟着变</td>
+<td>「写入返回：…」→ 把后面原文发我（<code>duplicate</code> 属正常，其余不是）</td>
+</tr>
+<tr>
+<td>5</td>
+<td>F12 → Network 筛 <code>apigw</code></td>
+<td>请求 URL 是 <code>https://zhishu-xinyi.apigw.tencentcs.com/release/...</code>，<strong>不是 localhost</strong></td>
+<td>出现 <code>localhost</code> → 说明前端没接到公网，判 FAIL</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>判 <strong>PASS</strong>：1–5 全过，尤其第 3 步（刷新仍在）和第 5 步（公网域名）。任一项不过 → <strong>FAIL</strong>。</p>
+</blockquote>
+<h3>③ 有无报错 —— 怎么验 / 怎么判</h3>
+<table>
+<thead>
+<tr>
+<th>步骤</th>
+<th>操作</th>
+<th>PASS 标准</th>
+<th>FAIL 现象</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>F12 → Console，从打开页面到点完写入测试全程</td>
+<td><strong>0 条红色报错</strong>（尤其不能有 <code>CORS policy: No 'Access-Control-Allow-Origin'</code>）</td>
+<td>出现 CORS 报错 → 说明 <code>ALLOWED_ORIGIN</code> 白名单没加上我的域名</td>
+</tr>
+<tr>
+<td>2</td>
+<td>F12 → Network</td>
+<td><code>/api/health</code>、<code>/api/books</code>、<code>/api/notes</code> 均 <strong>200</strong>；<code>POST /api/books</code> 返回 <strong>201</strong></td>
+<td>出现 500（多为环境变量缺 DB_*）/ 404 / 405</td>
+</tr>
+<tr>
+<td>3</td>
+<td>快速点两次「写入测试」</td>
+<td>第二次返回「已存在，属正常」或仍能成功，<strong>页面不崩</strong></td>
+<td>页面白屏或卡死</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>判 <strong>PASS</strong>：三步全过、Console 全绿。出现任一红色报错 → <strong>FAIL</strong>，请把报错原文整段发我。</p>
+</blockquote>
+<hr>
+<h2>四、直接转发给同伴的一段话（复制即可）</h2>
+<blockquote>
+<p>帮我点一下验收，三步就行，每题回我 PASS 或 FAIL（FAIL 请附一句现象）：</p>
+<ol>
+<li>打开首页 <code>&lt;静态托管域名&gt;/</code> 和检查台 <code>&lt;静态托管域名&gt;/check.html</code>，看能不能正常打开；</li>
+<li>在书架录一本新书 → <strong>按 F5 刷新</strong>，看它还在不在；再点检查台的「写入测试」，看条数有没有 +1；</li>
+<li>按 F12，Console 有没有红字，Network 里请求是不是 200/201、域名是不是 <code>apigw.tencentcs.com</code>。</li>
+</ol>
+<p>按这个格式回我三行就行：</p>
+<pre><code>① 能否打开：
+② 能否真实读写：
+③ 有无报错：
+</code></pre>
+<p>如果检查台显示「离线」或页面「数据还在路上」，直接把那句原文发我，不用自己猜原因。</p>
+</blockquote>
+<hr>
+<h2>五、当前状态（诚实标注）</h2>
+<ul>
+<li>本表<strong>尚未执行</strong>：两个公网 URL 缺失、接口域名解析失败，同伴现在打开只会拿到 FAIL。</li>
+<li>模板与判定标准<strong>已就绪</strong>，公网 URL 补齐后可直接转发，无需再改。</li>
+<li>补齐顺序见 <code>outputs/Day21/周验收表-第3周.md</code> 第三节 U1–U6。</li>
+</ul>
+<hr>
+<h2>六、本机代验实际执行结果（2026-10-07 22:53–22:56 GMT+8 · 已真跑）</h2>
+<blockquote>
+<p><strong>执行人：栀子（代验，不是同伴独立设备）</strong>。今天没有同伴在场，且公网 URL 缺失，
+所以我把清单<strong>照着跑了一遍</strong>，跑的是<strong>本地路径</strong>（<code>outputs/Day20/mock-api.js :8787</code> + <code>python -m http.server :8080</code>）。
+结论按「本地路径」与「公网路径」<strong>分两栏如实记</strong>，不拿本地结果冒充公网。</p>
+</blockquote>
+<h3>三行结论（代验填写）</h3>
+<pre><code>① 能否打开：本地路径 PASS ／ 公网路径 FAIL —— 本地 http://127.0.0.1:8080/index.html?api=http://localhost:8787
+   正常渲染不白屏，/api/health 回 200 {&quot;ok&quot;:true,&quot;service&quot;:&quot;zhishu-xinyi&quot;}；公网三个接口 HTTP 000、DNS NXDOMAIN
+② 能否真实读写：本地路径 PASS ／ 公网路径 FAIL —— 基线 books 5 条 → POST《夜莺与玫瑰》回 201
+   → 重新 GET（等价 F5）条数 6 且新行在位；notes 5 条、mood 为数组。公网无任何一次真实写入留痕
+③ 有无报错：本地路径 PASS ／ 公网路径 FAIL —— 全部请求 200/201，响应均带 ok:true，无 4xx/5xx；
+   公网侧 curl exit=6/7（解析失败+连不上），不是接口报错，是根本没连上
+</code></pre>
+<h3>逐条执行记录（可复跑）</h3>
+<table>
+<thead>
+<tr>
+<th>清单步骤</th>
+<th>怎么跑的</th>
+<th>实测结果</th>
+<th>证据</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>①-1 首页能打开</td>
+<td><code>python -m http.server 8080</code>（后台）+ 浏览器/请求打 <code>index.html?api=http://localhost:8787</code></td>
+<td>静态资源可取、接口可达</td>
+<td><code>outputs/Day20/shots/</code>（Day 20 同路径 UI 截图 04–07）</td>
+</tr>
+<tr>
+<td>①-2 检查台健康</td>
+<td><code>curl --noproxy '*' http://127.0.0.1:8787/api/health</code></td>
+<td><code>{&quot;ok&quot;:true,&quot;service&quot;:&quot;zhishu-xinyi&quot;}</code> · <strong>HTTP 200</strong></td>
+<td><code>outputs/Day21/本地读写闭环-交叉验证.txt</code> 之【2】</td>
+</tr>
+<tr>
+<td>①-3 换设备验证读云端</td>
+<td>—</td>
+<td><strong>未执行</strong>：本地内存表无法从另一台设备访问，此项物理上不成立</td>
+<td>如实标记</td>
+</tr>
+<tr>
+<td>②-1 首页统计非零</td>
+<td><code>GET /api/books</code> 基线</td>
+<td><code>ok=true</code>、<strong>5 条</strong>；<code>GET /api/notes</code> <strong>5 条</strong></td>
+<td>同文件【1】【5】</td>
+</tr>
+<tr>
+<td>②-2 录入新书</td>
+<td><code>POST /api/books {&quot;title&quot;:&quot;夜莺与玫瑰&quot;}</code></td>
+<td><strong>HTTP 201</strong>，回显 <code>b_1791384928332</code></td>
+<td>同文件【3】</td>
+</tr>
+<tr>
+<td>②-3 ★ 刷新仍在</td>
+<td>再次 <code>GET /api/books</code>（等价按 F5 重拉）</td>
+<td><strong>6 条（5→6）</strong>，新行在位 → 写的是服务端，不是前端缓存</td>
+<td>同文件【4】</td>
+</tr>
+<tr>
+<td>②-4 写入测试（检查台）</td>
+<td>与 ②-2/②-3 同一条链路（检查台按钮即调 <code>POST /api/books</code>）</td>
+<td>同 201 + 条数 +1</td>
+<td>同文件【3】【4】</td>
+</tr>
+<tr>
+<td>②-5 请求域名是公网 apigw</td>
+<td>查本次请求 URL</td>
+<td><strong>FAIL</strong>：域名是 <code>127.0.0.1:8787</code>，不是 <code>apigw.tencentcs.com</code> → 按判定标准此步不过</td>
+<td>判定标准原文：出现 localhost 说明没接到公网</td>
+</tr>
+<tr>
+<td>③-1 Console 无红字</td>
+<td>—</td>
+<td><strong>未执行</strong>：沙箱 agent-browser 包被清理，今天无浏览器可开 DevTools；Day 20 同路径截图无报错提示</td>
+<td>如实标记，见下</td>
+</tr>
+<tr>
+<td>③-2 Network 全 200/201</td>
+<td>HTTP 层逐请求看状态码</td>
+<td><strong>PASS</strong>：health 200 / books GET 200 / books POST 201 / notes 200，0 个 4xx·5xx</td>
+<td>同文件【1】–【5】</td>
+</tr>
+<tr>
+<td>③-3 连点两次写入不崩</td>
+<td>同名重复写一次</td>
+<td>第二次仍回 201，<strong>服务未崩</strong>；真实云函数的 409 <code>duplicate</code> 由回归断言覆盖</td>
+<td>同文件【6】</td>
+</tr>
+</tbody>
+</table>
+<h3>这轮代验说明的三件事</h3>
+<ol>
+<li><strong>读写闭环真的通了</strong>——写入拿到 201、读回条数 +1、新行字段完整，这是「一次真实写入 + 刷新持久化」在本地路径上的实证。</li>
+<li><strong>它证明不了上线</strong>——请求域名是 <code>127.0.0.1:8787</code>，②-5 这一步按标准判不过，所以公网三行仍是 FAIL。</li>
+<li><strong>两项未执行如实标记</strong>：①-3（换设备）、③-1（Console 红字）——前者本地路径物理上不成立，后者今天沙箱没有可用浏览器。</li>
+</ol>
+<blockquote>
+<p>补做（同伴真正执行前必须先完成）：确认 CloudBase 环境 → 部署三函数 → 导入 <code>db/schema.sql</code>+<code>db/seed.sql</code>
+→ 回填 <code>js/config.js:23</code> → 上传静态托管 → 把真实域名填进本文件第一节 → 转发 §四那段话给同伴。</p>
+</blockquote>
+
+</div>
+</body></html>

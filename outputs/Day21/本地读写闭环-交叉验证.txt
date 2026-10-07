@@ -1,0 +1,19 @@
+Day 21 · 同伴交叉验证 · 「②能否真实读写」HTTP 层实测（2026-10-07 22:55:26 GMT+8）
+目标服务：outputs/Day20/mock-api.js :8787（与 api-contract.md 同响应形状；POST 真写内存表）
+说明：HTTP 层实测（真实发请求、真实落表、真实读回），非 UI 点击；UI 层证据见 outputs/Day20/shots/05-07。
+
+【1】基线 GET /api/books
+  ok=true  条数=5  首条={"id":"b_1","title":"被讨厌的勇气","user_id":"local","created_at":"2026-09-21T08:30:00"}
+【2】健康探活 GET /api/health
+{"ok":true,"service":"zhishu-xinyi"}  HTTP=200
+【3】真实写入 POST /api/books {"title":"夜莺与玫瑰"}
+{"ok":true,"book":{"id":"b_1791384928332","title":"夜莺与玫瑰","user_id":"local","created_at":"2026-10-07T14:55:28"}}  HTTP=201
+【4】等价刷新：再次 GET /api/books（等同按 F5 重新拉列表）
+  条数=6（基线 5 → 现 6，+1）
+  《夜莺与玫瑰》在列表中 = true
+  新增行={"id":"b_1791384928332","title":"夜莺与玫瑰","user_id":"local","created_at":"2026-10-07T14:55:28"}
+【5】记录表读取 GET /api/notes
+  ok=true  条数=5  mood 为数组=true
+【6】重复书名分支（mock 与真实云函数差异，如实记录）
+{"ok":true,"book":{"id":"b_1791384930293","title":"夜莺与玫瑰","user_id":"local","created_at":"2026-10-07T14:55:30"}}  HTTP=201
+  ↑ 本地 mock 未实现防重复，仍回 201；真实云函数 409 duplicate 由回归断言 [4] 覆盖（outputs/Day21/regression-rerun.txt）

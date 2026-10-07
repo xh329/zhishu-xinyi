@@ -1,0 +1,99 @@
+Day 21 复跑时间：2026-10-07 22:56:11 GMT+8
+命令：node outputs/Day19/regression.cjs
+----------------------------------------
+
+================ 栀书心驿 · Day 19 全接口回归 ================
+
+[0] GET /api/health
+  ✓ 200
+  ✓ ok=true
+  ✓ service=zhishu-xinyi
+
+[1] GET /api/books
+  ✓ 200
+  ✓ ok=true
+  ✓ books 是数组且 5 条
+  ✓ 首条是瓦尔登湖（倒序）
+  ✓ book 字段形状正确
+  ✓ created_at 是 ISO(无 Z)
+
+[2] GET /api/books?limit=2
+  ✓ 200
+  ✓ limit 生效 → 2 条
+  ✓ limit 边界钳制：limit=999 → 100
+
+[3] POST /api/books（新增《夜莺与玫瑰》）
+[books] POST /api/books 新增成功 {
+  id: 'b_muy8cytubuoijg',
+  title: '夜莺与玫瑰',
+  user_id: 'local',
+  created_at: '2026-10-07 22:56:12'
+}
+  ✓ 201
+  ✓ ok=true
+  ✓ book.id 形如 b_xxx
+  ✓ book.title 回显正确
+  ✓ book.user_id=local
+  ✓ book.created_at 是 ISO
+  ✓ 写回后可列表读到（6 条）
+
+[4] POST /api/books（重复《小王子》→ 409）
+[books] POST /api/books 重复收录被拒 { title: '小王子', user_id: 'local' }
+  ✓ 409
+  ✓ error=duplicate
+  ✓ 中文提示
+
+[5] POST /api/books（空白书名 → 400）
+[books] POST /api/books 校验失败：书名不能为空
+  ✓ 400
+  ✓ error=invalid_param
+  ✓ 中文提示
+
+[6] GET /api/books?user_id=ghost（空列表）
+  ✓ 200
+  ✓ 空数组
+
+[7] PUT /api/books（→ 405）
+  ✓ 405
+  ✓ error=method_not_allowed
+
+[7.1] GET /api/books（数据库异常 → 500）
+[books] GET /api/books 读取失败 Error: simulated DB failure
+    at Object.query (D:\vibe coding\课程任务\outputs\Day19\regression.cjs:52:33)
+    at Object.listBooks (D:\vibe coding\课程任务\cloudfunctions\books\booksRepository.js:21:29)
+    at exports.main (D:\vibe coding\课程任务\cloudfunctions\books\index.js:136:32)
+    at main (D:\vibe coding\课程任务\outputs\Day19\regression.cjs:213:35)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+  ✓ 500
+  ✓ error=server_error
+
+[8] GET /api/notes
+  ✓ 200
+  ✓ ok=true
+  ✓ notes 是数组且 6 条
+  ✓ 首条是 n_seed06（倒序）
+  ✓ note 字段形状正确（7 字段）
+  ✓ mood 是数组
+  ✓ updated_at 可为 null
+
+[9] GET /api/notes?limit=3
+  ✓ limit 生效 → 3 条
+
+[10] POST /api/notes（→ 405）
+  ✓ 405
+  ✓ error=method_not_allowed
+
+[SQL] 执行过的 SQL 与原 SQL 逐字比对
+  ✓ 执行 SQL 去重集合 == 原 SQL 集合（无新增/无删改）
+  ✓ SQL#1 命中预期
+  ✓ SQL#2 命中预期
+  ✓ SQL#3 命中预期
+  ✓ SQL#4 命中预期
+  ✓ SQL#5 命中预期
+  ✓ SQL#6 命中预期
+  ✓ SQL#7 命中预期
+  ✓ SQL#8 命中预期
+  ✓ SQL#9 命中预期
+
+================ 结果：通过 51 / 失败 0 ================
+

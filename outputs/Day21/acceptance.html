@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><title>① 周验收表（逐项证据）</title>
+<style>
+:root{--ink:#2f3a2e;--sub:#6b7a68;--line:#e3e7df;--soft:#f7f8f4;--accent:#5f774f;--warn:#b4453a;--ok:#3f7a45;}
+*{box-sizing:border-box;}
+body{margin:0;background:#fff;color:var(--ink);
+  font-family:"Noto Serif SC","Songti SC",Georgia,serif;font-size:15px;line-height:1.75;}
+#__addrbar{position:fixed;left:0;right:0;top:0;height:44px;z-index:99999;display:flex;align-items:center;gap:8px;
+  padding:0 14px;background:#f1f3f4;border-bottom:1px solid #cfd4d9;
+  font-family:"Segoe UI",system-ui,sans-serif;font-size:14px;color:#3c4043;}
+#__addrbar .dots{display:flex;gap:6px;margin-right:10px;}
+#__addrbar .dot{width:11px;height:11px;border-radius:50%;}
+#__addrbar .omni{flex:1;display:flex;align-items:center;background:#fff;border:1px solid #dadce0;
+  border-radius:999px;padding:5px 14px;overflow:hidden;color:#202124;}
+.wrap{padding:56px 40px 40px;max-width:1180px;margin:0 auto;}
+.badge{display:inline-block;background:var(--soft);border:1px solid var(--line);border-radius:999px;
+  padding:4px 14px;font-size:13px;color:var(--accent);margin-bottom:10px;}
+h1{font-size:26px;margin:6px 0 14px;font-weight:500;}
+h2{font-size:20px;margin:26px 0 10px;padding-bottom:6px;border-bottom:1px solid var(--line);font-weight:500;}
+h3{font-size:17px;margin:20px 0 8px;font-weight:500;}
+p{margin:8px 0;}
+blockquote{margin:12px 0;padding:10px 16px;background:#fbfaf6;border-left:3px solid #cfd9c4;color:#55604f;}
+blockquote p{margin:4px 0;}
+table{border-collapse:collapse;width:100%;margin:12px 0;font-size:14px;}
+th,td{border:1px solid var(--line);padding:7px 10px;text-align:left;vertical-align:top;}
+th{background:var(--soft);font-weight:500;}
+tr:nth-child(even) td{background:#fcfcf9;}
+code{background:#f2f4ee;padding:1px 5px;border-radius:4px;font-size:13px;
+  font-family:Consolas,"Courier New",monospace;}
+pre{background:#f7f8f4;border:1px solid var(--line);border-radius:6px;padding:12px 14px;overflow:auto;}
+pre code{background:none;padding:0;font-size:13px;line-height:1.6;}
+hr{border:none;border-top:1px solid var(--line);margin:22px 0;}
+ul,ol{padding-left:24px;margin:8px 0;}
+li{margin:4px 0;}
+strong{color:#243020;}
+</style></head><body>
+<div id="__addrbar">
+  <span class="dots"><span class="dot" style="background:#ff5f57"></span><span class="dot" style="background:#febc2e"></span><span class="dot" style="background:#28c840"></span></span>
+  <span class="omni"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" style="margin-right:7px;flex:none">
+    <rect x="4" y="10" width="16" height="11" rx="2.5" fill="#5f6368"/>
+    <path d="M8 10V7a4 4 0 0 1 8 0v3" stroke="#5f6368" stroke-width="2.2" fill="none"/></svg>http://127.0.0.1:8137/outputs/Day21/acceptance.html</span>
+</div>
+<div class="wrap">
+  <span class="badge">① 周验收表（逐项证据） · Day 21 · 第 3 周验收 · 2026-10-07</span>
+  <h1>栀书心驿 · 第 3 周（Day 16–20）验收表</h1>
+<blockquote>
+<p>验收人：栀子（代验）｜验收时间：2026-10-07 22:56 GMT+8（证据全部为当日 22:53–22:56 复跑）｜项目：栀书心驿 zhishu-xinyi（<code>D:/vibe coding/课程任务</code>）
+判定口径：<strong>PASS</strong> = 当日复跑拿到可复现证据；<strong>FAIL</strong> = 按验证方法执行后未达通过标准；<strong>未执行</strong> = 本环境物理上无法执行（缺凭据/缺账号/缺硬件）。
+所有证据均给出「可打开的文件 + 可复跑的命令」，不含&quot;应该没问题&quot;&quot;基本可用&quot;一类表述。</p>
+</blockquote>
+<hr>
+<h2>一、验收结果总览</h2>
+<table>
+<thead>
+<tr>
+<th>结论</th>
+<th>项数</th>
+<th>行号</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>✅ PASS</td>
+<td>4</td>
+<td>1、2、3、4</td>
+</tr>
+<tr>
+<td>❌ FAIL</td>
+<td>4</td>
+<td>5、6、7、9</td>
+</tr>
+<tr>
+<td>🔧 FAIL → 当日修复 → PASS</td>
+<td>1</td>
+<td>8</td>
+</tr>
+<tr>
+<td>⬜ 未执行</td>
+<td>0 行（第 9 行内有 2 个子步骤标记「未执行」，见该行）</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>一句话结论</strong>：代码层与测试层全部通过（建表、读写接口、分层重构、契约文档），但**「公网部署」这一步一周都没落地**——接口域名 22:56 复测仍是 NXDOMAIN、静态托管地址仍是占位符，所以 4 项与公网相关的验收判 FAIL，不判 PASS。今天我把「同伴交叉验证」照清单<strong>真跑了一遍</strong>（本地路径 PASS、公网路径 FAIL），不是为了把 FAIL 洗成 PASS，是为了把&quot;没做&quot;和&quot;做了但没上线&quot;区分清楚。</p>
+<hr>
+<h2>二、逐项验收</h2>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>验收项（本周产出）</th>
+<th>验证方法（照做即可复现）</th>
+<th>结论</th>
+<th>证据（可打开 / 可复跑）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td><strong>schema / seed 脚本</strong>（<code>db/schema.sql</code> + <code>db/seed.sql</code>）</td>
+<td>复跑 <code>python outputs/Day16/verify_sql.py</code>：SQLite 等价执行建表+灌数，检查 ①每表 ≥5 行 ②<code>notes.book_id</code> 无孤儿 ③一对多成立 ④连跑两遍行数不变（幂等）</td>
+<td>✅ <strong>PASS</strong></td>
+<td>复跑输出：<code>outputs/Day21/verify-sql-rerun.txt</code>（books 5 行 / notes 6 行 / 孤儿 0 / b_seed01 下 2 段心得 / 末行「✅ 全部验证通过」）；脚本：<code>db/schema.sql:15-51</code>（先 DROP 子表后父表、PK/FK/UK 齐备）、<code>db/seed.sql:1-29</code>（先 DELETE 后 INSERT）；原图：<code>outputs/Day16/Day16-本地验证-表数据.png</code>。<strong>注</strong>：SQLite 等价执行，非真实 MySQL 实例——真实库从未导入过（见第 5 行）。</td>
+</tr>
+<tr>
+<td>2</td>
+<td><strong>GET 公网接口</strong>·代码层实现（<code>GET /api/books</code>、<code>GET /api/notes</code>）</td>
+<td>复跑 <code>node outputs/Day19/regression.cjs</code>，看 <code>[1][2][8][9]</code> 四组断言：200 / <code>ok:true</code> / 数组条数 / 字段形状 / <code>limit</code> 生效</td>
+<td>✅ <strong>PASS</strong>（代码层）</td>
+<td>复跑输出：<code>outputs/Day21/regression-rerun.txt</code>（末行「通过 51 / 失败 0」；<code>[1] books 5 条</code>、<code>[8] notes 6 条 且 mood 是数组</code>、<code>[2][9] limit 生效</code>）；代码：<code>cloudfunctions/books/index.js:125-144</code>、<code>cloudfunctions/notes/index.js:68</code>。<strong>注</strong>：回归跑在<strong>内存 DB 替身</strong>上，证明的是接口代码，不是云端数据库。</td>
+</tr>
+<tr>
+<td>3</td>
+<td><strong>POST 公网接口</strong>·代码层实现（<code>POST /api/books</code>：校验 / 防重复 / 写入读回）</td>
+<td>同一次回归的 <code>[3][4][5][7]</code>：新增返回 201 且回显正确 → 写回后列表 6 条；重复书名 → 409 <code>duplicate</code>；空白书名 → 400 <code>invalid_param</code>；PUT → 405</td>
+<td>✅ <strong>PASS</strong>（代码层）</td>
+<td><code>outputs/Day21/regression-rerun.txt</code> 中 <code>[3] ✓201 ✓book.id 形如 b_xxx ✓写回后可列表读到（6 条）</code>、<code>[4] ✓409 duplicate 中文提示</code>、<code>[5] ✓400 invalid_param</code>、<code>[7] ✓405 method_not_allowed</code>；代码：<code>cloudfunctions/books/index.js:86-124</code>（参数化 INSERT，无字符串拼接）；原图：<code>outputs/Day18/day18-post-success.png</code>、<code>day18-db-newrow.png</code>。<strong>注</strong>：同上，内存替身，非真实库写入。</td>
+</tr>
+<tr>
+<td>4</td>
+<td><strong>分层重构</strong>（Repository 数据访问层）</td>
+<td>①统计 SQL 语句落点：<code>grep -ciE &quot;SELECT |INSERT INTO|UPDATE |DELETE FROM&quot; &lt;文件&gt;</code>；②复跑回归末段「执行过的 SQL 与原 SQL 逐字比对」</td>
+<td>✅ <strong>PASS</strong></td>
+<td>SQL 落点实测：<code>books/index.js</code> <strong>0</strong> 行、<code>notes/index.js</code> <strong>0</strong> 行；<code>booksRepository.js</code> <strong>2</strong> 行、<code>notesRepository.js</code> <strong>1</strong> 行 —— SQL 100% 在数据访问层。逐字比对：<code>outputs/Day21/regression-rerun.txt</code> 末段「执行 SQL 去重集合 == 原 SQL 集合（无新增/无删改）」+ SQL#1–#9 全命中（证明只是平移、没改语义）；结构图：<code>outputs/Day19/structure.png</code>、<code>分层架构图.md</code>、<code>分层示意图.svg</code>；<code>TECH_DESIGN.md</code> 已同步一节。</td>
+</tr>
+<tr>
+<td>5</td>
+<td><strong>公网可访问</strong>（apigw 域名可达 + 静态托管 URL 已填）</td>
+<td>①<code>nslookup zhishu-xinyi.apigw.tencentcs.com</code>（另用 223.5.5.5 / 8.8.8.8 各查一次）；②<code>curl -s -m 20 -w &quot;[HTTP %{http_code}]&quot; https://zhishu-xinyi.apigw.tencentcs.com/release/api/health</code>；③全仓搜 <code>tcloudbaseapp</code> 看静态托管域名是否已填真实值</td>
+<td>❌ <strong>FAIL</strong>（22:56 复测，结论不变）</td>
+<td><code>outputs/Day21/公网连通性检查.txt</code>（22:56）：三个 DNS 服务器<strong>全部 Non-existent domain</strong>；curl 三条接口<strong>全部 HTTP 000</strong>（exit 6 无法解析 / exit 7 连不上）；对照组 <code>github.com</code>/<code>baidu.com</code> 均 <strong>200</strong>（证明不是本机断网）。静态托管域名：全仓命中全是占位符（<code>outputs/Day20/部署与验证.md:12、47</code> 均为 <code>https://xxx.tcloudbaseapp.com</code>），<strong>没有一处填了真实值</strong>。</td>
+</tr>
+<tr>
+<td>6</td>
+<td><strong>公网真实读写</strong>（一次真实写入 + 刷新后仍持久化，读的是云端 DB）</td>
+<td>浏览器打开首页 → 底部统计显示真实条数 → 检查台点「写入测试」→ 回首页刷新看数字 +1 → F12 Network 确认请求域名是 apigw 公网地址</td>
+<td>❌ <strong>FAIL</strong></td>
+<td>无任何证据：①第 5 行域名不可达，物理上无法发起该操作；②全仓不存在一次真实公网调用的成功留痕——Day 17–20 的证据全是<strong>本地替身</strong>（Day17 <code>self-check.js</code> 无状态 mock、Day18 <code>self-check.js</code> 有状态内存表、Day19 <code>regression.cjs</code> 内存 DB、Day20 <code>mock-api.js</code> 本地 :8787，截图在 <code>outputs/Day20/shots/01-07</code>）；③项目记忆 <code>2026-10-02.md</code> 明写「部署层 + 两张公网截图因用户搞不懂腾讯云控制台而<strong>主动暂停</strong>」，此后未补。<strong>补做（22:55）</strong>：在本地路径跑通一次真实写入+读回——<code>outputs/Day21/本地读写闭环-交叉验证.txt</code>（books 5→6、新行 <code>b_1791384928332</code> 在位、POST 回 201）。<strong>但这不等价于公网读写</strong>（请求域名是 <code>127.0.0.1:8787</code>，表里 ②-5 按判定标准判不过），故本行<strong>仍判 FAIL</strong>。</td>
+</tr>
+<tr>
+<td>7</td>
+<td><strong>公网检查台 URL</strong>（<code>check.html</code> 公网可打开，三要素齐全）</td>
+<td>浏览器打开 <code>&lt;静态托管域名&gt;/check.html</code>：健康「在线」+ books/notes 真实条数 + 「写入测试」可用</td>
+<td>❌ <strong>FAIL</strong></td>
+<td>页面与逻辑<strong>代码存在且本地跑通</strong>：<code>check.html</code>（63 行）、<code>js/check.js:47-106</code>（探活 / 并发读 / 写入测试 / 最后更新时间）、样式 <code>css/style.css</code>、本地四视图截图 <code>outputs/Day20/shots/04-check.png</code>、<code>05-write-ok.png</code>、<code>06-check-after.png</code>、<code>07-home-after.png</code>。<strong>但公网 URL 不存在</strong>：静态托管域名是占位符（见第 5 行），22:56 复测无变化，无法给出可打开的公网地址 → 判 FAIL（不是&quot;页面没做&quot;，是&quot;没有公网 URL&quot;）。</td>
+</tr>
+<tr>
+<td>8</td>
+<td><strong>api-contract.md 完整性</strong></td>
+<td>逐条核对：9 个接口是否都有「路径 + 方法 + 请求 + 响应 + 错误返回」；统一错误码表是否齐；§五状态是否与代码实际一致</td>
+<td>🔧 <strong>FAIL → 当日修复 → PASS</strong></td>
+<td><strong>发现 1 处硬伤（修前判 FAIL）</strong>：<code>api-contract.md</code> §五原文仍写「CORS 补上 <code>Access-Control-Allow-Origin: *</code>」，而 Day 20 代码已改成 <code>ALLOWED_ORIGIN</code> 白名单（<code>cloudfunctions/books/index.js:18-34</code>）——文档与实现冲突，按文档配置会被浏览器拦。同时 §五还写着「前端页面目前仍读 localStorage」，Day 20 后已不成立。<strong>当日已修</strong>：§五补 Day 19 / Day 20 / Day 21 三条状态，CORS 改为白名单描述，并标注实现覆盖 4/9、未实现项为 3/4/5/7/8（其中 <code>POST /api/notes</code> 现回 405）。修后核对：9/9 接口条目齐备（路径+方法+请求+响应+错误码），错误码表 5 码齐全（<code>invalid_param</code>/<code>unauthorized</code>/<code>not_found</code>/<code>method_not_allowed</code>/<code>server_error</code>），状态与代码一致 → <strong>PASS</strong>。</td>
+</tr>
+<tr>
+<td>9</td>
+<td><strong>同伴交叉验证</strong>（三行结论：能否打开 / 能否真实读写 / 有无报错）</td>
+<td>照 <code>outputs/Day21/同伴交叉验证-三行结论.md</code> 的清单逐步执行，三行各填 PASS/FAIL 并附现象</td>
+<td>❌ <strong>FAIL</strong>（本地路径 PASS · 公网路径 FAIL · 2 个子步骤标记未执行）</td>
+<td><strong>执行人：栀子代验，非同伴独立设备</strong>（今天无同伴在场）。执行记录与逐条实测见 <code>outputs/Day21/同伴交叉验证-三行结论.md</code> §六；HTTP 层原始输出见 <code>outputs/Day21/本地读写闭环-交叉验证.txt</code>。三行结论：① 能否打开 <strong>本地 PASS / 公网 FAIL</strong>（health 200 vs 三条 HTTP 000）；② 能否真实读写 <strong>本地 PASS / 公网 FAIL</strong>（5→6、新行在位 vs 无公网写入留痕）；③ 有无报错 <strong>本地 PASS / 公网 FAIL</strong>（全 200/201、0 个 4xx·5xx vs exit 6/7 根本没连上）。<strong>标记「未执行」的 2 个子步骤</strong>：①-3 换设备验证（本地内存表物理上无法跨设备）、③-1 F12 Console 红字检查（沙箱 <code>agent-browser</code> 包被清理，今日无可用浏览器）。</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2>三、本周未完成项（如实登记 · 不甩到&quot;下周再说&quot;就算完）</h2>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>未完成项</th>
+<th>卡在哪</th>
+<th>要谁做</th>
+<th>补做后能救回哪行</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>U1</td>
+<td>CloudBase 环境未部署（books / notes / health 三函数）</td>
+<td>沙箱无 CloudBase 登录态与密钥；用户此前卡在控制台导航</td>
+<td>你本机（或给 envId + 密钥由我代部署）</td>
+<td>行 5、行 6</td>
+</tr>
+<tr>
+<td>U2</td>
+<td>数据库未导入（schema.sql / seed.sql 从未进真实 MySQL）</td>
+<td>依赖 U1</td>
+<td>同上</td>
+<td>行 1（真实库）、行 6</td>
+</tr>
+<tr>
+<td>U3</td>
+<td>静态托管未上传，公网首页 + 检查台 URL 缺失</td>
+<td>依赖 U1；域名占位符未回填</td>
+<td>同上</td>
+<td>行 5、行 7</td>
+</tr>
+<tr>
+<td>U4</td>
+<td><code>ALLOWED_ORIGIN</code> 白名单未配置（且 CLI 更新环境变量是<strong>整体覆盖</strong>，只写它会抹掉 DB_* 凭据）</td>
+<td>依赖 U1</td>
+<td>同上（控制台增量改，或 <code>tcb fn detail</code> 读存量合并写回）</td>
+<td>行 5、行 6</td>
+</tr>
+<tr>
+<td>U5</td>
+<td>契约 9 项只实现 4 项：<code>GET /api/books/:id</code>、<code>GET /api/books/:id/notes</code>、<code>POST /api/notes</code>、<code>PUT /api/notes/:id</code>、<code>DELETE /api/notes/:id</code></td>
+<td>本周排期未含（Day 19 做的是重构，非新接口）</td>
+<td>第 4 周</td>
+<td>不影响本周 8 行的判定，但 <code>addNote</code> 前端调用会 405</td>
+</tr>
+<tr>
+<td>U6</td>
+<td>接口域名当前 DNS 解析失败</td>
+<td><strong>疑似</strong> CloudBase 免费环境被回收（未证实）</td>
+<td>先去控制台确认环境是否还在</td>
+<td>行 5、行 6、行 7</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2>四、今天最花时间的一步 &amp; 值不值（每日一问）</h2>
+<p><strong>最花时间：Day 19 的分层重构 + 那套 51 条断言的回归脚本</strong>（<code>outputs/Day19/regression.cjs</code> 286 行，含&quot;执行 SQL 与原 SQL 逐字比对&quot;这一招）。</p>
+<p><strong>值，但要打折。</strong> 值在：重构后接口层 SQL 归零，今天能一键复跑拿到 51/51，任何一处改坏立刻现形——这是本周唯一一条&quot;随时可复现、不依赖云&quot;的硬证据，也正是今天能把 1/2/3/4 四行判 PASS 的底气。打折在：<strong>它证明的是&quot;代码对&quot;，不是&quot;线上通&quot;</strong>。这一周我把可验证的部分做到了可复现，却把唯一能证明&quot;真的上线了&quot;的部署环节，留成了一个没人执行的待办。所以今天这 3 个 FAIL 不是意外，是那一步被跳过的账单。</p>
+<hr>
+<h2>五、复现命令（一行跑完全部本地可验项）</h2>
+<pre><code class="language-bash">cd &quot;D:/vibe coding/课程任务&quot;
+python outputs/Day16/verify_sql.py      # 行 1：建表 + 种子（SQLite 等价）
+node   outputs/Day19/regression.cjs     # 行 2/3/4：接口 + 分层，51 断言
+nslookup zhishu-xinyi.apigw.tencentcs.com   # 行 5：应为 NXDOMAIN（当前 FAIL 证据）
+</code></pre>
+
+</div>
+</body></html>
