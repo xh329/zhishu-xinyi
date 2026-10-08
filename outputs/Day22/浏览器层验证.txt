@@ -1,0 +1,25 @@
+Day 22 · 交付截图（headless Chromium · 2026/10/8 20:26:30）
+页面：http://127.0.0.1:8791/check.html?api=http://127.0.0.1:8791　（静态页与接口同源，接口由真实云函数代码处理）
+
+【⑤ 改写】改写目标：n_seed06 · 《瓦尔登湖》改之前 正文：在湖边独处，才听见自己真正想要什么。 ／ 心情：治愈 ／ 改写时间：（还没改过）
+  改之前正文（表单回填值）：在湖边独处，才听见自己真正想要什么。
+  改之后正文：在湖边独处，才听见自己真正想要什么。（Day22 联调时改过一次）
+  心情改成：平静、轻盈
+  PATCH 结果：接口回 200，页面已渲染对比表
+  对比表内容：接口返回 200 {"ok":true,"note":{…}} —— GET /api/notes 里这一段的值已经跟着变了： | 字段	改之前	改之后 | 正文	在湖边独处，才听见自己真正想要什么。	在湖边独处，才听见自己真正想要什么。（Day22 联调时改过一次） | 心情	治愈	平静、轻盈 | 改写时间	（还没改过）	2026年10月08日 20:26
+  已截图 → Day22-patch-改之前与改之后.png
+
+【⑥ 删除】二次确认文案：要把 n_seed06 这段删掉吗？删掉后不可找回。 留一留 确认删除
+  DELETE 结果：接口回 200，页面已重新 GET 核对
+  核对表内容：接口返回 200 {"ok":true,"id":"n_seed06"} | 核对项	删除前	删除后 | GET /api/notes 条数	6 段	5 段 | 返回里还有 n_seed06 吗	有	已消失 ✓ | 现在返回的 id：n_seed05、n_seed04、n_seed02、n_seed03、n_seed01
+  已截图 → Day22-delete-删除后GET不再返回.png
+
+本次页面发出的接口请求（域名 http://127.0.0.1:8791，本地替身，非公网）：
+  200 GET /api/health
+  200 GET /api/notes?user_id=local&limit=100
+  200 GET /api/books?user_id=local&limit=100
+  200 PATCH /api/notes/n_seed06
+  200 GET /api/notes?user_id=local&limit=100
+  200 DELETE /api/notes/n_seed06
+  200 GET /api/notes?user_id=local&limit=100
+Console error：1 条 → Failed to load resource: the server responded with a status of 404 (Not Found)

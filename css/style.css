@@ -935,3 +935,64 @@ body {
 }
 .check-list li { margin: 4px 0; }
 #last-update { color: var(--leaf-ink); }
+
+/* ===== 检查台 ⑤ 改写 / ⑥ 删除（Day 22 · 四类操作闭环自检） ===== */
+.page.check code {
+  font-family: Consolas, "Courier New", monospace;
+  font-size: 13px;
+  background: rgba(155, 179, 138, 0.16);
+  border-radius: 4px;
+  padding: 1px 5px;
+}
+.diff-label {
+  display: block;
+  margin: 14px 0 6px;
+  font-size: 14px;
+  letter-spacing: 0.12em;
+  color: var(--ink-soft);
+}
+.diff-input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.72);
+  color: var(--ink);
+  font-family: inherit;
+  font-size: 15px;
+  line-height: 1.8;
+  resize: vertical;
+}
+.diff-input:focus-visible { outline: 2px solid var(--leaf-ink); outline-offset: 2px; }
+.diff-moods { margin-bottom: 16px; }
+/* 改之前 / 改之后 并排对比表 */
+.diff-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 12px 0 4px;
+  font-size: 14px;
+  line-height: 1.7;
+}
+.diff-table th,
+.diff-table td {
+  border: 1px solid var(--line);
+  padding: 7px 10px;
+  text-align: left;
+  vertical-align: top;
+  overflow-wrap: anywhere;
+}
+.diff-table thead th { background: rgba(155, 179, 138, 0.14); font-weight: 500; color: var(--leaf-ink); }
+.diff-table tbody th { width: 88px; color: var(--ink-soft); font-weight: 400; background: rgba(255, 255, 255, 0.5); }
+/* 变了的格子给一点颜色，一眼看出"值确实改了" */
+.diff-changed { color: var(--leaf-ink); background: rgba(155, 179, 138, 0.18); font-weight: 500; }
+.diff-same { color: var(--ink-soft); }
+.diff-before { color: var(--leaf-ink); letter-spacing: 0.08em; }
+.diff-note { margin: 8px 0 0; font-size: 13px; color: var(--ink-soft); }
+.diff-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 12px; }
+.page.check .entry.subtle.danger { color: #9a5b5b; border-color: rgba(176, 106, 106, 0.45); }
+.page.check .entry.subtle.danger:hover {
+  color: #fff;
+  background: rgba(176, 106, 106, 0.85);
+  border-color: rgba(176, 106, 106, 0.85);
+}

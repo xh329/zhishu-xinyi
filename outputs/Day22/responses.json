@@ -1,0 +1,194 @@
+{
+  "notesBefore": [
+    {
+      "id": "n_seed06",
+      "content": "在湖边独处，才听见自己真正想要什么。",
+      "mood": [
+        "治愈"
+      ],
+      "updated_at": null
+    },
+    {
+      "id": "n_seed05",
+      "content": "她独自飞越非洲的夜，孤独里全是辽阔。",
+      "mood": [
+        "轻盈"
+      ],
+      "updated_at": null
+    },
+    {
+      "id": "n_seed04",
+      "content": "人生不必太用力，坦率接受每一天就好。",
+      "mood": [
+        "平静"
+      ],
+      "updated_at": null
+    },
+    {
+      "id": "n_seed02",
+      "content": "把重要的事，每天看一眼，就不会弄丢。",
+      "mood": [
+        "温暖"
+      ],
+      "updated_at": "2026-09-29T09:45:00"
+    },
+    {
+      "id": "n_seed03",
+      "content": "被讨厌不是终点，自由才是。",
+      "mood": [
+        "思索"
+      ],
+      "updated_at": null
+    },
+    {
+      "id": "n_seed01",
+      "content": "长大后才懂，玫瑰的骄傲不过是怕被辜负。",
+      "mood": [
+        "触动"
+      ],
+      "updated_at": null
+    }
+  ],
+  "patchResponse": {
+    "ok": true,
+    "note": {
+      "id": "n_seed06",
+      "book_id": "b_seed05",
+      "content": "在湖边独处，才听见自己真正想要什么。（Day22 联调时改过一次）",
+      "mood": [
+        "平静",
+        "轻盈"
+      ],
+      "user_id": "local",
+      "created_at": "2026-10-01T09:10:00",
+      "updated_at": "2026-10-08T21:27:58"
+    }
+  },
+  "notesAfterPatch": [
+    {
+      "id": "n_seed06",
+      "content": "在湖边独处，才听见自己真正想要什么。（Day22 联调时改过一次）",
+      "mood": [
+        "平静",
+        "轻盈"
+      ],
+      "updated_at": "2026-10-08T21:27:58"
+    },
+    {
+      "id": "n_seed05",
+      "content": "她独自飞越非洲的夜，孤独里全是辽阔。",
+      "mood": [
+        "轻盈"
+      ],
+      "updated_at": null
+    },
+    {
+      "id": "n_seed04",
+      "content": "人生不必太用力，坦率接受每一天就好。",
+      "mood": [
+        "平静"
+      ],
+      "updated_at": null
+    },
+    {
+      "id": "n_seed02",
+      "content": "把重要的事，每天看一眼，就不会弄丢。",
+      "mood": [
+        "温暖"
+      ],
+      "updated_at": "2026-09-29T09:45:00"
+    },
+    {
+      "id": "n_seed03",
+      "content": "被讨厌不是终点，自由才是。",
+      "mood": [
+        "思索"
+      ],
+      "updated_at": null
+    },
+    {
+      "id": "n_seed01",
+      "content": "长大后才懂，玫瑰的骄傲不过是怕被辜负。",
+      "mood": [
+        "触动"
+      ],
+      "updated_at": null
+    }
+  ],
+  "deleteResponse": {
+    "ok": true,
+    "id": "n_seed06"
+  },
+  "notesAfterDelete": [
+    {
+      "id": "n_seed05",
+      "content": "她独自飞越非洲的夜，孤独里全是辽阔。",
+      "mood": [
+        "轻盈"
+      ],
+      "updated_at": null
+    },
+    {
+      "id": "n_seed04",
+      "content": "人生不必太用力，坦率接受每一天就好。",
+      "mood": [
+        "平静"
+      ],
+      "updated_at": null
+    },
+    {
+      "id": "n_seed02",
+      "content": "把重要的事，每天看一眼，就不会弄丢。",
+      "mood": [
+        "温暖"
+      ],
+      "updated_at": "2026-09-29T09:45:00"
+    },
+    {
+      "id": "n_seed03",
+      "content": "被讨厌不是终点，自由才是。（改过一次）",
+      "mood": [
+        "思索"
+      ],
+      "updated_at": "2026-10-08T21:27:58"
+    },
+    {
+      "id": "n_seed01",
+      "content": "长大后才懂，玫瑰的骄傲不过是怕被辜负。",
+      "mood": [
+        "治愈"
+      ],
+      "updated_at": "2026-10-08T21:27:58"
+    }
+  ],
+  "countBeforeDelete": 6,
+  "countAfterDelete": 5,
+  "executedSQL": [
+    "SELECT id, book_id, content, mood, user_id, created_at, updated_at FROM notes WHERE user_id = ? ORDER BY created_at DESC LIMIT ?",
+    "SELECT id, book_id, content, mood, user_id, created_at, updated_at FROM notes WHERE id = ? LIMIT 1",
+    "UPDATE notes SET content = ?, mood = ?, updated_at = ? WHERE id = ?",
+    "SELECT id, book_id, content, mood, user_id, created_at, updated_at FROM notes WHERE id = ? LIMIT 1",
+    "SELECT id, book_id, content, mood, user_id, created_at, updated_at FROM notes WHERE user_id = ? ORDER BY created_at DESC LIMIT ?",
+    "SELECT id, book_id, content, mood, user_id, created_at, updated_at FROM notes WHERE id = ? LIMIT 1",
+    "UPDATE notes SET mood = ?, updated_at = ? WHERE id = ?",
+    "SELECT id, book_id, content, mood, user_id, created_at, updated_at FROM notes WHERE id = ? LIMIT 1",
+    "SELECT id, book_id, content, mood, user_id, created_at, updated_at FROM notes WHERE id = ? LIMIT 1",
+    "SELECT id, book_id, content, mood, user_id, created_at, updated_at FROM notes WHERE id = ? LIMIT 1",
+    "UPDATE notes SET content = ?, updated_at = ? WHERE id = ?",
+    "SELECT id, book_id, content, mood, user_id, created_at, updated_at FROM notes WHERE id = ? LIMIT 1",
+    "DELETE FROM notes WHERE id = ?",
+    "SELECT id, book_id, content, mood, user_id, created_at, updated_at FROM notes WHERE user_id = ? ORDER BY created_at DESC LIMIT ?",
+    "DELETE FROM notes WHERE id = ?",
+    "DELETE FROM notes WHERE id = ?",
+    "SELECT id, book_id, content, mood, user_id, created_at, updated_at FROM notes WHERE user_id = ? ORDER BY created_at DESC LIMIT ?",
+    "SELECT id, book_id, content, mood, user_id, created_at, updated_at FROM notes WHERE user_id = ? ORDER BY created_at DESC LIMIT ?",
+    "SELECT id, book_id, content, mood, user_id, created_at, updated_at FROM notes WHERE id = ? LIMIT 1",
+    "UPDATE notes SET content = ?, updated_at = ? WHERE id = ?",
+    "SELECT id, book_id, content, mood, user_id, created_at, updated_at FROM notes WHERE id = ? LIMIT 1",
+    "DELETE FROM notes WHERE id = ?",
+    "SELECT id, book_id, content, mood, user_id, created_at, updated_at FROM notes WHERE user_id = ? ORDER BY created_at DESC LIMIT ?"
+  ],
+  "totalAssertions": 55,
+  "pass": 55,
+  "fail": 0
+}

@@ -66,8 +66,8 @@
 | 4 | `/api/books/:id/notes` | GET | 书页的心得列表 `store.getNotesByBook` | ✓（单书心得列表） |
 | 5 | `/api/notes` | POST | F3 写心得 `store.addNote` | — |
 | 6 | `/api/notes` | GET | **心迹全部心得** `store.getNotes` | ★ **记录表读取**（重点） |
-| 7 | `/api/notes/:id` | PUT | 改写心得 `store.updateNote` | — |
-| 8 | `/api/notes/:id` | DELETE | 收起心得 `store.removeNote` | — |
+| 7 | `/api/notes/:id` | PATCH（PUT 兼容） | 改写心得 `store.updateNote` / `Z.api.updateNote` | — |
+| 8 | `/api/notes/:id` | DELETE | 收起心得 `store.removeNote` / `Z.api.removeNote` | — |
 
 > 课程要求"别忘了列表读取接口"：对栀书心驿而言，核心记录表是 `notes`，因此 **`GET /api/notes`（心迹）就是与案例 `GET /api/favorites` 对等的列表读取接口**，已列入第 6 项。另 `GET /api/books`（第 2 项）也是列表读取。
 > 首页 #/home 仅展示"共 N 本 / 共 M 段"，可由 `GET /api/books` + `GET /api/notes` 在前端聚合得出，**Day 15 不单列专用接口**（如需可后续加 `GET /api/today`，此处占位、暂不实现）。
@@ -175,28 +175,37 @@
   ```
 - **错误返回**：服务异常 → 500 `{ "ok": false, "error": "server_error" }`
 
-### 7. PUT /api/notes/:id —— 改写心得
+### 7. PATCH /api/notes/:id —— 改写心得（局部更新）
+> **状态**：✅ Day 22 已实现 · 部署位置 `cloudfunctions/notes/`（与 GET 列表同一函数；CORS 方法白名单补上 `PATCH/PUT/DELETE`）。本地 55 条断言回归全过（`outputs/Day22/regression.cjs`），见 `outputs/Day22/部署与验证.md`。
+> **为什么从 PUT 改成 PATCH**：这个接口改的是「调用方点到的字段」（只改正文、或只改心情），不是整条覆盖——语义上正是 PATCH。**PUT 保留为兼容别名**（同一函数同一分支处理，行为一致），Day 15 登记的 PUT 调用方不受影响。
+> **触发路径注意**：带 `:id` 的子路径也由本函数处理。代码同时兼容 `event.pathParameters.id`（触发配成路径参数）与 URL 末尾解析（触发配成通配），部署时把 HTTP 触发路径配成可匹配子路径的形式即可。
+
 - **路径参数**：`id`（心得主键）
-- **请求体**（JSON，字段均可选）：
+- **请求体**（JSON，字段均可选，**只允许** `content` / `mood`，其余字段一律忽略）：
   ```json
   { "content": "重新写过的句子。", "mood": ["治愈"] }
   ```
+- **行为**：只 SET 传入的字段（列名白名单，值参数化）；`updated_at` 自动刷新为当前时间；响应回读改后的完整记录。
 - **响应**（200）：
   ```json
-  { "ok": true, "note": { "id": "n_xxx", "content": "…", "mood": ["治愈"], "updated_at": "…" } }
+  { "ok": true, "note": { "id": "n_xxx", "book_id": "…", "content": "重新写过的句子。", "mood": ["治愈"], "user_id": "local", "created_at": "…", "updated_at": "…" } }
   ```
 - **错误返回**：
-  - 心得不存在 → 404 `{ "ok": false, "error": "not_found" }`
-  - 无可更新字段 → 400 `{ "ok": false, "error": "invalid_param" }`
+  - 没带 id / 无可更新字段 → 400 `{ "ok": false, "error": "invalid_param", "message": "没有要改写的内容（可以改正文或心情）" }`
+  - `content` trim 后为空白 → 400 `{ "ok": false, "error": "invalid_param", "message": "心得正文不能改成空白。" }`
+  - `mood` 不是数组（也不是 null）→ 400 `{ "ok": false, "error": "invalid_param", "message": "心情标签要是一个数组，例如 [\"平静\"]。" }`
+  - **id 不存在 → 404** `{ "ok": false, "error": "not_found", "message": "这段心得好像不在了，也许已经被收起。回「心迹」看看别的吧。" }`（中文说明，不假装成功）
 
 ### 8. DELETE /api/notes/:id —— 收起 / 删除心得
+> **状态**：✅ Day 22 已实现 · 部署位置 `cloudfunctions/notes/`（与 GET 列表同一函数；前端删除带**二次确认**，见 `js/views.js` 确认行与检查台 ⑥）。
+
 - **路径参数**：`id`（心得主键）
 - **响应**（200）：
   ```json
   { "ok": true, "id": "n_xxx" }
   ```
-  （也可返回 204 No Content，前端口侧兼容即可）
-- **错误返回**：心得不存在 → 404 `{ "ok": false, "error": "not_found" }`
+- **校验与幂等口径**：按 `affectedRows` 判断真的删掉了没有——**id 不存在（或已删过）→ 404** `{ "ok": false, "error": "not_found", "message": "这段心得好像不在了，也许已经被收起。回「心迹」看看别的吧。" }`，不返回 200 假装成功；没带 id → 400 `invalid_param`（中文「请指明要收起的是哪一段心得。」）。
+- 前端安全垫：SPA 卡片上的「删除」先就地换成确认行（「要把这段心得删掉吗？删掉后不可找回。」+ 留下 / 删除），检查台 ⑥ 同样两步确认。
 
 ---
 
@@ -226,4 +235,5 @@
 - **Day 20（已落地）**：前端从 `localStorage` 切到云端客户端 `js/api.js`（`Z.api`），读取走 `GET /api/books`、`GET /api/notes`，录入走 `POST /api/books`；新增检查台 `check.html`。**仍未实现**：第 3、4、5、7、8 项（5/9）——其中 `POST /api/notes`（第 5 项）当前回 405 `method_not_allowed`，`addNote` 在前端调用会失败。
 - 跨域（CORS）配置：**Day 20 已收紧**——由 `Access-Control-Allow-Origin: *` 改为读云函数环境变量 `ALLOWED_ORIGIN` 的**白名单**（命中才回 ACAO，并带 `Vary: Origin`；OPTIONS 预检回 204；`*` 已禁止）。白名单未命中时不回该头，浏览器侧即被拦。
 - **Day 21（第 3 周验收结论）**：**公网部署未落地**。`js/config.js:23` 的 `https://zhishu-xinyi.apigw.tencentcs.com/release` 在验收当日 DNS 解析失败（NXDOMAIN，三个 DNS 服务器一致），HTTP 无法建连；仓库内静态托管域名仍为占位符（详见 `outputs/Day21/公网连通性检查.txt`）。即：本契约 9 项中 **4 项代码已实现并通过本地回归，但均未取得公网可访问的证据**。补做顺序见 `outputs/Day21/周验收表-第3周.md`。
+- **Day 22（已落地）**：第 7 项（PUT 调整为 **PATCH**，PUT 保留兼容别名）与第 8 项（DELETE）已实现，实现覆盖 **6/9**——`cloudfunctions/notes/index.js` 现同时承载 GET 列表 + PATCH 改写 + DELETE 删除：id 存在性校验（不存在 → 404 中文「这段心得好像不在了…」）、字段白名单（只认 `content` / `mood`，值参数化）、`updated_at` 自动刷新、CORS 方法白名单补 `PATCH/PUT/DELETE`、服务端写入日志（余力加练）。**新增注意点**：带 `:id` 的子路径由同一函数处理，代码兼容 `pathParameters.id` 与 URL 末尾两种取法，CloudBase 触发路径需配成可匹配子路径的形式（见 `outputs/Day22/部署与验证.md` 第二节）。本地验证：`node outputs/Day22/regression.cjs`（内存库替身 + 真实云函数代码，**55 条断言全过**，含 PATCH 后 GET 读回值已变、DELETE 后 GET 不再返回、不存在 id 的 404、参数化与分层 0 SQL）；浏览器层两张交付截图（`outputs/Day22/Day22-patch-改之前与改之后.png`、`Day22-delete-删除后GET不再返回.png`）。**仍未实现**：第 3、4、5 项（3/9）；公网部署仍未落地（Day 21 的 U1–U4 待办不变）。
 - **关于响应形状 `{ok, data, error}` 的说明**：本项目成功响应用**语义化键** `books` / `notes` 承载数据（见 §三），与统一错误形状 `{ok:false, error}` 共同构成一致契约；未使用通用 `data` 键，是有意设计（字段语义更清晰），属契约范围内，不改变"成功 `ok:true` / 失败 `ok:false`+`error`"的统一约定。

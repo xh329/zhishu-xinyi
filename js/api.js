@@ -10,8 +10,9 @@
  *   GET  /api/notes              → getNotes()
  *   GET  /api/books/:id/notes    （第 4 项 · Day 21 起实现）本客户端先以 getNotes 客户端过滤兜底
  *   POST /api/books              → addBook(title)            （已实现 · Day 18）
- *   POST /api/notes              → addNote(...)             （第 5 项 · Day 21 起，暂会返回 method_not_allowed）
- *   DELETE /api/notes/:id        → removeNote(id)           （第 8 项 · Day 21 起）
+ *   POST /api/notes              → addNote(...)             （第 5 项 · 尚未实现，暂会返回 method_not_allowed）
+ *   PATCH /api/notes/:id         → updateNote(id, fields)   （第 7 项 · 已实现 · Day 22）
+ *   DELETE /api/notes/:id        → removeNote(id)           （第 8 项 · 已实现 · Day 22）
  *
  * 注意（AGENTS.md [D6-4]）：本文件只负责「把请求发到云端并回传数据」，
  * 绝不替用户生成读书心得正文——正文永远来自用户本人在 note.html 写下的内容。
@@ -66,6 +67,15 @@ window.ZhiShu = window.ZhiShu || {};
     };
   }
 
+  // 带 body 的通用选项（PATCH 用）
+  function jsonOpts(method, body) {
+    return {
+      method: method,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body || {}),
+    };
+  }
+
   var api = {
     // 探活：GET /api/health
     health: function () {
@@ -96,13 +106,22 @@ window.ZhiShu = window.ZhiShu || {};
       return request('/api/books', postOpts({ title: title })).then(function (d) { return d.book; });
     },
 
-    // 新增心得：POST /api/notes（Day 21 起实现；当前会返回 method_not_allowed）
+    // 新增心得：POST /api/notes（第 5 项 · 尚未实现，当前会返回 method_not_allowed）
     addNote: function (bookId, content, mood) {
       return request('/api/notes', postOpts({ book_id: bookId, content: content, mood: mood || [] }))
         .then(function (d) { return d.note; });
     },
 
-    // 删除心得：DELETE /api/notes/:id（Day 21 起实现）
+    // 改写心得：PATCH /api/notes/:id（第 7 项 · Day 22 已实现）
+    // fields 只放真的要改的字段（content / mood），不放的字段服务端不会动——
+    // 这就是"改一处"与"整条覆盖"的区别（PATCH 与 PUT 的分别）。
+    updateNote: function (id, fields) {
+      return request('/api/notes/' + encodeURIComponent(id), jsonOpts('PATCH', fields))
+        .then(function (d) { return d.note; });
+    },
+
+    // 删除心得：DELETE /api/notes/:id（第 8 项 · Day 22 已实现）
+    // 服务端会校验 id 是否存在：不存在的 id 回 404 + 中文说明，不会假装删成功。
     removeNote: function (id) {
       return request('/api/notes/' + encodeURIComponent(id), { method: 'DELETE' });
     },

@@ -47,6 +47,29 @@
         <p id="last-update" class="hint">—</p>
       </section>
 
+      <!-- ④ 改写一段心得（PATCH） -->
+      <section class="check-block">
+        <h3>⑤ 改写一段心得（PATCH · 接口第 7 项）</h3>
+        <p class="hint">取列表里最新的一段心事，改成你想要的样子再保存——正文与心情都由你亲手写，页面不替你改一个字。</p>
+        <p id="patch-target" class="hint">正在取最新一段…</p>
+        <div id="patch-form" hidden>
+          <label class="diff-label" for="patch-content">正文</label>
+          <textarea id="patch-content" class="diff-input" rows="3"></textarea>
+          <p class="diff-label">心情（可多选，点一下切换）</p>
+          <div id="patch-moods" class="mood-list diff-moods"></div>
+          <button id="patch-save" class="entry" type="button">保存这次改写（PATCH）</button>
+        </div>
+        <div id="patch-box" class="state" hidden></div>
+      </section>
+
+      <!-- ⑤ 删除一段心得（DELETE） -->
+      <section class="check-block">
+        <h3>⑥ 删除一段心得（DELETE · 接口第 8 项）</h3>
+        <p class="hint">删除要过两道关：这里点一次、再确认一次；服务端另外还会校验这条到底在不在。</p>
+        <button id="delete-test" class="entry" type="button">删除列表里最新一段</button>
+        <div id="delete-box" class="state" hidden></div>
+      </section>
+
       <nav class="links">
         <a href="index.html#/home">回到今日</a>
       </nav>
