@@ -209,20 +209,28 @@
 
 ---
 
-## 四、统一错误约定（占位，Day 16 起细化）
+## 四、统一错误约定（Day 16 起细化；Day 23 起「三类 + 中文说说明」）
 
-| 错误码 | HTTP | 含义 |
-| --- | --- | --- |
-| `invalid_param` | 400 | 请求参数缺失或非法 |
-| `unauthorized` | 401 | 未登录 / 无权限（上云登录态后启用） |
-| `not_found` | 404 | 资源不存在 |
-| `method_not_allowed` | 405 | 方法不被允许（如 /api/health 收到非 GET） |
-| `server_error` | 500 | 服务端异常 |
+| 错误码 | HTTP | 含义 | 用户侧归类（Day 23） |
+| --- | --- | --- | --- |
+| `invalid_param` | 400 | 请求参数缺失或非法 | 输入错 |
+| `unauthorized` | 401 | 未登录 / 无权限（上云登录态后启用） | 输入错 |
+| `not_found` | 404 | 资源不存在 | 输入错 |
+| `method_not_allowed` | 405 | 方法不被允许（如 /api/health 收到非 GET） | 服务端错 |
+| `server_error` | 500 | 服务端异常 | 服务端错 |
 
 错误响应统一形状：
 ```json
-{ "ok": false, "error": "<错误码>", "message": "（可选）人类可读说明" }
+{ "ok": false, "error": "<错误码>", "message": "人类可读的中文说明" }
 ```
+
+**Day 23 起的新约定（三类错误统一中文提示）**：
+- 三类错误都必须带 `message`（中文人话），不再出现只有 `error` 码、没有说明的响应；
+  - 输入错（400/404/409）：说明"哪里要改"，如「书名不能为空」「这段心得好像不在了，也许已经被收起。回「心迹」看看别的吧。」
+  - 服务端错（405/500）：统一为「驿站这边出了点小状况，请稍后再来。」（405 为「这个地址还不支持这种请求方式。」）
+  - 网络错：不属于服务端响应，由前端归类（见下）。
+- **前端统一出口**：`js/api.js` 导出 `Z.friendlyError(err)`，把所有错误（含浏览器 `fetch` 的英文原文、HTTP 状态码）归成 `input | network | server` 三类，返回 `{ kind, label, message, code, status }`；`views.js`、`check.js` 一律经它取文案，界面不再直接显示 `e.message`（杜绝「Failed to fetch」「请求失败（500）」这类裸报错）。
+  - 若服务端已给中文 `message`，前端**优先原样展示**（更具体）；否则用该类通用人话兜底。
 
 ---
 
@@ -237,3 +245,4 @@
 - **Day 21（第 3 周验收结论）**：**公网部署未落地**。`js/config.js:23` 的 `https://zhishu-xinyi.apigw.tencentcs.com/release` 在验收当日 DNS 解析失败（NXDOMAIN，三个 DNS 服务器一致），HTTP 无法建连；仓库内静态托管域名仍为占位符（详见 `outputs/Day21/公网连通性检查.txt`）。即：本契约 9 项中 **4 项代码已实现并通过本地回归，但均未取得公网可访问的证据**。补做顺序见 `outputs/Day21/周验收表-第3周.md`。
 - **Day 22（已落地）**：第 7 项（PUT 调整为 **PATCH**，PUT 保留兼容别名）与第 8 项（DELETE）已实现，实现覆盖 **6/9**——`cloudfunctions/notes/index.js` 现同时承载 GET 列表 + PATCH 改写 + DELETE 删除：id 存在性校验（不存在 → 404 中文「这段心得好像不在了…」）、字段白名单（只认 `content` / `mood`，值参数化）、`updated_at` 自动刷新、CORS 方法白名单补 `PATCH/PUT/DELETE`、服务端写入日志（余力加练）。**新增注意点**：带 `:id` 的子路径由同一函数处理，代码兼容 `pathParameters.id` 与 URL 末尾两种取法，CloudBase 触发路径需配成可匹配子路径的形式（见 `outputs/Day22/部署与验证.md` 第二节）。本地验证：`node outputs/Day22/regression.cjs`（内存库替身 + 真实云函数代码，**55 条断言全过**，含 PATCH 后 GET 读回值已变、DELETE 后 GET 不再返回、不存在 id 的 404、参数化与分层 0 SQL）；浏览器层两张交付截图（`outputs/Day22/Day22-patch-改之前与改之后.png`、`Day22-delete-删除后GET不再返回.png`）。**仍未实现**：第 3、4、5 项（3/9）；公网部署仍未落地（Day 21 的 U1–U4 待办不变）。
 - **关于响应形状 `{ok, data, error}` 的说明**：本项目成功响应用**语义化键** `books` / `notes` 承载数据（见 §三），与统一错误形状 `{ok:false, error}` 共同构成一致契约；未使用通用 `data` 键，是有意设计（字段语义更清晰），属契约范围内，不改变"成功 `ok:true` / 失败 `ok:false`+`error`"的统一约定。
+- **Day 23（安全审计 + 三类错误提示统一）**：① **密钥红线通过**——全仓库（198 个跟踪文件）与 git 全历史扫描密钥特征词（`password` / `secret` / `token` / `api_key` / `AKID` / `sk-` / `ghp_` 等）均 **0 条命中**，从未提交过明文密钥；`.env` 未入库。② 新增根目录 `.env.example`（全占位符模板），`.gitignore` 补 `.env` / `.env.*`（放行 `!.env.example`）/ `node_modules/` / `*.log` 等，密钥永不入库。③ **三类错误提示统一**——`js/api.js` 新增 `Z.friendlyError()`（裸报错 → 输入/网络/服务端三类中文人话），`views.js`、`check.js` 全部接入；云函数 `books` / `notes` / `health` 的 405、500 补中文 `message`；各云函数新增统一请求日志（时间 / 方法 / 路径 / 状态，余力加练）。本地验证：`node outputs/Day23/self-check.cjs` **16 条断言全过**，Day 22 回归 `regression.cjs` **55/55 仍全过**（接口行为不变）。审计证据与截图见 `outputs/Day23/`。

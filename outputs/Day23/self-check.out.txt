@@ -1,0 +1,54 @@
+
+[A] 前端：裸报错 → 三类中文人话（js/api.js）
+  ✓ api.js 暴露了 Z.friendlyError
+
+  ── 改之前（裸报错） → 改之后（人话） ──
+  · 网络错（浏览器英文原文 Failed to fetch）
+      改前：Failed to fetch
+      改后：[网络错] 网络好像断了一下，检查一下连接，再试一次吧。
+  ✓   归类正确（network）  → network
+  ✓   含中文、无英文残留
+  · 服务端错（旧代码：请求失败（500））
+      改前：请求失败（500）
+      改后：[服务端错] 驿站这边出了点小状况，过一会儿再来看看吧。
+  ✓   归类正确（server）  → server
+  ✓   含中文、无英文残留
+  · 输入错（参数非法，服务端未给说明）
+      改前：请求失败（400）
+      改后：[输入错] 有几处还需要你确认一下，改好再试一次吧。
+  ✓   归类正确（input）  → input
+  ✓   含中文、无英文残留
+  · 输入错（服务端已给中文说明，原样保留）
+      改前：这本书已经在书架上了，无需重复收录
+      改后：[输入错] 这本书已经在书架上了，无需重复收录
+  ✓   归类正确（input）  → input
+  ✓   含中文、无英文残留
+  · 资源不存在（404 not_found → 中文）
+      改前：not_found
+      改后：[输入错] 这段心得好像不在了，也许已经被收起。回「心迹」看看别的吧。
+  ✓   归类正确（input）  → input
+  ✓   含中文、无英文残留
+
+[B] 云函数：405 / 500 都带中文说明
+[req] 2026-10-09T13:15:48.017Z POST /api/notes → 405
+  ✓ notes 405 带中文 message  这个地址还不支持这种请求方式。
+[req] 2026-10-09T13:15:48.045Z DELETE /api/books → 405
+  ✓ books 405 带中文 message  这个地址还不支持这种请求方式。
+[req] 2026-10-09T13:15:48.045Z POST /api/health → 405
+  ✓ health 405 带中文 message  这个地址只接受 GET 请求。
+[notes] GET /api/notes failed: Error: db down
+    at Object.listNotes (D:\vibe coding\课程任务\outputs\Day23\self-check.cjs:84:59)
+    at exports.main (D:\vibe coding\课程任务\cloudfunctions\notes\index.js:127:32)
+    at D:\vibe coding\课程任务\outputs\Day23\self-check.cjs:122:29
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+[req] 2026-10-09T13:15:48.046Z GET /api/notes → 500
+  ✓ notes 500 带中文 message  驿站这边出了点小状况，请稍后再来。
+[books] GET /api/books 读取失败 Error: db down
+    at Object.listBooks (D:\vibe coding\课程任务\outputs\Day23\self-check.cjs:92:59)
+    at exports.main (D:\vibe coding\课程任务\cloudfunctions\books\index.js:153:32)
+    at D:\vibe coding\课程任务\outputs\Day23\self-check.cjs:127:29
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+[req] 2026-10-09T13:15:48.048Z GET /api/books → 500
+  ✓ books 500 带中文 message  驿站这边出了点小状况，请稍后再来。
+
+================ 结果：通过 16 / 失败 0 ================

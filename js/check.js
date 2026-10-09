@@ -18,6 +18,10 @@
   'use strict';
 
   var api = window.ZhiShu.api;
+
+  // Day 23：错误提示统一出口——把裸报错（英文 fetch 原文 / 状态码）翻成中文三类，
+  // 检查台只显示人话，不再直接贴 e.message。见 js/api.js 的 friendlyError()。
+  function friendly(e) { return window.ZhiShu.friendlyError(e); }
   var healthBox = document.getElementById('health-box');
   var dataBox = document.getElementById('data-box');
   var writeBox = document.getElementById('write-box');
@@ -79,8 +83,9 @@
     healthBox.className = 'state ok';
     healthBox.textContent = '在线 · ' + JSON.stringify(d);
   }).catch(function (e) {
+    var f = friendly(e);
     healthBox.className = 'state err';
-    healthBox.textContent = '离线 · ' + (e.message || e.code || '未知错误');
+    healthBox.textContent = '离线（' + f.label + '）· ' + f.message;
   });
 
   /* ---- ② 核心表真实数据 ---- */
@@ -116,8 +121,9 @@
     // 顺手把④的改写目标指向「列表里最新一段」（GET 按 created_at 倒序，第一条即最新）
     setupPatch(notes.length ? notes[0] : null);
   }).catch(function (e) {
+    var f = friendly(e);
     dataBox.className = 'state err';
-    dataBox.textContent = '读取失败 · ' + (e.message || e.code || '未知错误');
+    dataBox.textContent = '读取失败（' + f.label + '）· ' + f.message;
     setupPatch(null, e);
   });
 
@@ -133,9 +139,10 @@
       // 写入成功后刷新本页，让 ② 的数据与 ④ 的更新时间跟着变
       setTimeout(function () { location.reload(); }, 900);
     }).catch(function (e) {
+      var f = friendly(e);
       writeBox.className = 'state err';
       // 重复写入会被接口以 409 duplicate 拒绝，属正常，单独说明
-      writeBox.textContent = '写入返回：' + (e.message || e.code || '未知错误') +
+      writeBox.textContent = '写入返回（' + f.label + '）：' + f.message +
         (e.code === 'duplicate' ? '（已存在，属正常）' : '');
     });
   });
@@ -144,8 +151,9 @@
 
   function setupPatch(note, err) {
     if (!note) {
+      var f = err ? friendly(err) : null;
       patchTarget.textContent = err
-        ? '取不到心得列表：' + (err.message || err.code || '未知错误')
+        ? '取不到心得列表（' + f.label + '）：' + f.message
         : 'notes 表还是空的，先写一段心得再来试改写。';
       patchForm.hidden = true;
       return;
@@ -229,8 +237,9 @@
       pick = note;
     }).catch(function (e) {
       patchSave.disabled = false;
+      var f = friendly(e);
       patchBox.className = 'state err';
-      patchBox.textContent = '改写没成（' + (e.status || '') + '）· ' + (e.message || e.code || '未知错误');
+      patchBox.textContent = '改写没成（' + f.label + (f.status ? ' ' + f.status : '') + '）· ' + f.message;
     });
   });
 
@@ -292,8 +301,9 @@
       // 删掉的那条不能再当改写目标了，重新指向当前最新一段
       setupPatch(after.length ? after[0] : null);
     }).catch(function (e) {
+      var f = friendly(e);
       deleteBox.className = 'state err';
-      deleteBox.textContent = '删除返回：' + (e.status ? '(' + e.status + ') ' : '') + (e.message || e.code || '未知错误');
+      deleteBox.textContent = '删除返回（' + f.label + (f.status ? ' ' + f.status : '') + '）：' + f.message;
     });
   }
 })();

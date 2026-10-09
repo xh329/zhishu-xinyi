@@ -1,4 +1,8 @@
-/* 栀书心驿 · 公网接口客户端（Day 20）
+/* 栀书心驿 · 公网接口客户端（Day 20 建；Day 23 补统一错误提示）
+ *
+ * Day 23：新增 friendlyError()——把所有裸报错（英文「Failed to fetch」、
+ * 「请求失败（500）」等）统一归类为「输入错 / 网络错 / 服务端错」三类并翻译成中文，
+ * 供 views.js、check.js 等界面层统一调用。详见本文件中部「三类错误 → 中文人话」段。
  *
  * 把页面数据来源从浏览器 localStorage 切到云函数（按 api-contract.md）：
  *   store 层原本是本地存储；今天起，index.html 四个视图与检查台改读这个 Z.api。
@@ -30,16 +34,67 @@ window.ZhiShu = window.ZhiShu || {};
   // MVP 单用户本地场景，user_id 固定为 local（上云后由登录态提供）
   var USER_ID = 'local';
 
+  /* ============================================================
+   * 三类错误 → 中文人话（Day 23 统一错误提示）
+   * ------------------------------------------------------------
+   * 改之前的问题：错误在各处临时拼字，用户可能看到——
+   *   · 浏览器 fetch 的英文原文「Failed to fetch」——纯英文裸报错；
+   *   · 「请求失败（500）」——只有状态码、没有说明的黑话。
+   * 今天统一：无论错误来自哪一层，先经 friendlyError() 归成三类，再输出同一套温柔中文：
+   *   ① input   输入错   —— 参数缺失/格式不对/重复/资源不存在：告诉用户"改哪里"
+   *   ② network 网络错   —— 断网 / 连不上 / CORS 被拦 / 地址没配：提示"检查连接"
+   *   ③ server  服务端错 —— 服务异常(5xx) / 未知：承认是驿站这边的问题，不甩锅给用户
+   * ============================================================ */
+  var ERROR_KINDS = {
+    input:   { label: '输入错',   message: '有几处还需要你确认一下，改好再试一次吧。' },
+    network: { label: '网络错',   message: '网络好像断了一下，检查一下连接，再试一次吧。' },
+    server:  { label: '服务端错', message: '驿站这边出了点小状况，过一会儿再来看看吧。' },
+  };
+
+  // 把任意错误归类成三类之一（优先看服务端 error 码，其次看 HTTP 状态码）
+  function classifyError(err) {
+    var e = err || {};
+    var code = String(e.code || '');
+    var status = Number(e.status || 0);
+    if (code === 'invalid_param' || code === 'duplicate' || code === 'not_found') return 'input';
+    if (status === 400 || status === 404 || status === 409) return 'input';
+    if (code === 'network' || code === 'no_base_url') return 'network';
+    if (status === 0 && !code) return 'network';  // fetch 直接失败，没带任何状态
+    if (code === 'server_error' || status >= 500) return 'server';
+    return 'server';                              // 兜底：一律当作服务端错
+  }
+
+  /* 统一出口：把裸报错翻译成 { kind, label, message, code, status }
+   * 优先用服务端给的中文说明（更具体，如「这本书已经在书架上了，无需重复收录」）；
+   * 服务端没给说明、或给的是英文/技术话，就换成该类的通用人话。 */
+  function friendlyError(err) {
+    var e = err || {};
+    var kind = classifyError(e);
+    var info = ERROR_KINDS[kind];
+    var serverMsg = typeof e.serverMessage === 'string' ? e.serverMessage.trim() : '';
+    var hintMsg = typeof e.hint === 'string' ? e.hint.trim() : '';
+    return {
+      kind: kind,
+      label: info.label,
+      message: serverMsg || hintMsg || info.message,
+      code: e.code || ('http_' + (e.status || 'unknown')),
+      status: Number(e.status || 0),
+    };
+  }
+  Z.friendlyError = friendlyError;
+
   /* 统一的请求通道：
-   *   - 拦截「没配地址」的情况，给一句人话；
+   *   - 拦截「没配地址」的情况，给一句人话（hint）；
    *   - 解析 JSON，按契约判断 ok 字段；
-   *   - 业务失败（ok:false）或 HTTP 失败都抛带 code 的错误，交给视图层做错误态；
-   *   - 网络层错误（CORS 被拦 / 断网 / DNS 失败）也透传，code 标记为 network。 */
+   *   - 业务失败（ok:false）或 HTTP 失败都抛带 code / status 的错误，交给视图层做错误态；
+   *   - 网络层错误（CORS 被拦 / 断网 / DNS 失败）也透传，code 标记为 network。
+   * 注意：这里只负责"把错误带出来"，不负责拼给用户看的字——那由 friendlyError() 统一做。 */
   function request(path, options) {
     var BASE = getBase();
     if (!BASE || BASE.indexOf('<你的环境ID>') !== -1) {
-      var ne = new Error('还没有配置接口地址。请在 js/config.js 填入你的 CloudBase 环境公网地址（形如 https://<环境ID>.api.tcloudbase.com）。');
+      var ne = new Error('no_base_url');
       ne.code = 'no_base_url';
+      ne.hint = '还没有配置接口地址，请在 js/config.js 里填入你的 CloudBase 环境公网地址。';
       return Promise.reject(ne);
     }
     var url = BASE + path;
@@ -48,13 +103,17 @@ window.ZhiShu = window.ZhiShu || {};
         var data = null;
         try { data = text ? JSON.parse(text) : null; } catch (_) { data = null; }
         if (res.ok && data && data.ok !== false) return data;
-        var err = new Error((data && data.message) || ('请求失败（' + res.status + '）'));
+        var err = new Error('http_' + res.status);
         err.status = res.status;
         err.code = (data && data.error) || ('http_' + res.status);
+        // 服务端若给了说明就原样带上；不带 message 视作"没给人话"，交给 friendlyError 补
+        err.serverMessage = (data && data.message) || '';
         throw err;
       });
     }).catch(function (err) {
-      if (!err.status) err.code = err.code || 'network'; // 网络 / CORS 层错误
+      // 走到这里：要么是上面主动抛的业务错误（有 status / code），
+      // 要么是 fetch 自身失败（断网 / DNS / CORS 被拦）——后者标记为 network。
+      if (!err.status && !err.code) err.code = 'network';
       throw err;
     });
   }

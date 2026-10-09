@@ -35,7 +35,19 @@ function corsHeaders(event) {
 }
 function setCors(event) { CORS_HEADERS = corsHeaders(event); }
 
+// Day 23 余力加练：一条简单请求日志（时间 / 方法 / 路径 / 结果状态码）
+let REQ = { at: '', method: '', path: '' };
+function beginReq(event) {
+  const e = event || {};
+  REQ = {
+    at: new Date().toISOString(),
+    method: (e.httpMethod || 'GET').toUpperCase(),
+    path: e.path || (e.requestContext && e.requestContext.path) || '',
+  };
+}
+
 function json(statusCode, obj) {
+  console.log(`[req] ${REQ.at} ${REQ.method} ${REQ.path} → ${statusCode}`);
   return {
     statusCode,
     headers: { 'Content-Type': 'application/json; charset=utf-8', ...CORS_HEADERS },
@@ -85,10 +97,16 @@ function toMySQLDate(d) {
 // 「这条心得不在了」的统一中文说明：404（不存在）与「删过又删」共用一句，措辞温柔不追责
 const GONE_MESSAGE = '这段心得好像不在了，也许已经被收起。回「心迹」看看别的吧。';
 
+// Day 23：服务端异常（500）的统一中文说明——与前端 Z.friendlyError 的「服务端错」文案对齐，
+// 保证用户在任何一层看到的都是同一句人话，而不是裸的 server_error。
+const SERVER_MESSAGE = '驿站这边出了点小状况，请稍后再来。';
+
 exports.main = async (event, context) => {
+  beginReq(event); // Day 23：记下本次请求（时间 / 方法 / 路径），供统一日志
   setCors(event); // Day 20：按白名单计算本次请求的 CORS 头
   // 浏览器跨域预检
   if ((event.httpMethod || '').toUpperCase() === 'OPTIONS') {
+    console.log(`[req] ${REQ.at} ${REQ.method} ${REQ.path} → 204`);
     return { statusCode: 204, headers: CORS_HEADERS, body: '' };
   }
 
@@ -111,7 +129,7 @@ exports.main = async (event, context) => {
     } catch (err) {
       // 真实异常打到云函数日志，对客户端只给稳定错误码
       console.error('[notes] GET /api/notes failed:', err);
-      return json(500, { ok: false, error: 'server_error' });
+      return json(500, { ok: false, error: 'server_error', message: SERVER_MESSAGE });
     }
   }
 
@@ -183,7 +201,7 @@ exports.main = async (event, context) => {
       return json(200, { ok: true, note });
     } catch (err) {
       console.error('[notes] PATCH /api/notes/:id 改写失败', err);
-      return json(500, { ok: false, error: 'server_error' });
+      return json(500, { ok: false, error: 'server_error', message: SERVER_MESSAGE });
     }
   }
 
@@ -208,10 +226,10 @@ exports.main = async (event, context) => {
       return json(200, { ok: true, id });
     } catch (err) {
       console.error('[notes] DELETE /api/notes/:id 删除失败', err);
-      return json(500, { ok: false, error: 'server_error' });
+      return json(500, { ok: false, error: 'server_error', message: SERVER_MESSAGE });
     }
   }
 
-  // 其他方法（POST 等留到后续）→ 405 方法不被允许
-  return json(405, { ok: false, error: 'method_not_allowed' });
+  // 其他方法（POST 等留到后续）→ 405 方法不被允许（Day 23：补中文说明）
+  return json(405, { ok: false, error: 'method_not_allowed', message: '这个地址还不支持这种请求方式。' });
 };

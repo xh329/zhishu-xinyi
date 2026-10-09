@@ -61,9 +61,11 @@
       try {
         list = preview === 'empty' ? [] : await fetcher();
       } catch (err) {
-        // 云端读取失败（断网 / CORS 被拦 / 接口报错）→ 错误态，给一句人话 + 重试
+        // 云端读取失败（断网 / CORS 被拦 / 接口报错）→ 错误态。
+        // Day 23：文案统一走 Z.friendlyError()——输入错/网络错/服务端错各说各的人话，
+        // 不再把浏览器的英文原文或状态码直接贴给用户。
         mount(box, 'error', {
-          message: '这一页暂时打不开，过会儿再来看看。',
+          message: Z.friendlyError(err).message,
           actionText: '轻轻重试',
           onAction: retry,
         });
@@ -75,9 +77,10 @@
         box.innerHTML = '';
         render(box, list);
       }
-    }).catch(function () {
+    }).catch(function (err) {
+      // Day 23：同上，统一走 friendlyError，不留半句裸报错
       mount(box, 'error', {
-        message: '这一页暂时打不开，过会儿再来看看。',
+        message: Z.friendlyError(err).message,
         actionText: '轻轻重试',
         onAction: retry,
       });

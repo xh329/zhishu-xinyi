@@ -33,13 +33,28 @@ function corsHeaders(event) {
 }
 function setCors(event) { CORS_HEADERS = corsHeaders(event); }
 
+// Day 23 余力加练：一条简单请求日志（时间 / 方法 / 路径 / 结果状态码）
+let REQ = { at: '', method: '', path: '' };
+function beginReq(event) {
+  const e = event || {};
+  REQ = {
+    at: new Date().toISOString(),
+    method: (e.httpMethod || 'GET').toUpperCase(),
+    path: e.path || (e.requestContext && e.requestContext.path) || '',
+  };
+}
+
 function json(statusCode, obj) {
+  console.log(`[req] ${REQ.at} ${REQ.method} ${REQ.path} → ${statusCode}`);
   return {
     statusCode,
     headers: { 'Content-Type': 'application/json; charset=utf-8', ...CORS_HEADERS },
     body: JSON.stringify(obj),
   };
 }
+
+// Day 23：服务端异常（500）的统一中文说明——与前端 Z.friendlyError 的「服务端错」文案对齐
+const SERVER_MESSAGE = '驿站这边出了点小状况，请稍后再来。';
 
 // 从 CloudBase event 里尽量稳妥地取出查询参数（不同版本字段名可能不同）
 function getQuery(event) {
@@ -74,9 +89,11 @@ function genBookId() {
 }
 
 exports.main = async (event, context) => {
+  beginReq(event); // Day 23：记下本次请求（时间 / 方法 / 路径），供统一日志
   setCors(event); // Day 20：按白名单计算本次请求的 CORS 头
   // 浏览器跨域预检
   if ((event.httpMethod || '').toUpperCase() === 'OPTIONS') {
+    console.log(`[req] ${REQ.at} ${REQ.method} ${REQ.path} → 204`);
     return { statusCode: 204, headers: CORS_HEADERS, body: '' };
   }
 
@@ -117,7 +134,7 @@ exports.main = async (event, context) => {
         return json(409, { ok: false, error: 'duplicate', message: '这本书已经在书架上了，无需重复收录' });
       }
       console.error('[books] POST /api/books 写入失败', err);
-      return json(500, { ok: false, error: 'server_error' });
+      return json(500, { ok: false, error: 'server_error', message: SERVER_MESSAGE });
     }
   }
 
@@ -138,10 +155,10 @@ exports.main = async (event, context) => {
     } catch (err) {
       // 真实异常打到云函数日志，对客户端只给稳定错误码
       console.error('[books] GET /api/books 读取失败', err);
-      return json(500, { ok: false, error: 'server_error' });
+      return json(500, { ok: false, error: 'server_error', message: SERVER_MESSAGE });
     }
   }
 
-  // 其他方法（PUT/DELETE 等留到第 4 周）→ 405 方法不被允许
-  return json(405, { ok: false, error: 'method_not_allowed' });
+  // 其他方法（PUT/DELETE 等留到第 4 周）→ 405 方法不被允许（Day 23：补中文说明）
+  return json(405, { ok: false, error: 'method_not_allowed', message: '这个地址还不支持这种请求方式。' });
 };

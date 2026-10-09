@@ -30,7 +30,19 @@ function corsHeaders(event) {
 }
 function setCors(event) { CORS_HEADERS = corsHeaders(event); }
 
+// Day 23 余力加练：一条简单请求日志（时间 / 方法 / 路径 / 结果状态码）
+let REQ = { at: '', method: '', path: '' };
+function beginReq(event) {
+  const e = event || {};
+  REQ = {
+    at: new Date().toISOString(),
+    method: (e.httpMethod || 'GET').toUpperCase(),
+    path: e.path || (e.requestContext && e.requestContext.path) || '',
+  };
+}
+
 function json(statusCode, obj) {
+  console.log(`[req] ${REQ.at} ${REQ.method} ${REQ.path} → ${statusCode}`);
   return {
     statusCode,
     headers: { 'Content-Type': 'application/json; charset=utf-8', ...CORS_HEADERS },
@@ -39,20 +51,23 @@ function json(statusCode, obj) {
 }
 
 exports.main = async (event, context) => {
+  beginReq(event); // Day 23：记下本次请求（时间 / 方法 / 路径），供统一日志
   setCors(event); // Day 20：按白名单计算 CORS 头
 
   const method = (event.httpMethod || 'GET').toUpperCase();
 
   // 浏览器跨域预检
   if (method === 'OPTIONS') {
+    console.log(`[req] ${REQ.at} ${REQ.method} ${REQ.path} → 204`);
     return { statusCode: 204, headers: CORS_HEADERS, body: '' };
   }
 
-  // 只接受 GET，其他方法礼貌回 405（方法不被允许）
+  // 只接受 GET，其他方法礼貌回 405（方法不被允许；Day 23：补中文说明，不再只有裸错误码）
   if (method !== 'GET') {
     return json(405, {
       ok: false,
       error: 'method_not_allowed',
+      message: '这个地址只接受 GET 请求。',
       service: 'zhishu-xinyi',
     });
   }

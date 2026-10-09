@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>栀书心驿 · Day 23 三类错误提示</title>
+<style>
+:root{--ink:#2f3a2e;--sub:#6b7a68;--line:#e3e7df;--soft:#f7f8f4;--accent:#5f774f;--warn:#b4453a;--ok:#3f7a45;}
+*{box-sizing:border-box;}
+body{margin:0;background:#fff;color:var(--ink);
+  font-family:"Noto Serif SC","Songti SC",Georgia,serif;font-size:15px;line-height:1.75;}
+#__addrbar{position:fixed;left:0;right:0;top:0;height:44px;z-index:99999;display:flex;align-items:center;gap:8px;
+  padding:0 14px;background:#f1f3f4;border-bottom:1px solid #cfd4d9;
+  font-family:"Segoe UI",system-ui,sans-serif;font-size:14px;color:#3c4043;}
+#__addrbar .dots{display:flex;gap:6px;margin-right:10px;}
+#__addrbar .dot{width:11px;height:11px;border-radius:50%;}
+#__addrbar .omni{flex:1;display:flex;align-items:center;background:#fff;border:1px solid #dadce0;
+  border-radius:999px;padding:5px 14px;overflow:hidden;color:#202124;}
+.wrap{padding:58px 40px 44px;max-width:1120px;margin:0 auto;}
+.badge{display:inline-block;background:var(--soft);border:1px solid var(--line);border-radius:999px;
+  padding:4px 14px;font-size:13px;color:var(--accent);margin-bottom:10px;}
+h1{font-size:26px;margin:6px 0 12px;font-weight:500;}
+.lead{color:var(--sub);margin:6px 0 22px;max-width:900px;}
+.card{border:1px solid var(--line);border-radius:12px;padding:18px 20px;margin:0 0 16px;background:#fdfdfb;}
+.card h3{margin:0 0 4px;font-size:17px;font-weight:500;}
+.card .desc{color:var(--sub);font-size:14px;margin:0 0 14px;}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.cell{border-radius:9px;padding:12px 14px;}
+.cell .lbl{font-size:12px;letter-spacing:.06em;margin-bottom:6px;font-family:"Segoe UI",system-ui,sans-serif;}
+.before{background:#fbf1f0;border:1px solid #f0d8d4;}
+.before .lbl{color:var(--warn);}
+.after{background:#f1f6ee;border:1px solid #d7e3cd;}
+.after .lbl{color:var(--ok);}
+.mono{font-family:Consolas,"Courier New",monospace;font-size:13.5px;word-break:break-all;}
+.after .tag{display:inline-block;background:#dbe8d1;color:#3a5a2a;border-radius:6px;padding:1px 8px;
+  font-size:12px;margin-right:8px;font-family:"Segoe UI",system-ui,sans-serif;}
+.after .msg{font-size:15px;}
+.raw{color:#8a5b57;}
+.pending{color:var(--sub);font-size:13px;font-style:italic;}
+.foot{margin-top:22px;padding-top:14px;border-top:1px solid var(--line);color:var(--sub);font-size:13px;}
+</style>
+</head>
+<body>
+<div id="__addrbar">
+  <span class="dots"><span class="dot" style="background:#ff5f57"></span><span class="dot" style="background:#febc2e"></span><span class="dot" style="background:#28c840"></span></span>
+  <span class="omni"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" style="margin-right:7px;flex:none">
+    <rect x="4" y="10" width="16" height="11" rx="2.5" fill="#5f6368"/>
+    <path d="M8 10V7a4 4 0 0 1 8 0v3" stroke="#5f6368" stroke-width="2.2" fill="none"/></svg>http://127.0.0.1:8791/outputs/Day23/error-demo.html</span>
+</div>
+<div class="wrap">
+  <span class="badge">Day 23 · 三类错误 → 统一中文提示 · 2026-10-09</span>
+  <h1>三类错误，同一套人话</h1>
+  <p class="lead">下面三段错误都是<b>真实触发</b>的（请求打到本地 mock 服务）：400 输入错、500 服务端错、连接失败的网络错。
+     左侧「改之前」是旧代码会直接糊到用户脸上的原文（英文 / 状态码黑话），右侧「改之后」是经 <code>js/api.js</code>
+     的 <code>Z.friendlyError()</code> 统一归类后的中文提示。</p>
+  <div id="cards"><p class="pending">正在真实请求 mock 服务…</p></div>
+  <p class="foot">说明：headless 截图，页面顶部地址栏为真实访问地址；三段错误分别来自
+    <code>/input/api/books</code>（400）、<code>/server/api/books</code>（500）、<code>/offline/api/books</code>（断开连接）。</p>
+</div>
+
+<script src="../../js/api.js"></script>
+<script>
+(function () {
+  'use strict';
+  var Z = window.ZhiShu;
+  var CASES = [
+    { tag: '① 输入错', sub: '400 invalid_param', base: 'http://127.0.0.1:8791/input',
+      desc: '参数缺失或格式不对。服务端只回了错误码，没给说明——这正是最容易被裸暴露的一类。' },
+    { tag: '② 服务端错', sub: '500 server_error', base: 'http://127.0.0.1:8791/server',
+      desc: '服务端自己出了异常。旧前端此处只显示「请求失败（500）」，用户一头雾水。' },
+    { tag: '③ 网络错', sub: '连接失败 / 断网', base: 'http://127.0.0.1:8791/offline',
+      desc: '请求根本没发出去。旧前端直接把浏览器的英文原文（Failed to fetch）贴给用户。' },
+  ];
+
+  // 「改之前」旧代码的拼法：有 status → '请求失败（xxx）'；否则直接 e.message（英文 fetch 原文）
+  function oldText(e) {
+    if (e && e.status) return '请求失败（' + e.status + '）';
+    return (e && e.message) || (e && e.code) || '未知错误';
+  }
+  function esc(s) {
+    return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  }
+
+  function probe(c) {
+    window.ZhiShuConfig = window.ZhiShuConfig || {};
+    window.ZhiShuConfig.API_BASE_URL = c.base;
+    return Z.api.getBooks().then(function () {
+      return { ok: true, raw: '（本应报错，却成功了）', friendly: null };
+    }).catch(function (e) {
+      var f = Z.friendlyError(e);
+      return { ok: false, raw: oldText(e), friendly: f };
+    });
+  }
+
+  Promise.all(CASES.map(probe)).then(function (results) {
+    var html = CASES.map(function (c, i) {
+      var r = results[i];
+      var after = r.ok
+        ? '<span class="pending">（未按预期报错）</span>'
+        : '<span class="tag">' + esc(r.friendly.label) + '</span><span class="msg">' + esc(r.friendly.message) + '</span>';
+      return '<div class="card">' +
+        '<h3>' + esc(c.tag) + ' <span style="color:#8b9a86;font-size:13px">· ' + esc(c.sub) + '</span></h3>' +
+        '<p class="desc">' + c.desc + '</p>' +
+        '<div class="grid">' +
+          '<div class="cell before"><div class="lbl">改之前 · 界面直接显示</div>' +
+            '<div class="mono raw">' + esc(r.raw) + '</div></div>' +
+          '<div class="cell after"><div class="lbl">改之后 · 统一中文提示</div>' + after + '</div>' +
+        '</div></div>';
+    }).join('');
+    document.getElementById('cards').innerHTML = html;
+    document.title = 'Day23-三类错误提示-就绪';
+  });
+})();
+</script>
+</body>
+</html>
