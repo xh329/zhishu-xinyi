@@ -1,0 +1,38 @@
+=== Day 24 Bug 复现（修复前）===
+时间：2026-10-10T15:40:56.681Z
+页面：http://127.0.0.1:8793/check.html?api=http://127.0.0.1:8793
+
+【复现步骤】
+  1. 打开检查台，等 ② 读完 books/notes
+  2. 滚到 ⑥「删除一段心得」，点一次「删除列表里最新一段」
+  3. 在确认行上，快速连点两次「确认删除」
+
+  → GET /api/health
+  → GET /api/books?user_id=local&limit=100
+  → GET /api/notes?user_id=local&limit=100
+  [HTTP 404] GET http://127.0.0.1:8793/favicon.ico
+  [console.error] Failed to load resource: the server responded with a status of 404 (Not Found)
+【步骤 1-2】改写目标（= ⑥ 要删的那条）: 改写目标：n_seed06 · 《瓦尔登湖》改之前 正文：在湖边独处，才听见自己真正想要什么。 ／ 心情：治愈 ／ 改写时间：（还没改过）
+
+【步骤 3】点「删除列表里最新一段」，再连点两次「确认删除」：
+  —— 网络请求流水 ——
+  确认行文本: 要把 n_seed06 这段删掉吗？删掉后不可找回。留一留确认删除
+  → GET /api/notes?user_id=local&limit=100
+  → GET /api/notes?user_id=local&limit=100
+  → DELETE /api/notes/n_seed06
+  → DELETE /api/notes/n_seed06
+  → GET /api/notes?user_id=local&limit=100
+  [HTTP 404] DELETE http://127.0.0.1:8793/api/notes/n_seed06
+  [console.error] Failed to load resource: the server responded with a status of 404 (Not Found)
+
+  —— ⑥ 反馈区文本变化（按时间顺序）——
+   [1] 要把 n_seed06 这段删掉吗？删掉后不可找回。留一留确认删除
+   [2] 接口返回 200 {"ok":true,"id":"n_seed06"}核对项删除前删除后GET /api/notes 条数6 段5 段返回里还有 n_seed06 吗有已消失 ✓现在返回的 id：n_seed05、n_seed04、n_seed02、n_seed03、n_seed01
+
+  —— 控制台报错原文 ——
+   (1) Failed to load resource: the server responded with a status of 404 (Not Found)
+   (2) Failed to load resource: the server responded with a status of 404 (Not Found)
+
+【判读】DELETE 请求次数 = 2（DELETE /api/notes/n_seed06 , DELETE /api/notes/n_seed06）
+【判读】控制台红报错条数 = 2
+【结论】复现成功：按钮未禁用 → 重复 DELETE → 控制台 404 红报错，且删除反馈被第二次失败覆盖。

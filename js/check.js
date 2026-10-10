@@ -46,6 +46,16 @@
   var pick = null;        // 当前改写目标（GET 返回里的原始对象）
   var selectedMoods = []; // 当前在④里勾着的心情
 
+  // Day 24 修复：写操作的「在途锁」。
+  // 起因：③ 写入、⑥ 确认删除两处按钮在请求还没回来时既没禁用、也没有在途标记，
+  //   连点会发出第二次请求 —— ③ 快速双击（真人 120ms 间隔即触发）会写两次 POST /api/books：
+  //     同秒内 → 第二次 409 duplicate，控制台留红报错；
+  //     跨秒瞬间 → 标题（只精确到秒）不同，UNIQUE(user_id,title) 拦不住，**真的插进两条测试书籍**。
+  // 对照：⑤ 的「保存这次改写」本来就做了 patchSave.disabled —— 三处行为不一致才是根因本身。
+  // 修法：与 ⑤ 对齐，请求发出前立刻置在途锁并禁用按钮，请求结束再放行。
+  var writeBusy = false;   // ③ 写入测试是否在途
+  var deleteBusy = false;  // ⑥ 删除是否在途
+
   function escapeHtml(s) {
     return String(s == null ? '' : s)
       .replace(/&/g, '&amp;').replace(/</g, '&lt;')
@@ -129,6 +139,10 @@
 
   /* ---- ③ 一次写入测试 ---- */
   writeBtn.addEventListener('click', function () {
+    // Day 24：在途期间不接受第二次点击——否则会重复 POST（同秒 409 / 跨秒真的多插一条）
+    if (writeBusy) return;
+    writeBusy = true;
+    writeBtn.disabled = true;   // 按钮也压住，肉眼可见地"这次已经在写了"
     writeBox.hidden = false;
     writeBox.className = 'state';
     writeBox.textContent = '写入中…';
@@ -136,9 +150,12 @@
     api.addBook(title).then(function (b) {
       writeBox.className = 'state ok';
       writeBox.textContent = '写入成功：' + b.title + '（' + b.id + '）— 刷新首页即可见';
-      // 写入成功后刷新本页，让 ② 的数据与 ④ 的更新时间跟着变
+      // 写入成功后刷新本页，让 ② 的数据与 ④ 的更新时间跟着变。
+      // 按钮保持禁用直到刷新——这 900ms 的窗口里再点也不该再写一条。
       setTimeout(function () { location.reload(); }, 900);
     }).catch(function (e) {
+      writeBusy = false;         // 失败才放行（成功路径等刷新，无需恢复）
+      writeBtn.disabled = false;
       var f = friendly(e);
       writeBox.className = 'state err';
       // 重复写入会被接口以 409 duplicate 拒绝，属正常，单独说明
@@ -247,10 +264,13 @@
 
   deleteBtn.addEventListener('click', function () {
     // 二次确认：先把"后果"说清楚，再让人决定（删除比新增更容易出事，就栽在这一步）
+    // Day 24：删除在途时这次点击直接吞掉，避免排队第二次删除
+    if (deleteBusy) return;
     openDeleteConfirm();
   });
 
   function openDeleteConfirm() {
+    if (deleteBusy) return;
     if (!pick) {
       deleteBox.hidden = false;
       deleteBox.className = 'state err';
@@ -273,8 +293,17 @@
   }
 
   function doDelete() {
+    // Day 24：在途锁——第二次「确认删除」不许进来（否则会重发 DELETE，服务端按契约回 404，控制台报红）
+    if (deleteBusy) return;
+    deleteBusy = true;
     var id = pick.id;
     var beforeCount = null;
+    // 立刻压住确认/取消两个按钮；同时下面的 textContent 会把确认行整体换掉，
+    // 双保险确保"删除中"这一段时间点不出第二枪。
+    var confirmBtn = document.getElementById('delete-confirm');
+    var cancelBtn = document.getElementById('delete-cancel');
+    if (confirmBtn) confirmBtn.disabled = true;
+    if (cancelBtn) cancelBtn.disabled = true;
     deleteBox.className = 'state';
     deleteBox.textContent = '删除中…';
 
@@ -285,6 +314,7 @@
     }).then(function () {
       return api.getNotes();
     }).then(function (after) {
+      deleteBusy = false;        // 本轮结束，放行下一次删除
       var stillThere = after.some(function (n) { return n.id === id; });
       deleteBox.className = 'state ok';
       deleteBox.innerHTML =
@@ -301,6 +331,7 @@
       // 删掉的那条不能再当改写目标了，重新指向当前最新一段
       setupPatch(after.length ? after[0] : null);
     }).catch(function (e) {
+      deleteBusy = false;        // 失败也要放行，不然这一页就再也删不动了
       var f = friendly(e);
       deleteBox.className = 'state err';
       deleteBox.textContent = '删除返回（' + f.label + (f.status ? ' ' + f.status : '') + '）：' + f.message;
