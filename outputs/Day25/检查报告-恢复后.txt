@@ -1,0 +1,25 @@
+栀书心驿 · 发布前检查报告
+====================================================================
+[PASS] #1 公网接口连通性（/health）
+       证据：js/config.js 未定义 API_BASE_URL（当前为纯静态离线版，无公网接口）
+       备注：已知边界：静态期无接口，跳过连通性判定
+[PASS] #2 无硬编码密钥（password/secret/token/ak/sk/ghp_）
+       证据：扫描 26 个代码/配置文件（js/ cloudfunctions/ db/ 与根级），命中 0 条真实密钥
+[PASS] #3 .env 不入库（ignore 命中 且 未被跟踪）
+       证据：check-ignore .env → 命中(被忽略); 被跟踪的 .env* → 0 个
+[PASS] #4 CORS 白名单（不使用 * 通配符）
+       证据：Allow-Origin 相关行 4 处，通配符赋值 0 处；白名单来源 ALLOWED_ORIGIN=是
+[PASS] #5 凭据只从 process.env 读取
+       证据：相关行 8 处，非 process.env 来源 0 处
+[PASS] #6 SQL 参数化 / 无注入（Day22 回归）
+       证据：================ 结果：通过 55 / 失败 0 ================ / / 证据已写入 outputs/Day22/{responses.json, executed-sql.json, regression.out.txt}
+[PASS] #7 XSS 转义（innerHTML 插值经 escapeHtml）
+       证据：未发现未转义的 innerHTML 插值
+[PASS] #8 三类错误中文提示（Day23 自检）
+       证据：✓ books 500 带中文 message 驿站这边出了点小状况，请稍后再来。 / / ================ 结果：通过 16 / 失败 0 ================
+[PASS] #9 页面脚本引用完整（无断链）
+       证据：共核对 24 条脚本引用，全部存在
+[PASS] #10 favicon 已声明（无 /favicon.ico 404 红报错）
+       证据：5 个页面全部声明了 favicon
+====================================================================
+合计 10 项：通过 10，失败 0

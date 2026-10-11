@@ -1,0 +1,87 @@
+{
+  "total": 10,
+  "passed": 9,
+  "failed": 1,
+  "results": [
+    {
+      "id": 1,
+      "name": "公网接口连通性（/health）",
+      "kind": "runtime",
+      "pass": true,
+      "evidence": "js/config.js 未定义 API_BASE_URL（当前为纯静态离线版，无公网接口）",
+      "note": "已知边界：静态期无接口，跳过连通性判定"
+    },
+    {
+      "id": 2,
+      "name": "无硬编码密钥（password/secret/token/ak/sk/ghp_）",
+      "kind": "static",
+      "pass": true,
+      "evidence": "扫描 26 个代码/配置文件（js/ cloudfunctions/ db/ 与根级），命中 0 条真实密钥",
+      "note": ""
+    },
+    {
+      "id": 3,
+      "name": ".env 不入库（ignore 命中 且 未被跟踪）",
+      "kind": "static",
+      "pass": true,
+      "evidence": "check-ignore .env → 命中(被忽略); 被跟踪的 .env* → 0 个",
+      "note": ""
+    },
+    {
+      "id": 4,
+      "name": "CORS 白名单（不使用 * 通配符）",
+      "kind": "static",
+      "pass": true,
+      "evidence": "Allow-Origin 相关行 4 处，通配符赋值 0 处；白名单来源 ALLOWED_ORIGIN=是",
+      "note": ""
+    },
+    {
+      "id": 5,
+      "name": "凭据只从 process.env 读取",
+      "kind": "static",
+      "pass": true,
+      "evidence": "相关行 8 处，非 process.env 来源 0 处",
+      "note": ""
+    },
+    {
+      "id": 6,
+      "name": "SQL 参数化 / 无注入（Day22 回归）",
+      "kind": "runtime",
+      "pass": true,
+      "evidence": "================ 结果：通过 55 / 失败 0 ================ / / 证据已写入 outputs/Day22/{responses.json, executed-sql.json, regression.out.txt}",
+      "note": ""
+    },
+    {
+      "id": 7,
+      "name": "XSS 转义（innerHTML 插值经 escapeHtml）",
+      "kind": "static",
+      "pass": true,
+      "evidence": "未发现未转义的 innerHTML 插值",
+      "note": ""
+    },
+    {
+      "id": 8,
+      "name": "三类错误中文提示（Day23 自检）",
+      "kind": "runtime",
+      "pass": true,
+      "evidence": "✓ books 500 带中文 message 驿站这边出了点小状况，请稍后再来。 / / ================ 结果：通过 16 / 失败 0 ================",
+      "note": ""
+    },
+    {
+      "id": 9,
+      "name": "页面脚本引用完整（无断链）",
+      "kind": "static",
+      "pass": false,
+      "evidence": "断链 1 条：book.html → js/book-view.js",
+      "note": ""
+    },
+    {
+      "id": 10,
+      "name": "favicon 已声明（无 /favicon.ico 404 红报错）",
+      "kind": "static",
+      "pass": true,
+      "evidence": "5 个页面全部声明了 favicon",
+      "note": ""
+    }
+  ]
+}
