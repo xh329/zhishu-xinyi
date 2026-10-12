@@ -1,0 +1,52 @@
+<svg viewBox="0 0 240 180" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+  <!-- 栀子花小枝：淡雅白花 + 浅绿叶，整体轻盈，宜作封面角落点缀 -->
+  <g fill="none" stroke="#9bb38a" stroke-opacity="0.5" stroke-width="2.2" stroke-linecap="round">
+    <path d="M14 168 C 70 156 96 120 122 74 C 140 44 162 28 182 20" />
+  </g>
+
+  <!-- 叶片 -->
+  <g fill="#9bb38a" fill-opacity="0.28" stroke="#9bb38a" stroke-opacity="0.4" stroke-width="0.8">
+    <g transform="translate(46,146) rotate(-30)">
+      <path d="M0 0 C 16 -7 40 -6 52 4 C 38 13 14 11 0 0 Z" />
+      <path d="M3 1 C 18 -1 36 0 49 4" fill="none" stroke="#9bb38a" stroke-opacity="0.32" stroke-width="0.8" />
+    </g>
+    <g transform="translate(88,116) rotate(34)">
+      <path d="M0 0 C 16 -7 40 -6 52 4 C 38 13 14 11 0 0 Z" />
+      <path d="M3 1 C 18 -1 36 0 49 4" fill="none" stroke="#9bb38a" stroke-opacity="0.32" stroke-width="0.8" />
+    </g>
+    <g transform="translate(132,80) rotate(-18)">
+      <path d="M0 0 C 14 -6 34 -5 44 3 C 32 11 12 9 0 0 Z" />
+      <path d="M3 1 C 15 -1 30 0 41 3" fill="none" stroke="#9bb38a" stroke-opacity="0.32" stroke-width="0.8" />
+    </g>
+  </g>
+
+  <!-- 花苞 -->
+  <g transform="translate(150,44)">
+    <path d="M0 10 C -7 4 -7 -6 0 -12 C 7 -6 7 4 0 10 Z"
+          fill="#ffffff" fill-opacity="0.85" stroke="#e9cfd6" stroke-opacity="0.7" stroke-width="0.8" />
+  </g>
+
+  <!-- 花朵：五瓣栀子的柔白 -->
+  <g>
+    <g transform="translate(118,78) scale(0.82)">
+      <g fill="#ffffff" fill-opacity="0.92" stroke="#e9cfd6" stroke-opacity="0.7" stroke-width="0.8">
+        <ellipse cx="0" cy="-10" rx="6.5" ry="10" />
+        <ellipse cx="0" cy="-10" rx="6.5" ry="10" transform="rotate(72)" />
+        <ellipse cx="0" cy="-10" rx="6.5" ry="10" transform="rotate(144)" />
+        <ellipse cx="0" cy="-10" rx="6.5" ry="10" transform="rotate(216)" />
+        <ellipse cx="0" cy="-10" rx="6.5" ry="10" transform="rotate(288)" />
+      </g>
+      <circle cx="0" cy="0" r="3.2" fill="#f3e2b0" fill-opacity="0.9" />
+    </g>
+    <g transform="translate(182,20) scale(1.05)">
+      <g fill="#ffffff" fill-opacity="0.94" stroke="#e9cfd6" stroke-opacity="0.7" stroke-width="0.8">
+        <ellipse cx="0" cy="-10" rx="6.5" ry="10" />
+        <ellipse cx="0" cy="-10" rx="6.5" ry="10" transform="rotate(72)" />
+        <ellipse cx="0" cy="-10" rx="6.5" ry="10" transform="rotate(144)" />
+        <ellipse cx="0" cy="-10" rx="6.5" ry="10" transform="rotate(216)" />
+        <ellipse cx="0" cy="-10" rx="6.5" ry="10" transform="rotate(288)" />
+      </g>
+      <circle cx="0" cy="0" r="3.4" fill="#f3e2b0" fill-opacity="0.9" />
+    </g>
+  </g>
+</svg>

@@ -11,6 +11,8 @@
   <link rel="stylesheet" href="css/style.css" />
   <!-- Day 24：声明 favicon，避免浏览器自动请求 /favicon.ico 落空、在控制台留一条 404 红报错 -->
   <link rel="icon" type="image/svg+xml" href="assets/img/gardenia.svg" />
+  <!-- Day 26：机器可读版本标记，供发布后核验「线上到底是哪一版」 -->
+  <meta name="app-version" content="1.0.0" />
 </head>
 <body>
   <!-- 余力加练：跳过导航，直接到正文（键盘 Tab 第一站即可跳过，读屏友好） -->
@@ -108,13 +110,11 @@
       </div>
     </section>
 
-    <footer class="foot">栀子微光，伴你读完这一段</footer>
+    <!-- Day 26：页脚版本标记——回滚演练时肉眼即可分辨「线上是 v1.0 还是上一版」 -->
+    <footer class="foot">栀子微光，伴你读完这一段<span class="foot-ver" title="当前发布版本">v1.0</span></footer>
   </main>
 
-  <!-- Day 20：前端运行配置（公网接口地址）+ 云端接口客户端，须在 store 之前加载 -->
-  <script src="js/config.js"></script>
-  <script src="js/api.js"></script>
-  <!-- 本地存储封装：仅 book.html / note.html / notes.html 仍用本地存储写数据 -->
+  <!-- 本地存储封装：数据留在你自己的浏览器里（store.js 同时提供异步包装 Z.api） -->
   <script src="js/store.js"></script>
   <!-- 可复用组件：卡片 / 状态视图 -->
   <script src="js/components.js"></script>

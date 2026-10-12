@@ -19,3 +19,9 @@ Thumbs.db
 
 # WPS 临时锁文件（形如 ~$AGENTS.md），非真实文件，禁止提交
 ~$*.md
+
+# WorkBuddy 发布用暂存副本（正式站点的静态子集，源文件在仓库根目录，勿重复入库）
+outputs/publish-site/
+
+# WorkBuddy 发布应用的本地标记文件（记录 appId 与本机路径，属机器本地产物，不入库）
+.wbapp_*.genie

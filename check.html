@@ -10,6 +10,8 @@
   <link rel="stylesheet" href="css/style.css" />
   <!-- Day 24：声明 favicon，避免浏览器自动请求 /favicon.ico 落空、在控制台留一条 404 红报错 -->
   <link rel="icon" type="image/svg+xml" href="assets/img/gardenia.svg" />
+  <!-- Day 26：机器可读版本标记，供发布后核验「线上到底是哪一版」 -->
+  <meta name="app-version" content="1.0.0" />
 </head>
 <body>
   <!-- 栀子花瓣飘落动景容器（由 js/petals.js 填充，尊重"减少动态效果"偏好） -->
@@ -78,9 +80,8 @@
     </div>
   </main>
 
-  <!-- 运行配置 + 云端接口客户端，须在 check.js 之前加载 -->
-  <script src="js/config.js"></script>
-  <script src="js/api.js"></script>
+  <!-- 本地存储封装（含异步包装 Z.api 与 friendlyError），须在 check.js 之前加载 -->
+  <script src="js/store.js"></script>
   <script src="js/check.js"></script>
   <!-- 栀子花瓣飘落动景 -->
   <script src="js/petals.js"></script>

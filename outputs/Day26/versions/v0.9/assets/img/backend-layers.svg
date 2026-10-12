@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 470" font-family="'PingFang SC','Microsoft YaHei',system-ui,sans-serif">
+  <rect width="680" height="470" fill="#faf7f3"/>
+  <text x="340" y="34" text-anchor="middle" font-size="19" fill="#7a6a55" font-weight="600">栀书心驿 · 后端分层架构（Day 19 重构后）</text>
+  <text x="340" y="56" text-anchor="middle" font-size="12.5" fill="#a99c88">「查数据库」这段代码从 接口层 移到了 数据访问层（Repository）</text>
+
+  <!-- ① 接口层 -->
+  <rect x="40" y="80" width="600" height="96" rx="14" fill="#eaf3ea" stroke="#cfe3cf" stroke-width="1.5"/>
+  <text x="60" y="104" font-size="14" fill="#5a8a5a" font-weight="600">① 接口层 · Controller</text>
+  <text x="60" y="125" font-size="12" fill="#4a4036">只做三件事：接请求 → 调 Repository → 返响应</text>
+  <rect x="60" y="138" width="172" height="26" rx="6" fill="#fff" stroke="#cfe3cf"/>
+  <text x="146" y="156" text-anchor="middle" font-size="12" fill="#3a322a">books/index.js</text>
+  <rect x="244" y="138" width="172" height="26" rx="6" fill="#fff" stroke="#cfe3cf"/>
+  <text x="330" y="156" text-anchor="middle" font-size="12" fill="#3a322a">notes/index.js</text>
+  <rect x="428" y="138" width="172" height="26" rx="6" fill="#fff" stroke="#cfe3cf"/>
+  <text x="514" y="156" text-anchor="middle" font-size="12" fill="#3a322a">health/index.js</text>
+
+  <!-- 箭头 ① → ② -->
+  <line x1="340" y1="176" x2="340" y2="206" stroke="#b9a98f" stroke-width="2"/>
+  <polygon points="340,212 334,202 346,202" fill="#b9a98f"/>
+
+  <!-- ② 数据访问层 -->
+  <rect x="40" y="214" width="600" height="96" rx="14" fill="#fdeede" stroke="#e9c9a3" stroke-width="1.5"/>
+  <text x="60" y="238" font-size="14" fill="#b5651d" font-weight="600">② 数据访问层 · Repository（Day 19 新拆出）</text>
+  <text x="60" y="259" font-size="12" fill="#4a4036">集中全部 SQL：表的增删查改都在这层，接口层不再写一句查询</text>
+  <rect x="60" y="272" width="262" height="26" rx="6" fill="#fff" stroke="#e9c9a3"/>
+  <text x="191" y="290" text-anchor="middle" font-size="12" fill="#3a322a">booksRepository.js（books 表）</text>
+  <rect x="338" y="272" width="262" height="26" rx="6" fill="#fff" stroke="#e9c9a3"/>
+  <text x="469" y="290" text-anchor="middle" font-size="12" fill="#3a322a">notesRepository.js（notes 表）</text>
+
+  <!-- 箭头 ② → ③ -->
+  <line x1="340" y1="310" x2="340" y2="340" stroke="#b9a98f" stroke-width="2"/>
+  <polygon points="340,346 334,336 346,336" fill="#b9a98f"/>
+
+  <!-- ③ 基础设施层 -->
+  <rect x="40" y="348" width="600" height="86" rx="14" fill="#e8f1f6" stroke="#bfe0ee" stroke-width="1.5"/>
+  <text x="60" y="372" font-size="14" fill="#3f7d9d" font-weight="600">③ 基础设施层 · db.js</text>
+  <text x="60" y="393" font-size="12" fill="#4a4036">MySQL 连接池（mysql2/promise）+ 行 → 契约形状映射；被两层复用，不随业务变动</text>
+  <rect x="60" y="406" width="262" height="22" rx="6" fill="#fff" stroke="#bfe0ee"/>
+  <text x="191" y="421" text-anchor="middle" font-size="11.5" fill="#3a322a">cloudfunctions/books/db.js</text>
+  <rect x="338" y="406" width="262" height="22" rx="6" fill="#fff" stroke="#bfe0ee"/>
+  <text x="469" y="421" text-anchor="middle" font-size="11.5" fill="#3a322a">cloudfunctions/notes/db.js</text>
+
+  <text x="40" y="462" font-size="11.5" fill="#a99c88">注：health/index.js 仅探活、无数据库，故不经过 Repository 与 db.js 两层。</text>
+</svg>

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>栀书心驿 · 我的心得</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@300;400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+  <!-- Day 24：声明 favicon，避免浏览器自动请求 /favicon.ico 落空、在控制台留一条 404 红报错 -->
+  <link rel="icon" type="image/svg+xml" href="assets/img/gardenia.svg" />
+  <!-- Day 26：机器可读版本标记，供发布后核验「线上到底是哪一版」 -->
+  <meta name="app-version" content="1.0.0" />
+</head>
+<body>
+  <!-- 栀子花瓣飘落动景容器（由 js/petals.js 填充，尊重"减少动态效果"偏好） -->
+  <div class="petals" id="petals" aria-hidden="true"></div>
+
+  <main class="page notes">
+    <div class="glow" aria-hidden="true"></div>
+
+    <div class="panel">
+      <p class="brand">栀书心驿</p>
+      <h2 class="title">我的心得</h2>
+
+      <!-- Day 12 筛选：按书名或关键字轻轻筛一筛（label 与输入框显式关联，读屏可用） -->
+      <div class="filter">
+        <label class="filter-label" for="filter-input">筛一筛</label>
+        <input id="filter-input" class="book-input filter-input" type="search"
+               placeholder="想找哪本书的心得？输入书名或关键字" autocomplete="off" />
+      </div>
+      <!-- 筛选结果回执：让「列表变了」被看见，aria-live 让读屏用户也能感知 -->
+      <p id="filter-status" class="filter-status" aria-live="polite"></p>
+
+      <div id="notes-list" class="notes-list"></div>
+
+      <!-- 空状态：还没有任何心得时温柔承接（见 TECH_DESIGN §7） -->
+      <div id="empty" class="empty" hidden>
+        <p class="empty-tip">还没开始，今天就是第一天。<br />读几页，写几句，心就慢慢安下来了。</p>
+        <a class="entry" href="book.html">收下第一本书</a>
+      </div>
+
+      <!-- Day 12 筛选无结果的空状态：与「全空」区分开，换一个词或去写下一篇 -->
+      <div id="filter-empty" class="empty" hidden>
+        <p class="empty-tip" id="filter-empty-text"></p>
+        <a class="entry subtle" href="book.html">再收一本书，写下一篇</a>
+      </div>
+
+      <!-- Day 13：回到新的多视图主页，其余去处不变 -->
+      <nav class="links">
+        <a href="index.html#/home">回到今日</a>
+        <a href="index.html#/books">看看书架</a>
+      </nav>
+    </div>
+  </main>
+
+  <script src="js/store.js"></script>
+  <script src="js/components.js"></script>
+  <script src="js/notes.js"></script>
+  <!-- 栀子花瓣飘落动景 -->
+  <script src="js/petals.js"></script>
+  <!-- 背景乐声：进站待命，首次轻点响起，右上角可开关 -->
+  <script src="js/music.js"></script>
+</body>
+</html>

@@ -133,6 +133,17 @@ body {
   text-align: center;
 }
 
+/* Day 26：页脚版本标记——极小、安静，但让「线上是哪一版」肉眼可核验（发布/回滚演练用） */
+.foot-ver {
+  display: inline-block;
+  margin-left: 0.9em;
+  padding-left: 0.9em;
+  border-left: 1px solid currentColor;
+  font-size: 0.82em;
+  letter-spacing: 0.14em;
+  opacity: 0.55;
+}
+
 /* ---- P2 书籍录入 / 书籍空间页 ---- */
 .panel {
   position: relative;

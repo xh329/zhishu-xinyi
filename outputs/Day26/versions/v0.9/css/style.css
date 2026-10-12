@@ -1,0 +1,998 @@
+/* 栀书心驿 · 诗意氛围基底样式
+   设计基调：柔色留白、衬线字体、自然意象（栀子绿 / 微光）、缓慢温和动效。
+   此文件服务所有页面（P1–P4），改动需谨慎（见 TECH_DESIGN §11）。 */
+
+:root {
+  --paper: #fbf7f0;        /* 栀子白：柔色纸感背景 */
+  --paper-deep: #f4ede0;   /* 背景渐变收尾色 */
+  --ink: #4a4036;          /* 暖墨色：正文 */
+  --ink-soft: #6f6350;     /* 浅墨：副文字、提示（加深以满足 WCAG AA） */
+  --leaf: #9bb38a;         /* 栀子叶绿：背景/装饰点缀 */
+  --leaf-ink: #5a7745;     /* 深叶色：品牌字/标签，确保文字对比度 */
+  --glow: rgba(255, 243, 214, 0.9); /* 微光 */
+  --line: #ece3d4;         /* 分隔线 / 边框 */
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; }
+
+body {
+  /* 优先联网衬线体，离线回退到系统衬线 */
+  font-family: "Noto Serif SC", "Songti SC", "STSong", "SimSun", serif;
+  color: var(--ink);
+  background: radial-gradient(120% 80% at 50% -10%, #fffdf8 0%, var(--paper) 45%, var(--paper-deep) 100%);
+  line-height: 1.9;
+  -webkit-font-smoothing: antialiased;
+  overflow-wrap: break-word;
+}
+
+/* 通用页面容器：留白、居中、缓慢淡入 */
+.page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 24px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* 微光：缓慢呼吸，营造"灯下读书"的暖意 */
+.glow {
+  position: absolute;
+  top: 8%;
+  left: 50%;
+  width: 340px;
+  height: 340px;
+  transform: translateX(-50%);
+  background: radial-gradient(circle, var(--glow) 0%, rgba(255, 243, 214, 0) 70%);
+  filter: blur(8px);
+  pointer-events: none;
+  animation: breathe 7s ease-in-out infinite;
+}
+
+@keyframes breathe {
+  0%, 100% { opacity: 0.55; transform: translateX(-50%) scale(1); }
+  50%      { opacity: 0.9;  transform: translateX(-50%) scale(1.08); }
+}
+
+.home-inner {
+  position: relative;
+  text-align: center;
+  max-width: 560px;
+  animation: fadein 1.6s ease both;
+}
+
+@keyframes fadein {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: none; }
+}
+
+.brand {
+  letter-spacing: 0.5em;
+  text-indent: 0.5em;
+  color: var(--leaf-ink);
+  font-size: 18px;
+  margin-bottom: 30px;
+}
+
+.motto {
+  font-size: 34px;
+  font-weight: 400;
+  letter-spacing: 0.08em;
+  margin-bottom: 18px;
+}
+
+.sub {
+  color: var(--ink-soft);
+  font-size: 16px;
+  margin-bottom: 40px;
+}
+
+/* 入口按钮：圆角、轻柔悬浮，降低"开始"的心理门槛 */
+.entry {
+  display: inline-block;
+  padding: 14px 34px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  color: var(--ink);
+  text-decoration: none;
+  background: rgba(255, 255, 255, 0.55);
+  letter-spacing: 0.18em;
+  font-size: 16px;
+  transition: all 0.6s ease;
+}
+
+.entry:hover {
+  background: #fff;
+  box-shadow: 0 8px 30px rgba(155, 179, 138, 0.25);
+  transform: translateY(-2px);
+}
+.entry:focus-visible {
+  outline: 2px solid var(--leaf-ink);
+  outline-offset: 3px;
+  background: #fff;
+}
+.entry:active {
+  transform: translateY(0);
+  box-shadow: 0 3px 12px rgba(90, 119, 69, 0.15);
+}
+
+.hint {
+  margin-top: 26px;
+  color: var(--ink-soft);
+  font-size: 14px;
+}
+
+.foot {
+  margin-top: 48px;
+  color: var(--ink-soft);
+  font-size: 13px;
+  letter-spacing: 0.1em;
+  text-align: center;
+}
+
+/* ---- P2 书籍录入 / 书籍空间页 ---- */
+.panel {
+  position: relative;
+  text-align: center;
+  max-width: 520px;
+  width: 100%;
+  animation: fadein 1.4s ease both;
+}
+.book .title {
+  font-size: 26px;
+  font-weight: 400;
+  letter-spacing: 0.06em;
+  margin-bottom: 30px;
+}
+.book-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+}
+.book-input {
+  width: 100%;
+  max-width: 380px;
+  padding: 14px 18px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.6);
+  color: var(--ink);
+  font-family: inherit;
+  font-size: 16px;
+  text-align: center;
+  outline: none;
+  transition: border-color 0.5s ease, box-shadow 0.5s ease;
+}
+.book-input:focus {
+  border-color: var(--leaf);
+  box-shadow: 0 6px 24px rgba(155, 179, 138, 0.2);
+}
+.book-input::placeholder { color: var(--ink-soft); }
+.book-card {
+  margin-top: 28px;
+  padding: 24px;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.7);
+  animation: fadein 1.2s ease both;
+}
+.card-label { color: var(--leaf-ink); font-size: 13px; letter-spacing: 0.2em; margin-bottom: 8px; }
+.card-name { font-size: 22px; margin-bottom: 6px; }
+.card-date { color: var(--ink-soft); font-size: 13px; margin-bottom: 20px; }
+.entry.subtle { padding: 10px 26px; font-size: 15px; }
+.links {
+  margin-top: 34px;
+  display: flex;
+  gap: 26px;
+  justify-content: center;
+}
+.links a {
+  color: var(--ink-soft);
+  text-decoration: none;
+  font-size: 14px;
+  letter-spacing: 0.08em;
+  border-bottom: 1px solid transparent;
+  transition: color 0.4s ease, border-color 0.4s ease;
+}
+.links a:hover { color: var(--ink); border-color: var(--line); }
+
+/* ---- P3 心得书写页 ---- */
+.note .title { font-size: 26px; font-weight: 400; letter-spacing: 0.06em; margin-bottom: 10px; }
+.book-ref { color: var(--leaf-ink); font-size: 15px; letter-spacing: 0.08em; margin-bottom: 28px; }
+.note-area {
+  width: 100%;
+  max-width: 560px;
+  min-height: 200px;
+  padding: 20px 22px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.6);
+  color: var(--ink);
+  font-family: inherit;
+  font-size: 17px;
+  line-height: 2;
+  resize: vertical;
+  outline: none;
+  transition: border-color 0.5s ease, box-shadow 0.5s ease;
+}
+.note-area:focus { border-color: var(--leaf); box-shadow: 0 6px 24px rgba(155, 179, 138, 0.2); }
+.note-area::placeholder { color: var(--ink-soft); }
+.mood {
+  margin-top: 26px;
+  text-align: center;
+  max-width: 560px;
+  width: 100%;
+}
+.mood-label { color: var(--ink-soft); font-size: 14px; letter-spacing: 0.12em; margin-bottom: 14px; }
+.mood-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+}
+.mood-item {
+  padding: 8px 18px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.5);
+  color: var(--ink-soft);
+  font-family: inherit;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.4s ease;
+}
+.mood-item:hover { color: var(--ink); border-color: var(--leaf); }
+.mood-item.selected {
+  background: var(--leaf-ink);
+  border-color: var(--leaf-ink);
+  color: #fff;
+  box-shadow: 0 6px 18px rgba(90, 119, 69, 0.3);
+}
+.note-actions { margin-top: 30px; display: flex; flex-direction: column; align-items: center; gap: 16px; }
+.saved-tip { color: var(--leaf-ink); font-size: 14px; opacity: 0; transition: opacity 0.6s ease; }
+.saved-tip.show { opacity: 1; }
+
+/* ---- Day 11 交互反馈：保存按钮的三个状态 ---- */
+/* 收存中：禁用、变浅、光标变等待，文字后跟呼吸的省略号（加载动画） */
+.entry.busy {
+  cursor: wait;
+  opacity: 0.7;
+  color: var(--ink-soft);
+  transform: none;
+  box-shadow: none;
+}
+.entry.busy::after {
+  content: "";
+  animation: saving-dots 1.2s steps(1, end) infinite;
+}
+@keyframes saving-dots {
+  0%   { content: ""; }
+  25%  { content: "·"; }
+  50%  { content: "··"; }
+  75%  { content: "···"; }
+}
+/* 已收好：深叶绿定格 + 轻轻落定的一下缩放，让"生效了"最明确 */
+.entry.done {
+  background: var(--leaf-ink);
+  border-color: var(--leaf-ink);
+  color: #fff;
+  animation: settle 0.5s ease;
+}
+@keyframes settle {
+  from { transform: scale(0.94); }
+  to   { transform: scale(1); }
+}
+/* 禁用期间不吃悬浮/按压效果 */
+.entry:disabled { cursor: not-allowed; }
+.entry:disabled:hover,
+.entry:disabled:active { transform: none; box-shadow: none; background: rgba(255, 255, 255, 0.55); }
+.entry.done:disabled { cursor: default; background: var(--leaf-ink); }
+
+/* 撤销链接：像书页边一行小注，点一下即可反悔 */
+.undo-link {
+  background: none;
+  border: none;
+  padding: 4px 10px;
+  color: var(--ink-soft);
+  font-family: inherit;
+  font-size: 14px;
+  letter-spacing: 0.08em;
+  cursor: pointer;
+  border-bottom: 1px dotted var(--ink-soft);
+  transition: color 0.4s ease, border-color 0.4s ease;
+}
+.undo-link:hover { color: var(--leaf-ink); border-color: var(--leaf-ink); }
+
+/* 失败提示：温柔的一点赭色，看得见但不吓人 */
+.fail-tip { color: #a4574d; font-size: 14px; letter-spacing: 0.04em; }
+
+/* 余力加练：心情标签与撤销链接的键盘焦点状态（与 .entry:focus-visible 同一套语言） */
+.mood-item:focus-visible,
+.undo-link:focus-visible {
+  outline: 2px solid var(--leaf-ink);
+  outline-offset: 3px;
+  border-radius: 999px;
+}
+
+/* ---- P4 我的心得列表页 ---- */
+.notes .title { font-size: 26px; font-weight: 400; letter-spacing: 0.06em; margin-bottom: 24px; }
+.notes-list {
+  width: 100%;
+  max-width: 600px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+.note-card {
+  padding: 22px 24px;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.7);
+  text-align: left;
+  animation: fadein 1.1s ease both;
+}
+.nc-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.nc-book { font-size: 18px; color: var(--ink); }
+.nc-moods { display: flex; flex-wrap: wrap; gap: 8px; }
+.nc-mood {
+  font-size: 13px;
+  padding: 4px 14px;
+  border-radius: 999px;
+  background: rgba(90, 119, 69, 0.18);
+  color: var(--leaf-ink);
+  letter-spacing: 0.08em;
+}
+.nc-date { color: var(--ink-soft); font-size: 13px; margin-bottom: 12px; }
+.nc-content { font-size: 16px; line-height: 2; color: var(--ink); white-space: pre-wrap; }
+/* 心得卡片上的"改写 / 收起"：轻巧文字按钮，不抢正文，三种状态齐全 */
+.nc-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px; }
+.nc-btn {
+  font-family: inherit;
+  font-size: 14px;
+  letter-spacing: 0.12em;
+  padding: 7px 18px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: transparent;
+  color: var(--ink-soft);
+  cursor: pointer;
+  transition: all 0.4s ease;
+}
+.nc-btn:hover { color: var(--leaf-ink); border-color: var(--leaf); background: rgba(155, 179, 138, 0.12); }
+.nc-btn:focus-visible { outline: 2px solid var(--leaf-ink); outline-offset: 3px; }
+.nc-btn:active { transform: translateY(1px); }
+.nc-btn-ghost { color: var(--ink-soft); }
+/* 收起（删除）用柔和的藕粉，不刺眼，与整体诗意基调一致 */
+.nc-btn-danger { color: #b06a6a; border-color: rgba(176, 106, 106, 0.4); }
+.nc-btn-danger:hover { color: #fff; background: rgba(176, 106, 106, 0.85); border-color: rgba(176, 106, 106, 0.85); }
+.nc-actions-confirm { align-items: center; gap: 12px; }
+.nc-confirm-text { font-size: 14px; color: var(--ink-soft); margin-right: auto; letter-spacing: 0.06em; }
+.empty { text-align: center; max-width: 460px; animation: fadein 1.4s ease both; }
+.empty-tip { color: var(--ink-soft); font-size: 16px; margin-bottom: 30px; line-height: 2; }
+
+/* ---- Day 12 筛选交互：筛一筛（沿用 .book-input 的柔色输入框语言） ---- */
+.filter {
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto 26px;
+}
+.filter-label {
+  display: block;
+  color: var(--ink-soft);
+  font-size: 13px;
+  letter-spacing: 0.18em;
+  margin-bottom: 10px;
+}
+/* 筛选框比录入框更收敛一点：更矮、字号稍小，像书页边一行小注 */
+.filter-input { max-width: 380px; padding: 11px 18px; font-size: 15px; }
+/* 结果回执：一行小字，深叶绿色保证对比度；变化时轻柔淡入 */
+.filter-status {
+  margin: 0 auto 18px;
+  color: var(--leaf-ink);
+  font-size: 14px;
+  letter-spacing: 0.06em;
+  animation: fadein 0.8s ease both;
+}
+.filter-status:empty { display: none; margin: 0; }
+
+/* ============================================================
+   栀子花飘落动景（呼应 PRD 自然意象 + 缓慢温和动效的"必要条件"）
+   ============================================================ */
+/* 让页面内容浮在飘落花瓣之上，保证文字清晰可读 */
+.page { z-index: 2; }
+
+.petals {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;   /* 花瓣不拦截点击 */
+  overflow: hidden;
+  z-index: 1;
+}
+.petal {
+  position: absolute;
+  top: -12%;
+  will-change: transform;
+  animation: petal-fall var(--fall-dur, 12s) linear infinite;
+}
+.petal-inner {
+  width: 100%;
+  height: 100%;
+  animation: petal-sway var(--sway-dur, 4s) ease-in-out infinite alternate;
+}
+.petal-inner svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+  filter: drop-shadow(0 2px 3px rgba(214, 150, 170, 0.16));
+}
+@keyframes petal-fall {
+  from { transform: translateY(-12vh); }
+  to   { transform: translateY(112vh); }
+}
+@keyframes petal-sway {
+  from { transform: translateX(calc(var(--sway, 40px) * -1)) rotate(0deg); }
+  to   { transform: translateX(var(--sway, 40px)) rotate(var(--spin, 360deg)); }
+}
+/* 尊重系统"减少动态效果"偏好：不放花瓣，呼吸/淡入也一并关闭 */
+@media (prefers-reduced-motion: reduce) {
+  .petals { display: none; }
+  .glow { animation: none; }
+  .home-inner, .panel, .book-card, .note-card, .empty { animation: none; }
+}
+
+/* 封面底部栀子花点缀：固定、淡雅，置于无文字的角落（见 assets/img/gardenia.svg） */
+.cover-flora {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 44%;
+  pointer-events: none;
+  z-index: 1;            /* 在文字之下，不干扰阅读 */
+}
+.cover-flora .flora {
+  position: absolute;
+  bottom: -6px;
+  width: 190px;
+  opacity: 0.82;         /* 淡淡、淡雅 */
+  filter: drop-shadow(0 2px 5px rgba(155, 179, 138, 0.12));
+}
+.cover-flora .flora-left  { left: 10px; }
+.cover-flora .flora-right { right: 10px; transform: scaleX(-1); }
+@media (max-width: 560px) {
+  .cover-flora .flora { width: 132px; opacity: 0.7; }
+  .cover-flora .flora-left  { left: 2px; }
+  .cover-flora .flora-right { right: 2px; }
+}
+
+/* ---- Day 11 追加：背景乐声开关键（js/music.js 注入，全站常驻右上角） ---- */
+.music-btn {
+  position: fixed;
+  top: 18px;
+  right: 18px;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.72);
+  color: var(--ink-soft);
+  font-family: inherit;
+  font-size: 18px;
+  cursor: pointer;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.5s ease;
+}
+/* 关：一枚斜线轻轻划过音符（休止的意象） */
+.music-btn[data-state="off"]::after {
+  content: "";
+  position: absolute;
+  width: 24px;
+  height: 1.5px;
+  background: var(--ink-soft);
+  transform: rotate(-45deg);
+}
+.music-btn:hover {
+  border-color: var(--leaf);
+  color: var(--leaf-ink);
+  box-shadow: 0 6px 20px rgba(155, 179, 138, 0.25);
+}
+.music-btn:focus-visible {
+  outline: 2px solid var(--leaf-ink);
+  outline-offset: 3px;
+}
+/* 待命态：轻微呼吸，邀请一次轻触；开：静止并微微上浮；关：斜线休止符 */
+.music-btn[data-state="waiting"] { animation: music-invite 3.5s ease-in-out infinite; }
+.music-btn[data-state="on"] { color: var(--leaf-ink); border-color: var(--leaf); transform: translateY(-1px); }
+.music-btn[data-state="off"] { color: var(--ink-soft); opacity: 0.75; }
+@keyframes music-invite {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(155, 179, 138, 0); }
+  50%      { box-shadow: 0 0 0 9px rgba(155, 179, 138, 0.18); }
+}
+/* 待命提示：从右上角移到页面底部居中，并加柔色药丸底——与顶部「今日/书架/心迹」
+   三个导航词拉开明显距离，不再压字、不再重叠（用户真实反馈：提示字与导航重在一起很乱） */
+.music-hint {
+  position: fixed;
+  bottom: 56px;
+  left: 50%;
+  right: auto;
+  top: auto;
+  transform: translateX(-50%);
+  margin: 0;
+  padding: 8px 18px;
+  color: var(--ink-soft);
+  font-size: 13px;
+  letter-spacing: 0.1em;
+  /* 小屏上长提示词也不许溢出视口边缘：限宽 + 居中，绝不压到别处文字 */
+  max-width: calc(100vw - 32px);
+  text-align: center;
+  background: rgba(255, 255, 255, 0.72);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  box-shadow: 0 6px 22px rgba(155, 179, 138, 0.18);
+  z-index: 50;
+  transition: opacity 1.2s ease;
+  pointer-events: none;
+}
+.music-hint.fade { opacity: 0; }
+@media (max-width: 560px) {
+  .music-btn { top: 12px; right: 12px; width: 40px; height: 40px; }
+  .music-hint { display: none; } /* 小屏放不下侧字，靠按钮呼吸动效传达 */
+}
+/* 尊重"减少动态效果"偏好：开关键也不再呼吸 */
+@media (prefers-reduced-motion: reduce) {
+  .music-btn[data-state="waiting"] { animation: none; }
+}
+
+/* 顶部留白处的一句鼓励：小字、柔色、淡入，随意而温暖 */
+.whisper {
+  position: absolute;
+  top: 9%;
+  left: 0;
+  right: 0;
+  margin: 0;
+  text-align: center;
+  font-size: 15px;
+  font-weight: 400;
+  letter-spacing: 3px;
+  color: var(--leaf-ink);
+  opacity: 0.82;
+  pointer-events: none;
+  animation: fadein 1.9s ease both;
+}
+@media (max-width: 560px) {
+  .whisper { top: 7%; font-size: 13px; letter-spacing: 2px; }
+}
+
+/* ============ Day 8 主视图（index.html）布局 ============ */
+
+/* 主视图改为可滚动的纵向流，不再强制单屏居中（覆盖 .page 的 center / overflow:hidden） */
+.main-view {
+  justify-content: flex-start;
+  min-height: 100vh;
+  padding: 56px 24px 96px;
+  overflow: visible;
+}
+
+/* 入口按钮在空/错误态里也作行动、重试按钮，统一指针与字体 */
+.entry { cursor: pointer; font-family: inherit; }
+
+/* 修正（实战步骤3）：主视图是长滚动页，原先绝对定位 top:9% 的轻声寄语
+   会挤进「栀书心驿」与主标语之间；改回文档流，置于品牌上方 */
+.main-view .whisper {
+  position: static;
+  margin-bottom: 26px;
+}
+
+/* 区块1：诗意引导 */
+.hero {
+  text-align: center;
+  max-width: 560px;
+  margin: 6px auto 36px;
+  animation: fadein 1.6s ease both;
+}
+.hero .sub { margin-bottom: 30px; }
+.hero .hint { margin-top: 22px; }
+.stat {
+  margin-top: 22px;
+  color: var(--ink-soft);
+  font-size: 14px;
+  letter-spacing: 0.06em;
+}
+
+/* 区块容器（区块2 / 区块3） */
+.shelf {
+  width: 100%;
+  max-width: 720px;
+  margin: 30px auto 0;
+  text-align: left;
+  animation: fadein 1.6s ease both;
+}
+.shelf-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 18px;
+  padding: 0 4px;
+}
+.shelf-head h2 {
+  font-size: 20px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  color: var(--ink);
+}
+.shelf-head a {
+  color: var(--ink-soft);
+  font-size: 13px;
+  text-decoration: none;
+  letter-spacing: 0.06em;
+  border-bottom: 1px solid transparent;
+  transition: color .4s ease, border-color .4s ease;
+}
+.shelf-head a:hover { color: var(--leaf-ink); border-color: var(--line); }
+
+/* 卡片网格：桌面多列，手机单列 */
+.card-grid { display: grid; gap: 16px; }
+.book-grid  { grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); }
+.notes-grid { grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 18px; }
+
+/* 卡片基底（书名卡 / 心得卡 共用） */
+.card {
+  padding: 20px 22px;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.72);
+  text-align: left;
+  animation: fadein 1.1s ease both;
+  transition: transform .5s ease, box-shadow .5s ease;
+}
+.card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 30px rgba(155, 179, 138, 0.18);
+}
+
+/* 状态视图：加载 / 空 / 错误 */
+.state-view {
+  text-align: center;
+  padding: 30px 12px;
+  animation: fadein 1.2s ease both;
+}
+.state-text { color: var(--ink-soft); font-size: 16px; line-height: 2; }
+.state-view .entry { margin-top: 18px; }
+
+/* 加载中转圈（缓慢、温和，呼应整体氛围） */
+.spinner {
+  width: 30px;
+  height: 30px;
+  margin: 0 auto 14px;
+  border: 3px solid var(--line);
+  border-top-color: var(--leaf);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* 手机宽度：卡片单列、间距收紧、留白减小 */
+@media (max-width: 560px) {
+  .main-view { padding: 44px 18px 84px; }
+  .main-view .whisper { margin-bottom: 20px; }
+  .book-grid, .notes-grid { grid-template-columns: 1fr; }
+  .shelf { margin-top: 24px; }
+  .entry { min-width: 220px; padding-left: 24px; padding-right: 24px; }
+  /* Day 14 手机宽度修复：标题行不再硬挤一行——书页标题《被讨厌的勇气》
+     在 375px 下被右侧按钮压成一字一行竖排。允许换行后，标题拿整行、按钮另起一行。 */
+  .shelf-head { flex-wrap: wrap; row-gap: 10px; }
+  .shelf-title { flex-wrap: wrap; }
+  .shelf-head h2 { white-space: normal; }
+}
+
+/* ============================================================
+   Day 13 多视图导航（hash 路由）：顶栏 / 面包屑 / 视图区块
+   ============================================================ */
+
+/* 跳过导航的隐藏链接：平时藏在页面上方，键盘聚焦时才滑出来 */
+.skip-link {
+  position: absolute;
+  top: -60px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 60;
+  padding: 10px 22px;
+  border: 1px solid var(--line);
+  border-radius: 0 0 14px 14px;
+  background: #fff;
+  color: var(--ink);
+  font-size: 14px;
+  letter-spacing: 0.08em;
+  text-decoration: none;
+  transition: top 0.3s ease;
+}
+.skip-link:focus {
+  top: 0;
+  outline: 2px solid var(--leaf-ink);
+  outline-offset: 2px;
+}
+
+/* 顶栏：左侧品牌，右侧导航标签；给右上角固定的乐声键让出位置 */
+.topbar {
+  position: relative;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  /* 右侧留 96px 净空：给右上角常驻的 ♪ 音乐键（44px 宽 + 18px 外距）兜底，
+     即便系统字号偏大或网页缩放，导航词也绝不会挤到键上（修复：提示词曾压在右上角字上） */
+  padding: 14px 96px 6px 28px;
+  flex-wrap: wrap;
+}
+.topbar-brand {
+  color: var(--leaf-ink);
+  font-size: 15px;
+  letter-spacing: 0.34em;
+}
+.mainnav {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.mainnav a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;              /* 移动端热区 */
+  padding: 0 18px;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  color: var(--ink-soft);
+  font-size: 15px;
+  letter-spacing: 0.14em;
+  text-decoration: none;
+  transition: all 0.5s ease;
+}
+.mainnav a:hover {
+  color: var(--ink);
+  border-color: var(--line);
+  background: rgba(255, 255, 255, 0.6);
+}
+.mainnav a:focus-visible {
+  outline: 2px solid var(--leaf-ink);
+  outline-offset: 3px;
+}
+/* 当前所在：深叶绿胶囊 + 底部一线书签，两种线索并行，不只靠颜色区分 */
+.mainnav a[aria-current="page"] {
+  color: var(--leaf-ink);
+  border-color: var(--leaf);
+  background: rgba(155, 179, 138, 0.16);
+  box-shadow: inset 0 -2px 0 var(--leaf-ink);
+}
+
+/* 视图上方的"当前位置"一行：面包屑在左，返回上一页在右 */
+.viewbar {
+  width: 100%;
+  max-width: 720px;
+  margin: 4px auto 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.crumbs {
+  color: var(--ink-soft);
+  font-size: 13px;
+  letter-spacing: 0.08em;
+}
+.crumbs a {
+  color: var(--ink-soft);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: color 0.4s ease, border-color 0.4s ease;
+}
+.crumbs a:hover { color: var(--leaf-ink); border-color: var(--line); }
+.crumbs a:focus-visible { outline: 2px solid var(--leaf-ink); outline-offset: 3px; }
+.crumbs [aria-current="page"] { color: var(--ink); }
+
+.crumb-back {
+  padding: 6px 14px;
+  min-height: 36px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.6);
+  color: var(--ink-soft);
+  font-family: inherit;
+  font-size: 13px;
+  letter-spacing: 0.08em;
+  cursor: pointer;
+  transition: all 0.4s ease;
+}
+.crumb-back:hover { color: var(--leaf-ink); border-color: var(--leaf); }
+.crumb-back:focus-visible { outline: 2px solid var(--leaf-ink); outline-offset: 3px; }
+
+/* 未知路由的温柔说明：一行小注，不惊扰 */
+.route-warn {
+  width: 100%;
+  max-width: 720px;
+  margin: 16px auto 0;
+  padding: 10px 18px;
+  border: 1px dashed var(--line);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.5);
+  color: var(--ink-soft);
+  font-size: 14px;
+  text-align: center;
+  animation: fadein 0.8s ease both;
+}
+
+/* 视图区块：切换时轻轻淡入，像翻过一页 */
+.view {
+  width: 100%;
+  animation: fadein 0.9s ease both;
+}
+/* 仅供读屏的隐藏文本：视觉上收起来，屏幕阅读器照常播报 */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* 今日视图：并排的两个入口 */
+.hero-actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+/* 区块标题旁的数量小注 */
+.shelf-title { display: flex; align-items: baseline; gap: 10px; }
+.shelf-count { color: var(--ink-soft); font-size: 13px; letter-spacing: 0.06em; }
+.view-tip { color: var(--ink-soft); font-size: 14px; margin: -8px 0 16px; padding: 0 4px; }
+
+/* 整张卡片可点：清掉链接下划线，保留卡片的柔色外观 */
+.card-link {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+  border-radius: 18px;
+  transition: transform 0.5s ease, box-shadow 0.5s ease;
+}
+.card-link:hover { transform: translateY(-3px); }
+.card-link:focus-visible { outline: 2px solid var(--leaf-ink); outline-offset: 3px; }
+.card-link .card { animation: none; }        /* 由外层统一做淡入，避免双层动效打架 */
+.card-link:hover .card { box-shadow: 0 10px 30px rgba(155, 179, 138, 0.18); }
+
+/* 多视图容器：扣掉顶栏高度，避免多出一屏滚动 */
+.app { min-height: calc(100vh - 62px); padding-top: 26px; }
+
+@media (max-width: 560px) {
+  /* 小屏右侧留 80px 净空，同样给 ♪ 键兜底（键在小屏为 40px + 12px 外距） */
+  .topbar { padding: 10px 80px 4px 18px; }
+  .topbar-brand { letter-spacing: 0.22em; font-size: 14px; }
+  .mainnav a { padding: 0 14px; min-height: 40px; font-size: 14px; }
+  .viewbar { margin-top: 8px; }
+  .app { padding-top: 20px; }
+}
+/* 尊重"减少动态效果"偏好：视图切换也安静下来 */
+@media (prefers-reduced-motion: reduce) {
+  .view, .route-warn { animation: none; }
+  .card-link:hover { transform: none; }
+}
+
+/* ===== 检查台（Day 20 · 公网接口与数据自检） ===== */
+.page.check { justify-content: flex-start; }
+.page.check .panel { width: 100%; max-width: 640px; margin-top: 40px; }
+.page.check .title { margin-bottom: 6px; }
+.check-block {
+  margin-top: 26px;
+  padding-top: 18px;
+  border-top: 1px solid var(--line);
+}
+.check-block h3 {
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--leaf-ink);
+  margin-bottom: 12px;
+  letter-spacing: 0.04em;
+}
+/* 检查台里的状态块：复用 .state 容器，给一点文字与配色 */
+.page.check .state {
+  text-align: left;
+  padding: 14px 16px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.5);
+  font-size: 15px;
+  line-height: 1.9;
+  color: var(--ink-soft);
+  word-break: break-all;
+}
+.page.check .state.ok { border-left: 3px solid var(--leaf); }
+.page.check .state.err { border-left: 3px solid #d98b8b; color: #9a5b5b; }
+.check-list {
+  margin: 8px 0 0;
+  padding-left: 20px;
+  color: var(--ink);
+}
+.check-list li { margin: 4px 0; }
+#last-update { color: var(--leaf-ink); }
+
+/* ===== 检查台 ⑤ 改写 / ⑥ 删除（Day 22 · 四类操作闭环自检） ===== */
+.page.check code {
+  font-family: Consolas, "Courier New", monospace;
+  font-size: 13px;
+  background: rgba(155, 179, 138, 0.16);
+  border-radius: 4px;
+  padding: 1px 5px;
+}
+.diff-label {
+  display: block;
+  margin: 14px 0 6px;
+  font-size: 14px;
+  letter-spacing: 0.12em;
+  color: var(--ink-soft);
+}
+.diff-input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.72);
+  color: var(--ink);
+  font-family: inherit;
+  font-size: 15px;
+  line-height: 1.8;
+  resize: vertical;
+}
+.diff-input:focus-visible { outline: 2px solid var(--leaf-ink); outline-offset: 2px; }
+.diff-moods { margin-bottom: 16px; }
+/* 改之前 / 改之后 并排对比表 */
+.diff-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 12px 0 4px;
+  font-size: 14px;
+  line-height: 1.7;
+}
+.diff-table th,
+.diff-table td {
+  border: 1px solid var(--line);
+  padding: 7px 10px;
+  text-align: left;
+  vertical-align: top;
+  overflow-wrap: anywhere;
+}
+.diff-table thead th { background: rgba(155, 179, 138, 0.14); font-weight: 500; color: var(--leaf-ink); }
+.diff-table tbody th { width: 88px; color: var(--ink-soft); font-weight: 400; background: rgba(255, 255, 255, 0.5); }
+/* 变了的格子给一点颜色，一眼看出"值确实改了" */
+.diff-changed { color: var(--leaf-ink); background: rgba(155, 179, 138, 0.18); font-weight: 500; }
+.diff-same { color: var(--ink-soft); }
+.diff-before { color: var(--leaf-ink); letter-spacing: 0.08em; }
+.diff-note { margin: 8px 0 0; font-size: 13px; color: var(--ink-soft); }
+.diff-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 12px; }
+.page.check .entry.subtle.danger { color: #9a5b5b; border-color: rgba(176, 106, 106, 0.45); }
+.page.check .entry.subtle.danger:hover {
+  color: #fff;
+  background: rgba(176, 106, 106, 0.85);
+  border-color: rgba(176, 106, 106, 0.85);
+}

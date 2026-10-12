@@ -10,6 +10,8 @@
   <link rel="stylesheet" href="css/style.css" />
   <!-- Day 24：声明 favicon，避免浏览器自动请求 /favicon.ico 落空、在控制台留一条 404 红报错 -->
   <link rel="icon" type="image/svg+xml" href="assets/img/gardenia.svg" />
+  <!-- Day 26：机器可读版本标记，供发布后核验「线上到底是哪一版」 -->
+  <meta name="app-version" content="1.0.0" />
 </head>
 <body>
   <!-- 栀子花瓣飘落动景容器（由 js/petals.js 填充，尊重"减少动态效果"偏好） -->
@@ -46,6 +48,7 @@
   </main>
 
   <script src="js/store.js"></script>
+  <script src="js/components.js"></script>
   <script src="js/book.js"></script>
   <!-- 栀子花瓣飘落动景 -->
   <script src="js/petals.js"></script>
