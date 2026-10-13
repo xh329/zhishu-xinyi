@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>资源检查结果｜栀书心驿 · Day 27</title>
+<style>
+  :root{
+    --bg:#faf7f2; --card:#ffffff; --ink:#3a332c; --ink-2:#6b6157;
+    --line:#e8e0d6; --ok:#4a7c59; --bad:#a4483c; --accent:#8a6d9b;
+    --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,"Courier New",monospace;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; padding:40px 28px 56px; background:var(--bg); color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;
+    font-size:15px; line-height:1.7;
+  }
+  .wrap{max-width:900px;margin:0 auto;}
+  h1{font-size:26px;font-weight:600;letter-spacing:.02em;margin:0 0 6px;}
+  .sub{color:var(--ink-2);font-size:13px;margin-bottom:28px;}
+  .card{
+    background:var(--card);border:1px solid var(--line);border-radius:14px;
+    padding:22px 26px;margin-bottom:20px;
+  }
+  h2{font-size:15px;font-weight:600;margin:0 0 14px;letter-spacing:.04em;color:var(--accent);}
+  pre{
+    font-family:var(--mono);font-size:12.5px;line-height:1.65;white-space:pre-wrap;
+    background:#f4f0ea;border:1px solid var(--line);border-radius:9px;
+    padding:14px 16px;margin:0 0 14px;color:#3f3a34;
+  }
+  table{width:100%;border-collapse:collapse;font-size:14px;}
+  th,td{text-align:left;padding:9px 10px;border-bottom:1px solid var(--line);vertical-align:top;}
+  th{color:var(--ink-2);font-weight:500;font-size:13px;width:210px;}
+  td b{font-weight:600;}
+  .ok{color:var(--ok);font-weight:600;}
+  .bad{color:var(--bad);font-weight:600;}
+  .concl{
+    background:#f2f6f2;border:1px solid #d6e3d8;border-left:4px solid var(--ok);
+    border-radius:10px;padding:16px 20px;margin-top:4px;font-size:15px;
+  }
+  .note{color:var(--ink-2);font-size:12.5px;margin-top:14px;}
+  .foot{
+    margin-top:26px;padding-top:16px;border-top:1px dashed var(--line);
+    color:var(--ink-2);font-size:12px;display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <h1>资源检查结果 · 栀书心驿</h1>
+  <div class="sub">Day 27 ｜ 第 4 周 ｜ 2026-10-13 18:33 ｜ 全部为真实命令输出，可复跑 ｜ 本页不含任何密钥 / Token / 账号信息</div>
+
+  <div class="card">
+    <h2>一、实测命令与输出（原始）</h2>
+<pre>$ curl -s -o /dev/null -w "[%{http_code}]" -m 20 https://zhishu-xinyi-70127.app.workbuddy.host/
+[200]
+
+$ curl -s -m 20 https://zhishu-xinyi-70127.app.workbuddy.host/ | grep -o 'app-version" content="[^"]*"'
+app-version" content="1.0.0"
+                       页脚 foot-ver → v1.0
+
+$ nslookup zhishu-xinyi.apigw.tencentcs.com
+*** 找不到 zhishu-xinyi.apigw.tencentcs.com : Non-existent domain      ← NXDOMAIN
+
+$ curl -s -o /dev/null -w "[%{http_code}]" -m 15 https://zhishu-xinyi.apigw.tencentcs.com/release/api/health
+[000]
+
+# 对照组：排除“本机断网”
+$ nslookup tcb-api.tencentcloudapi.com
+名称:    tcb-api.tencentcloudapi.com
+Addresses:  81.69.216.233
+            81.69.138.235
+
+# 云服务查询（数据库 / 存储 / 用户）
+$ workbuddy_cloudservice_db_list_tables --app wbapp_Vuqg5ib15u1zNLXuFkV72I
+error: application wbapp_Vuqg5ib15u1zNLXuFkV72I has no cloud service</pre>
+  </div>
+
+  <div class="card">
+    <h2>二、逐项结论</h2>
+    <table>
+      <tr><th>CloudBase 环境还在吗</th><td><span class="bad">已不存在</span> —— 专属接口域名 NXDOMAIN，域名记录本身已消失</td></tr>
+      <tr><th>为什么不是"网络不通"</th><td>对照组 <code>tcb-api.tencentcloudapi.com</code> <span class="ok">正常解析到 IP</span> → 是那个域名没了，不是本机断网</td></tr>
+      <tr><th>本月用量</th><td><b>0</b> —— 无云函数、无数据库、无存储（未开通）</td></tr>
+      <tr><th>到期时间</th><td><b>无</b> —— 没有在跑的云资源，即无到期日</td></tr>
+      <tr><th>资源包 / 免费额度剩余</th><td><b>不适用</b>（无资源）</td></tr>
+      <tr><th>是否欠费</th><td><b>不适用</b></td></tr>
+      <tr><th>云端数据条数</th><td>不可取（环境已回收）</td></tr>
+      <tr><th>谁在真正服务</th><td><b>WorkBuddy 静态托管</b> —— <span class="ok">HTTP 200</span>，v1.0.0</td></tr>
+    </table>
+    <div class="concl">
+      <b>结论：</b>CloudBase 环境已回收，<b>无额度、无到期日、云端数据不可取</b>。当前<b>零云资源占用、零到期风险</b>。
+    </div>
+    <div class="note">
+      诚实边界：以上为公网证据判定，覆盖本应用依赖的全部云资源；不能证明该腾讯云账号下没有其它残留计费项 —— 那一层只有登录控制台可见。
+    </div>
+  </div>
+
+  <div class="foot">
+    <span>证据文件：outputs/Day27/资源与到期说明.md ｜ CloudBase资源检查-操作步骤.md</span>
+    <span>栀书心驿 · 慢慢来</span>
+  </div>
+
+</div>
+</body>
+</html>
