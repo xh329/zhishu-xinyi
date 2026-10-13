@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>帮我试个东西 · 栀书心驿</title>
+<style>
+  :root{
+    --bg:#fbf7f4;
+    --card:#ffffff;
+    --ink:#3d3630;
+    --ink-soft:#7d7269;
+    --rose:#c98a94;
+    --rose-soft:#f3e2e2;
+    --line:#ece3de;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    padding:26px 18px 60px;
+    background:var(--bg);
+    color:var(--ink);
+    font-family:"Noto Serif SC","Songti SC","SimSun",Georgia,serif;
+    line-height:1.85;
+    font-size:16px;
+    -webkit-text-size-adjust:100%;
+  }
+  .wrap{max-width:560px;margin:0 auto;}
+  .hi{text-align:center;margin:0 0 6px;font-size:13px;letter-spacing:.22em;color:var(--rose);}
+  h1{font-size:23px;font-weight:500;text-align:center;margin:0 0 10px;letter-spacing:.04em;}
+  .lead{font-size:15px;color:var(--ink-soft);text-align:center;margin:0 0 22px;}
+  .card{
+    background:var(--card);border:1px solid var(--line);border-radius:14px;
+    padding:20px 18px;margin-bottom:16px;
+    box-shadow:0 1px 2px rgba(120,100,95,.04);
+  }
+  .card h2{
+    font-size:15px;font-weight:500;margin:0 0 12px;color:var(--ink);
+    letter-spacing:.06em;
+  }
+  .link-box{
+    background:var(--rose-soft);border-radius:10px;padding:14px 12px;text-align:center;
+    font-family:ui-monospace,Menlo,Consolas,monospace;font-size:13px;
+    word-break:break-all;line-height:1.7;color:#8d5a63;
+  }
+  ol.steps{list-style:none;margin:0;padding:0;counter-reset:s;}
+  ol.steps li{
+    counter-increment:s;position:relative;padding-left:40px;
+    margin:0 0 16px;min-height:28px;
+  }
+  ol.steps li:last-child{margin-bottom:0;}
+  ol.steps li::before{
+    content:counter(s);
+    position:absolute;left:0;top:1px;
+    width:26px;height:26px;border-radius:50%;
+    background:var(--rose-soft);color:#a86a74;
+    font-size:13px;line-height:26px;text-align:center;
+    font-family:system-ui,sans-serif;
+  }
+  .say{
+    display:block;margin-top:3px;font-size:14px;color:var(--ink-soft);
+  }
+  .note{
+    font-size:14px;color:var(--ink-soft);
+    border-left:2px solid var(--rose-soft);padding-left:12px;margin:0;
+  }
+  .foot{text-align:center;font-size:12.5px;color:#a99e96;margin-top:24px;letter-spacing:.06em;}
+  .q{margin:0;padding-left:20px;}
+  .q li{margin-bottom:8px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <p class="hi">栀 书 心 驿</p>
+  <h1>帮我试个东西</h1>
+  <p class="lead">两三分钟就好。没有说明书，你随便摸索。<br />不知道点哪，直接说出来就行。</p>
+
+  <div class="card">
+    <h2>先打开这个</h2>
+    <div class="link-box">https://zhishu-xinyi-70127.app.workbuddy.host/</div>
+  </div>
+
+  <div class="card">
+    <h2>然后照着做</h2>
+    <ol class="steps">
+      <li>打开上面那个网址，停几秒。<span class="say">然后跟我说一句：你觉得这是干嘛的？</span></li>
+      <li>点「开始今天的阅读」。<span class="say">随便写一本你正在读、或者想读的书，把它收下。</span></li>
+      <li>接着写三句话 —— 读完这本书，你什么感觉。<span class="say">顺手点一个心情，写完把它存起来。</span></li>
+      <li>刷新一下页面。<span class="say">刚才写的东西，还在吗？</span></li>
+      <li>把刚才那条心得改一改。<span class="say">改一个字都算。</span></li>
+      <li>把它删掉。</li>
+      <li>最后再刷新一次。<span class="say">看你删掉的那条，还回不回来。</span></li>
+    </ol>
+  </div>
+
+  <div class="card">
+    <h2>两句要说的话</h2>
+    <p class="note">
+      一、<strong>卡住不用不好意思</strong>，卡住才是我要的东西。<br />
+      二、全程我不会帮你点，也不会告诉你下一步在哪 —— 就当我不在。
+    </p>
+  </div>
+
+  <div class="card">
+    <h2>做完最后问我三句</h2>
+    <ol class="q">
+      <li>哪一步最别扭、最想骂人？</li>
+      <li>如果只能改一个地方，你改哪？</li>
+      <li>你还会再用第二次吗？为什么？</li>
+    </ol>
+  </div>
+
+  <p class="foot">谢谢你帮我这几分钟</p>
+
+</div>
+</body>
+</html>
