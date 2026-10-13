@@ -1,0 +1,16 @@
+=== A. 全新环境、0 条数据时打开写心得页 ===
+  localStorage 里 notes 条数 = 0（0 = 这一页上什么都没写过）
+  输入框是空的吗：true
+  「已为你收好」提示 → display=block / visibility=visible / opacity=0 / hidden 属性=false
+  提示文字："已为你收好，去\"心迹\"看看吧。"
+  ★ 判定：提示不可见（或没有误导）
+
+=== B. 改写这条链路走不走得通 ===
+  心迹页上显示的心得："原来一切烦恼都来自人际关系，先把课题分清楚。"
+  点「改写」后到了：https://zhishu-xinyi-70127.app.workbuddy.host/note.html?edit=n_mv6i28ci0xe3&book=b_mv6i1pmxktyq&from=notes
+  改写页是否带出原文："原来一切烦恼都来自人际关系，先把课题分清楚。"
+  关联书名显示："《被讨厌的勇气》" ／ 已选心情：[]
+  改写保存后停在：https://zhishu-xinyi-70127.app.workbuddy.host/note.html?edit=n_mv6i28ci0xe3&book=b_mv6i1pmxktyq&from=notes
+  保存后提示："已为你改好，去瞧瞧吧。"
+  localStorage 里那条现在的内容：["原来一切烦恼都来自人际关系，先把课题分清楚。（改一个字试试）"]
+  是否留下 updated_at（改写痕迹）：true
