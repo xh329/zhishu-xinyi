@@ -53,8 +53,8 @@
 | --- | --- |
 | 检查项 | 用户操作是否有明确反馈（加载/空/错/成功），危险操作是否有确认 |
 | 结论 | ✅ **PASS** —— 四态齐全 + 保存提示 + 删除二次确认 + 改写前后对比 + 连点防护 |
-| 证据（可打开） | `outputs/Day27/修复后验证-运行记录.txt`（14 项**全部 PASS**）；`outputs/Day24/核心流程测试清单.md`（C1–C11，24 项断言 PASS） |
-| 证据（可复跑） | `node outputs/Day24/regression.cjs`（24/24）；`node outputs/Day27/verify-fix.cjs`（14 项） |
+| 证据（可打开） | **今日线上实跑** `outputs/Day28/核心流程重复检测.txt`（7 步全 PASS、Console 0 报错）；`outputs/Day27/修复后验证-运行记录.txt`（14 项 PASS）；`outputs/Day24/核心流程测试清单.md`（C1–C11，24 项断言 PASS） |
+| 证据（可复跑） | `node outputs/Day28/recheck-core-flow.cjs`（公网 7 步）；`node outputs/Day24/regression.cjs`（24/24）；`node outputs/Day27/verify-fix.cjs`（14 项） |
 
 **当场可见的反馈清单（截图可逐项指认）**
 
@@ -130,8 +130,8 @@
 | --- | --- |
 | 检查项 | 写入后刷新，数据是否仍在 |
 | 结论 | ✅ **PASS（同浏览器内）** —— 公网上写入 + 刷新后数据仍在（localStorage 持久化） |
-| 证据（可打开） | `outputs/Day27/修复后验证-运行记录.txt` 第 4 节「刷新后数据仍在（localStorage）—— notes=1」PASS；`outputs/Day27/shots/self-6-刷新后.png` |
-| 证据（可复跑） | 公网 check.html：写入测试书籍 → 刷新 → 条数 +1（当场演示） |
+| 证据（可打开） | **今日线上实跑** `outputs/Day28/核心流程重复检测.txt` 第 4 步「刷新前 notes=1 → 刷新后 notes=1」PASS；`outputs/Day27/修复后验证-运行记录.txt` 第 4 节 PASS |
+| 证据（可复跑） | `node outputs/Day28/recheck-core-flow.cjs`（公网写入→刷新→仍在）；公网 check.html：写入测试书籍 → 刷新 → 条数 +1 |
 
 > **必须写清的已知边界**：数据存在**各自浏览器的 localStorage** —— **换设备 / 换浏览器 / 清缓存 → 数据为空**。这是纯静态阶段的边界，**不是 bug**；要保住数据须接回云端（见「五、后续优化」）。红线上限：**未把"同浏览器持久化"说成"云端持久化"。**
 
@@ -175,6 +175,25 @@
 | 证据（可复跑） | 见文末命令：`git grep` 扫 `ghp_/sk-/AKID` **0 条**；`git ls-files \| grep .env` 只有 `.env.example`；发布前检查 `verify.cjs` #2/#3 **PASS** |
 
 **发布前检查 10 项（`outputs/Day27/发布前检查-修复后.txt`）**：#1 接口连通(静态期标注) / #2 无密钥 / #3 .env 不入库 / #4 CORS 白名单 / #5 凭据走 process.env / #6 SQL 参数化 55/55 / #7 XSS 转义 / #8 三类错误中文 16/16 / #9 无断链 24 条 / #10 favicon 已声明 —— **10/10 PASS、退出码 0**。
+
+---
+
+## 二·补　核心流程重复检测（板块②·今日线上实跑）
+
+> 目的：确认「昨天的修复 + 今天的验收」没有把主链路跑坏（回归检测）。**公网正式站、全新浏览器环境、手机宽度 430×900**，只走页面上看得见、点得到的元素。
+> 脚本：`node outputs/Day28/recheck-core-flow.cjs`｜日志：`outputs/Day28/核心流程重复检测.txt`｜截图：`outputs/Day28/shots/flow-1..8-*.png`
+
+| 步 | 核心流程 | 判定 | 实测 |
+| --- | --- | --- | --- |
+| 1 | 打开首页 | ✅ PASS | HTTP **200**（5.2s 首屏）；诗意首页正常渲染 |
+| 2 | 收下一本书 | ✅ PASS | 出现「已收下」卡片 |
+| 3 | 写一段心得并保存 | ✅ PASS | 提示「已为你收好…」；notes 落盘 **1** 条 |
+| 4 | 刷新确认 | ✅ PASS | 刷新前 notes=1 → **刷新后 notes=1** |
+| 5 | 心迹页改写/删除可达 | ✅ PASS | 改写按钮 true、删除按钮 true |
+| 6 | 改写一段心得 | ✅ PASS | 带出原文 + 写入 `updated_at`，正文已更新 |
+| 7 | 删除 + 再刷新 | ✅ PASS | 二次确认「删掉后不可找回」；删除后 notes=0，再刷新仍 **0** |
+
+**合计：7 / 7 PASS；控制台红字 0 条。→ ✅ 核心流程重复检测通过。**
 
 ---
 

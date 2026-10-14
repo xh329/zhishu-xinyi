@@ -1,0 +1,55 @@
+{
+  "base": "https://zhishu-xinyi-70127.app.workbuddy.host/",
+  "fail": null,
+  "consoleErrors": 0,
+  "log": [
+    {
+      "step": 1,
+      "name": "打开首页（HTTP 200 且已渲染）",
+      "ok": true,
+      "status": 200
+    },
+    {
+      "step": 2,
+      "name": "收下这本书（出现「已收下」）",
+      "ok": true
+    },
+    {
+      "step": 3,
+      "name": "写心得并保存（有提示 + 落盘 1 条）",
+      "ok": true,
+      "tip": "已为你收好，回到这本书看看吧。",
+      "notes": 1
+    },
+    {
+      "step": 4,
+      "name": "刷新后数据仍在",
+      "ok": true,
+      "before": 1,
+      "after": 1
+    },
+    {
+      "step": 5,
+      "name": "心迹页有「改写」「删除」",
+      "ok": true,
+      "edit": true,
+      "del": true
+    },
+    {
+      "step": 6,
+      "name": "改写链路通（带出原文 + 写入 updated_at）",
+      "ok": true,
+      "len": 1,
+      "hasUpdated": true,
+      "content": "改一改：慢慢读，是在把自己找回来。"
+    },
+    {
+      "step": 7,
+      "name": "删除有二次确认且刷新不回来",
+      "ok": true,
+      "confirmText": "要把这段心得删掉吗？删掉后不可找回。留下删除",
+      "n1": 0,
+      "n2": 0
+    }
+  ]
+}
