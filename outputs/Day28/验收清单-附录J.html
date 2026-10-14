@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><title>结营验收清单 · 附录 J</title>
+<style>
+:root{--ink:#2f3a2e;--sub:#6b7a68;--line:#e3e7df;--soft:#f7f8f4;--accent:#5f774f;--warn:#b4453a;--ok:#3f7a45;}
+*{box-sizing:border-box;}
+body{margin:0;background:#fff;color:var(--ink);
+  font-family:"Noto Serif SC","Songti SC",Georgia,serif;font-size:15px;line-height:1.7;}
+#__addrbar{position:fixed;left:0;right:0;top:0;height:44px;z-index:99999;display:flex;align-items:center;gap:8px;
+  padding:0 14px;background:#f1f3f4;border-bottom:1px solid #cfd4d9;
+  font-family:"Segoe UI",system-ui,sans-serif;font-size:13.5px;color:#3c4043;}
+#__addrbar .dots{display:flex;gap:6px;margin-right:10px;}
+#__addrbar .dot{width:11px;height:11px;border-radius:50%;}
+#__addrbar .omni{flex:1;display:flex;align-items:center;background:#fff;border:1px solid #dadce0;
+  border-radius:999px;padding:4px 14px;overflow:hidden;color:#202124;}
+.wrap{padding:60px 40px 40px;max-width:1080px;margin:0 auto;}
+.badge{display:inline-block;background:var(--soft);border:1px solid var(--line);border-radius:999px;
+  padding:4px 14px;font-size:13px;color:var(--accent);margin-bottom:10px;}
+h1{font-size:25px;margin:6px 0 6px;font-weight:500;}
+.sub{color:var(--sub);font-size:13.5px;margin:0 0 14px;}
+h2{font-size:19px;margin:24px 0 10px;padding-bottom:6px;border-bottom:1px solid var(--line);font-weight:500;}
+table{border-collapse:collapse;width:100%;margin:10px 0;font-size:14px;}
+th,td{border:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:top;}
+th{background:var(--soft);font-weight:500;}
+tr:nth-child(even) td{background:#fcfcf9;}
+code{background:#f2f4ee;padding:1px 5px;border-radius:4px;font-size:12.5px;
+  font-family:Consolas,"Courier New",monospace;}
+.mark{font-size:16px;font-weight:700;text-align:center;white-space:nowrap;}
+.p{color:var(--ok);} .n{color:#a8761f;} .f{color:var(--warn);}
+.tag{display:inline-block;font-size:12px;padding:1px 8px;border-radius:999px;border:1px solid var(--line);background:#fff;color:var(--sub);}
+.sum{display:flex;gap:12px;margin:12px 0 6px;flex-wrap:wrap;}
+.card{border:1px solid var(--line);border-radius:8px;padding:10px 16px;background:var(--soft);min-width:150px;}
+.card .num{font-size:24px;font-weight:600;}
+.card .lbl{font-size:13px;color:var(--sub);}
+.note{margin:12px 0;padding:10px 16px;background:#fbfaf6;border-left:3px solid #cfd9c4;color:#55604f;font-size:13.5px;}
+strong{color:#243020;}
+.chain{font-size:12.5px;color:var(--sub);}
+</style></head><body>
+<div id="__addrbar">
+  <span class="dots"><span class="dot" style="background:#ff5f57"></span><span class="dot" style="background:#febc2e"></span><span class="dot" style="background:#28c840"></span></span>
+  <span class="omni"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" style="margin-right:7px;flex:none">
+    <rect x="4" y="10" width="16" height="11" rx="2.5" fill="#5f6368"/>
+    <path d="M8 10V7a4 4 0 0 1 8 0v3" stroke="#5f6368" stroke-width="2.2" fill="none"/></svg>zhishu-xinyi/outputs/Day28/验收清单-附录J.html</span>
+</div>
+<div class="wrap">
+  <span class="badge">结营交付 · 附录 J 验收清单 · Day 28 · 2026-10-14</span>
+  <h1>栀书心驿 · 最终验收清单（附录 J）</h1>
+  <p class="sub">验收人：栀子（代验）｜线上作品：<code>https://zhishu-xinyi-70127.app.workbuddy.host/</code>（v1.0.1）</p>
+
+  <div class="sum">
+    <div class="card"><div class="num p">8</div><div class="lbl">✅ PASS</div></div>
+    <div class="card"><div class="num n">2</div><div class="lbl">⬜ 未执行（云端·已降级）</div></div>
+    <div class="card"><div class="num p">0</div><div class="lbl">❌ FAIL</div></div>
+    <div class="card"><div class="num">10</div><div class="lbl">检查项合计</div></div>
+  </div>
+
+  <h2>逐项判定（每项附实际证据）</h2>
+  <table>
+    <thead><tr><th style="width:34px">#</th><th style="width:150px">检查项</th><th style="width:64px">结论</th><th>实际证据（可打开 / 可复跑）</th></tr></thead>
+    <tbody>
+      <tr>
+        <td>1</td><td>页面 / 视图数量</td><td class="mark p">✅ PASS</td>
+        <td>5 个独立页面 + 单页内 4 条 hash 路由视图 = <strong>9 个可用界面</strong><br>
+        <span class="chain">线上 5 页 HTTP 码实测全 200；路由见 <code>js/views.js:90/111/142/190</code></span></td>
+      </tr>
+      <tr>
+        <td>2</td><td>反馈交互</td><td class="mark p">✅ PASS</td>
+        <td>加载/空/错/成功<strong>四态齐全</strong> + 保存提示「已收好」+ 删除二次确认 + 改写前后对比 + 连点防护<br>
+        <span class="chain">证据 <code>outputs/Day27/修复后验证-运行记录.txt</code>（14 项全 PASS）、<code>outputs/Day24/核心流程测试清单.md</code>（24 项）</span></td>
+      </tr>
+      <tr>
+        <td>3</td><td>数据库读写</td><td class="mark n">⬜ 未执行<br><span style="font-size:11px;color:var(--sub)">（云端）·降级 PASS</span></td>
+        <td>线上<strong>无云数据库</strong>（CloudBase 环境已回收）；降级为浏览器 <code>localStorage</code>，读写闭环<strong>可当场演示</strong><br>
+        <span class="chain">证据 <code>js/store.js</code>；check.html 写入→刷新条数 +1（Day27 验证第 4 节 PASS）</span></td>
+      </tr>
+      <tr>
+        <td>4</td><td>前后端链路</td><td class="mark n">⬜ 未执行<br><span style="font-size:11px;color:var(--sub)">（无后端）·纯静态</span></td>
+        <td>线上<strong>不存在后端</strong>；5 个页面<strong>均未引用</strong> <code>api.js</code>/<code>config.js</code>，只引 <code>store.js</code><br>
+        <span class="chain">历史链路（Day20–22 前端↔云函数↔MySQL）随环境回收失效；<code>store.js:128-180</code> 提供同名同形本地接口</span></td>
+      </tr>
+      <tr>
+        <td>5</td><td>合法数据来源</td><td class="mark p">✅ PASS</td>
+        <td>全部数据由<strong>用户本人手输</strong>（书名、心得正文）；零爬取、零第三方接口、零版权素材<br>
+        <span class="chain">图片仅 2 张自绘 SVG；<code>PRD.md §4</code> 已把"自动搜索/封面拉取"列为暂缓（避免版权风险）</span></td>
+      </tr>
+      <tr>
+        <td>6</td><td>公网地址</td><td class="mark p">✅ PASS</td>
+        <td><code>https://zhishu-xinyi-70127.app.workbuddy.host/</code> —— 5 页全 200，首页含版本指纹 <code>v1.0.1</code><br>
+        <span class="chain">截图 <code>outputs/Day28/shots/验收截图2-公网作品.png</code>（含地址栏）</span></td>
+      </tr>
+      <tr>
+        <td>7</td><td>线上持久化</td><td class="mark p">✅ PASS<br><span style="font-size:11px;color:var(--sub)">（同浏览器内）</span></td>
+        <td>公网写入后<strong>刷新数据仍在</strong>（localStorage）；已如实标注边界：换设备/清缓存即丢<br>
+        <span class="chain">证据 Day27 验证第 4 节「刷新后数据仍在 —— notes=1」PASS</span></td>
+      </tr>
+      <tr>
+        <td>8</td><td>回滚与备份说明</td><td class="mark p">✅ PASS</td>
+        <td>回滚手册 + 发布清单 + <strong>实测 86 秒回退演练</strong>；归档产物带逐文件 sha256<br>
+        <span class="chain"><code>outputs/Day26/{回滚手册,发布清单-v1.0,回滚演练记录}.md</code>；<code>release.cjs check</code> 指纹比对</span></td>
+      </tr>
+      <tr>
+        <td>9</td><td>CloudBase 额度与到期风险</td><td class="mark p">✅ PASS<br><span style="font-size:11px;color:var(--sub)">（判定式）</span></td>
+        <td><strong>零云资源、零额度、无到期日、无欠费</strong>：环境域名 NXDOMAIN + WorkBuddy 云服务未开通<br>
+        <span class="chain">证据 <code>outputs/Day27/资源与到期说明.md</code>；<code>nslookup</code> 对照组排除断网</span></td>
+      </tr>
+      <tr>
+        <td>10</td><td>敏感文件</td><td class="mark p">✅ PASS</td>
+        <td>仓内<strong>无 .env、无明文密钥</strong>，只留占位模板 <code>.env.example</code>；发布前检查 #2/#3 PASS<br>
+        <span class="chain"><code>git grep</code> 扫 ghp_/sk-/AKID = 0 条；<code>outputs/Day23/安全自查清单.md</code>（10 项全绿）</span></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="note">
+    <strong>口径声明</strong>：第 3、4 项指的是「前端 ↔ 云函数 ↔ MySQL」这条<strong>云端链路</strong>。CloudBase 环境已被回收（专属域名 NXDOMAIN），线上为<strong>纯静态形态</strong>，故按判定口径<strong>如实标为「未执行」</strong>，并附降级实现的可演示证据 —— <strong>没有一项把未验证内容说成通过</strong>。
+  </div>
+
+  <h2>降级口径对照（课程「卡住降级」）</h2>
+  <table>
+    <thead><tr><th style="width:150px">降级要求</th><th style="width:110px">结论</th><th>说明</th></tr></thead>
+    <tbody>
+      <tr><td>公网首页</td><td class="mark p">✅ 达成</td><td><code>https://zhishu-xinyi-70127.app.workbuddy.host/</code> → 200</td></tr>
+      <tr><td>健康接口</td><td class="mark n">◑ 降级</td><td>线上无云端 <code>/api/health</code>；检查台改由本地 <code>Z.api.health()</code> 返回 <code>{ok:true,mode:'local'}</code></td></tr>
+      <tr><td>一次线上写入</td><td class="mark p">✅ 达成</td><td>公网 check.html「写入测试」→ 本地新增 1 条</td></tr>
+      <tr><td>刷新后持久化</td><td class="mark p">✅ 达成</td><td>刷新后条数不变（同浏览器）</td></tr>
+      <tr><td>PATCH / DELETE</td><td class="mark p">✅ 完成</td><td>改写/删除在降级层均完成并可演示，<strong>无未执行项</strong></td></tr>
+    </tbody>
+  </table>
+</div>
+</body></html>
